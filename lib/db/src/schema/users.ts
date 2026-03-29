@@ -5,6 +5,10 @@ import { z } from "zod/v4";
 export const roleEnum = pgEnum("user_role", ["user", "admin"]);
 export const upgradeTypeEnum = pgEnum("upgrade_type", ["basic", "premium", "lifetime"]);
 
+export const DRIVER_IDS = ["BC1482", "RU1823", "DZ1923", "TK7321", "SPF1643"] as const;
+export type DriverId = typeof DRIVER_IDS[number];
+export const FREE_DRIVER: DriverId = "SPF1643";
+
 export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -26,6 +30,15 @@ export const usersTable = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const driverAccessTable = pgTable("driver_access", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
+  driverId: text("driver_id").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  grantedAt: timestamp("granted_at").notNull().defaultNow(),
+  paymentRef: text("payment_ref"),
+});
+
 export const insertUserSchema = createInsertSchema(usersTable).omit({
   id: true,
   createdAt: true,
@@ -34,3 +47,4 @@ export const insertUserSchema = createInsertSchema(usersTable).omit({
 });
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof usersTable.$inferSelect;
+export type DriverAccess = typeof driverAccessTable.$inferSelect;
