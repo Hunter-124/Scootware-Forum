@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-12">
       {/* Hero Section */}
-      <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/20 aspect-[21/9] md:aspect-[3/1] flex items-center">
+      <section className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/20 min-h-[380px] md:min-h-[460px] flex items-center">
         <img 
           src={`${import.meta.env.BASE_URL}images/hero-bg.png`} 
           alt="Cybernetic grid background" 
@@ -19,20 +19,37 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
         
-        <div className="relative z-10 p-8 md:p-12 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold tracking-widest mb-6 uppercase">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> System Online
+        <div className="relative z-10 p-8 md:p-14 w-full flex flex-col md:flex-row items-center md:items-start gap-8">
+          {/* Logo block */}
+          <div className="flex flex-col items-center shrink-0 md:items-start">
+            <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden border-2 border-primary/50 shadow-[0_0_40px_rgba(168,85,247,0.4)] bg-black/60 flex items-center justify-center">
+              <img 
+                src={`${import.meta.env.BASE_URL}images/logo.png`} 
+                alt="Scootware Logo" 
+                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+              />
+            </div>
+            <span className="mt-3 font-display font-extrabold text-lg md:text-xl tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 uppercase">
+              SCOOTWARE
+            </span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-extrabold mb-4 text-glow tracking-tight text-white leading-tight">
-            DOMINATE THE <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">HARDWARE.</span>
-          </h1>
-          <p className="text-lg text-gray-300 mb-8 max-w-lg font-light">
-            Welcome to the Scootware intelligence hub. Access elite driver tools, share configurations, and connect with other operatives.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link href="/upgrades">
-              <Button variant="glow" size="lg" className="font-bold tracking-wide">GET ACCESS <Zap className="ml-2 w-5 h-5" /></Button>
-            </Link>
+
+          {/* Text block */}
+          <div className="max-w-xl text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold tracking-widest mb-5 uppercase">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> System Online
+            </div>
+            <h1 className="text-4xl md:text-6xl font-display font-extrabold mb-4 text-glow tracking-tight text-white leading-tight">
+              DOMINATE THE <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">GAME.</span>
+            </h1>
+            <p className="text-lg text-gray-300 mb-8 max-w-lg font-light">
+              Squeeze every last frame out of your hardware. Scootware's precision-tuned driver suite is engineered for competitive gaming — maximum performance, zero compromise.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+              <Link href="/upgrades">
+                <Button variant="glow" size="lg" className="font-bold tracking-wide">GET ACCESS <Zap className="ml-2 w-5 h-5" /></Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
