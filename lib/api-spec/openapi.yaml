@@ -1,22 +1,33 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Scootware Forum API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User management
+  - name: forum
+    description: Forum operations
+  - name: shoutbox
+    description: Shoutbox operations
+  - name: admin
+    description: Admin operations
+  - name: upgrades
+    description: Account upgrade operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,538 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered, verification email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/verify-email:
+    get:
+      operationId: verifyEmail
+      tags: [auth]
+      summary: Verify email with token
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/sso/google:
+    get:
+      operationId: ssoGoogle
+      tags: [auth]
+      summary: Initiate Google SSO
+      responses:
+        "302":
+          description: Redirect to Google
+
+  /auth/sso/discord:
+    get:
+      operationId: ssoDiscord
+      tags: [auth]
+      summary: Initiate Discord SSO
+      responses:
+        "302":
+          description: Redirect to Discord
+
+  /auth/sso/steam:
+    get:
+      operationId: ssoSteam
+      tags: [auth]
+      summary: Initiate Steam SSO
+      responses:
+        "302":
+          description: Redirect to Steam
+
+  /users/{userId}:
+    get:
+      operationId: getUserProfile
+      tags: [users]
+      summary: Get user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/{userId}/avatar:
+    post:
+      operationId: uploadAvatar
+      tags: [users]
+      summary: Upload user avatar
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Avatar uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/{userId}/posts:
+    get:
+      operationId: getUserProfilePosts
+      tags: [users]
+      summary: Get posts on user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Profile posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProfilePost"
+    post:
+      operationId: createProfilePost
+      tags: [users]
+      summary: Post on a user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProfilePostRequest"
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfilePost"
+
+  /forum/categories:
+    get:
+      operationId: getCategories
+      tags: [forum]
+      summary: Get forum categories and subforums
+      responses:
+        "200":
+          description: Forum categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /forum/threads:
+    get:
+      operationId: getThreads
+      tags: [forum]
+      summary: Get threads in a subforum
+      parameters:
+        - name: subforumId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Threads list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThreadsResponse"
+    post:
+      operationId: createThread
+      tags: [forum]
+      summary: Create a new thread
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateThreadRequest"
+      responses:
+        "201":
+          description: Thread created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+
+  /forum/threads/{threadId}:
+    get:
+      operationId: getThread
+      tags: [forum]
+      summary: Get a thread with its posts
+      parameters:
+        - name: threadId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Thread with posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThreadDetail"
+
+  /forum/posts:
+    post:
+      operationId: createPost
+      tags: [forum]
+      summary: Reply to a thread
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostRequest"
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+
+  /shoutbox:
+    get:
+      operationId: getShoutboxMessages
+      tags: [shoutbox]
+      summary: Get recent shoutbox messages
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Shoutbox messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShoutboxMessage"
+    post:
+      operationId: postShoutboxMessage
+      tags: [shoutbox]
+      summary: Post a shoutbox message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateShoutboxMessageRequest"
+      responses:
+        "201":
+          description: Message posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShoutboxMessage"
+
+  /upgrades:
+    get:
+      operationId: getUpgrades
+      tags: [upgrades]
+      summary: Get available account upgrades
+      responses:
+        "200":
+          description: Available upgrades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Upgrade"
+
+  /upgrades/purchase:
+    post:
+      operationId: purchaseUpgrade
+      tags: [upgrades]
+      summary: Purchase an account upgrade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseUpgradeRequest"
+      responses:
+        "200":
+          description: Upgrade purchased
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users:
+    get:
+      operationId: adminGetUsers
+      tags: [admin]
+      summary: Get all users (admin)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUsersResponse"
+
+  /admin/users/{userId}:
+    patch:
+      operationId: adminUpdateUser
+      tags: [admin]
+      summary: Update user (admin)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUpdateUserRequest"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/users/{userId}/ban:
+    post:
+      operationId: adminBanUser
+      tags: [admin]
+      summary: Ban a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BanUserRequest"
+      responses:
+        "200":
+          description: User banned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users/{userId}/unban:
+    post:
+      operationId: adminUnbanUser
+      tags: [admin]
+      summary: Unban a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User unbanned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/config:
+    get:
+      operationId: adminGetConfig
+      tags: [admin]
+      summary: Get site configuration
+      responses:
+        "200":
+          description: Site config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
+    patch:
+      operationId: adminUpdateConfig
+      tags: [admin]
+      summary: Update site configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteConfig"
+      responses:
+        "200":
+          description: Config updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +574,413 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+      required: [username, email, password]
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        message:
+          type: string
+      required: [user]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        upgradeType:
+          type: string
+          nullable: true
+        upgradeExpiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+        isBanned:
+          type: boolean
+        isEmailVerified:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        postCount:
+          type: integer
+      required: [id, username, email, role, isBanned, isEmailVerified, createdAt, postCount]
+
+    UserProfile:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        recentPosts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePost"
+      required: [user, recentPosts]
+
+    ProfilePost:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        authorId:
+          type: integer
+        authorUsername:
+          type: string
+        authorAvatarUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, content, authorId, authorUsername, createdAt]
+
+    CreateProfilePostRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+      required: [content]
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        subforums:
+          type: array
+          items:
+            $ref: "#/components/schemas/Subforum"
+      required: [id, name, subforums]
+
+    Subforum:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        threadCount:
+          type: integer
+        postCount:
+          type: integer
+        lastPost:
+          $ref: "#/components/schemas/LastPost"
+          nullable: true
+        requiresUpgrade:
+          type: boolean
+        parentId:
+          type: integer
+          nullable: true
+      required: [id, name, threadCount, postCount, requiresUpgrade]
+
+    LastPost:
+      type: object
+      properties:
+        threadTitle:
+          type: string
+        username:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [threadTitle, username, createdAt]
+
+    Thread:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subforumId:
+          type: integer
+        authorId:
+          type: integer
+        authorUsername:
+          type: string
+        authorAvatarUrl:
+          type: string
+          nullable: true
+        replyCount:
+          type: integer
+        viewCount:
+          type: integer
+        isPinned:
+          type: boolean
+        isLocked:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastPostAt:
+          type: string
+          format: date-time
+          nullable: true
+      required: [id, title, subforumId, authorId, authorUsername, replyCount, viewCount, isPinned, isLocked, createdAt]
+
+    ThreadsResponse:
+      type: object
+      properties:
+        threads:
+          type: array
+          items:
+            $ref: "#/components/schemas/Thread"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required: [threads, total, page, totalPages]
+
+    ThreadDetail:
+      type: object
+      properties:
+        thread:
+          $ref: "#/components/schemas/Thread"
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required: [thread, posts, total, page, totalPages]
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        threadId:
+          type: integer
+        authorId:
+          type: integer
+        authorUsername:
+          type: string
+        authorAvatarUrl:
+          type: string
+          nullable: true
+        authorRole:
+          type: string
+        authorUpgradeType:
+          type: string
+          nullable: true
+        authorPostCount:
+          type: integer
+        authorJoinedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required: [id, content, threadId, authorId, authorUsername, authorRole, authorPostCount, authorJoinedAt, createdAt]
+
+    CreateThreadRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+        content:
+          type: string
+          minLength: 1
+          maxLength: 50000
+        subforumId:
+          type: integer
+      required: [title, content, subforumId]
+
+    CreatePostRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 50000
+        threadId:
+          type: integer
+      required: [content, threadId]
+
+    ShoutboxMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        authorId:
+          type: integer
+        authorUsername:
+          type: string
+        authorAvatarUrl:
+          type: string
+          nullable: true
+        authorRole:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, content, authorId, authorUsername, authorRole, createdAt]
+
+    CreateShoutboxMessageRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [content]
+
+    Upgrade:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        durationDays:
+          type: integer
+        features:
+          type: array
+          items:
+            type: string
+      required: [id, name, description, price, durationDays, features]
+
+    PurchaseUpgradeRequest:
+      type: object
+      properties:
+        upgradeId:
+          type: string
+      required: [upgradeId]
+
+    AdminUsersResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+      required: [users, total, page, totalPages]
+
+    AdminUpdateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+        role:
+          type: string
+          enum: [user, admin]
+        upgradeType:
+          type: string
+          nullable: true
+        upgradeExpiresAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    BanUserRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+      required: [reason]
+
+    SiteConfig:
+      type: object
+      properties:
+        siteName:
+          type: string
+        siteDescription:
+          type: string
+        maintenanceMode:
+          type: boolean
+        allowRegistration:
+          type: boolean
+        requireEmailVerification:
+          type: boolean
+      required: [siteName, siteDescription, maintenanceMode, allowRegistration, requireEmailVerification]

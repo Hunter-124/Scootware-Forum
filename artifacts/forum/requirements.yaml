@@ -1,0 +1,31 @@
+packages:
+  "framer-motion": "For sleek page transitions, modal animations, and dynamic tech UI interactions"
+  "date-fns": "For formatting post and join dates beautifully"
+  "lucide-react": "For crisp, consistent iconography across the forum"
+  "react-hook-form": "For robust form state management in login, registration, and posting"
+  "@hookform/resolvers": "For integrating Zod validation with react-hook-form"
+  "clsx": "Utility for constructing class names"
+  "tailwind-merge": "Utility for merging tailwind classes without conflicts"
+
+images:
+  - path: "artifacts/forum/public/images/hero-bg.png"
+    description: "Dark purple cybernetic grid background with glowing neon circuitry lines, subtle hexagonal patterns, and soft magenta light leaks. High tech, aggressive gaming aesthetic."
+    aspect_ratio: "16:9"
+  - path: "artifacts/forum/public/images/logo.png"
+    description: "Sleek, aggressive metallic logo mark for 'Scootware'. Stylized sharp 'S' with neon purple and cyan accents on a transparent background. Esports/hacker aesthetic."
+    aspect_ratio: "1:1"
+  - path: "artifacts/forum/public/images/upgrade-basic.png"
+    description: "A glowing blue futuristic access card or microchip floating in a dark void. Represents a basic tier upgrade."
+    aspect_ratio: "1:1"
+  - path: "artifacts/forum/public/images/upgrade-premium.png"
+    description: "A glowing purple and gold futuristic access card or advanced microchip floating in a dark void. Represents a premium tier upgrade."
+    aspect_ratio: "1:1"
+  - path: "artifacts/forum/public/images/upgrade-lifetime.png"
+    description: "An incredibly intricate, glowing red and magenta futuristic artifact or core processor, radiating power. Represents a lifetime tier upgrade."
+    aspect_ratio: "1:1"
+
+notes:
+  - "The frontend relies heavily on @workspace/api-client-react for TanStack Query hooks"
+  - "Auth is session-based via cookies; /api/auth/me checks status"
+  - "Shoutbox polls every 10 seconds via react-query refetchInterval"
+  - "Images use the provided generated paths"
