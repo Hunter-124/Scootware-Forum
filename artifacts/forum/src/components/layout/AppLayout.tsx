@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useLogout } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, User as UserIcon, Shield, Sparkles, MessageSquare } from "lucide-react";
+import { LogOut, Menu, User as UserIcon, Shield, Sparkles, MessageSquare, Download } from "lucide-react";
 import { cn, getRoleColor } from "@/lib/utils";
 import { Shoutbox } from "./Shoutbox";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +40,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Link href="/" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors">Forum</Link>
               <Link href="/upgrades" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-accent" /> Upgrades
+              </Link>
+              <Link href="/loader" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
+                <Download className="w-4 h-4 text-primary" /> Loader
               </Link>
             </nav>
           </div>
@@ -111,6 +114,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium">Forum</Link>
                 <Link href="/upgrades" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" /> Upgrades
+                </Link>
+                <Link href="/loader" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
+                  <Download className="w-4 h-4 text-primary" /> Loader
                 </Link>
                 
                 {isAuthenticated ? (

@@ -8,6 +8,7 @@ import Subforum from "@/pages/Subforum";
 import ThreadView from "@/pages/Thread";
 import UserProfile from "@/pages/Profile";
 import Upgrades from "@/pages/Upgrades";
+import Loader from "@/pages/Loader";
 import AdminDashboard from "@/pages/Admin";
 import { Login, Register } from "@/pages/AuthPages";
 import NotFound from "@/pages/not-found";
@@ -31,6 +32,7 @@ function Router() {
         <Route path="/thread/:id" component={ThreadView} />
         <Route path="/profile/:id" component={UserProfile} />
         <Route path="/upgrades" component={Upgrades} />
+        <Route path="/loader" component={Loader} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/admin" component={AdminDashboard} />
