@@ -5,6 +5,8 @@
  * Scootware Forum API
  * OpenAPI spec version: 0.1.0
  */
+import type { SiteConfigInviteRequestMode } from "./siteConfigInviteRequestMode";
+import type { SiteConfigProducts } from "./siteConfigProducts";
 
 export interface SiteConfig {
   siteName: string;
@@ -12,4 +14,10 @@ export interface SiteConfig {
   maintenanceMode: boolean;
   allowRegistration: boolean;
   requireEmailVerification: boolean;
+  inviteOnlyMode?: boolean;
+  inviteRequestMode?: SiteConfigInviteRequestMode;
+  /** @minimum 0 */
+  inviteRequestCooldownDays?: number;
+  /** Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100). */
+  products?: SiteConfigProducts;
 }

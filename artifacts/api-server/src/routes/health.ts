@@ -8,4 +8,16 @@ router.get("/healthz", (_req, res) => {
   res.json(data);
 });
 
+// Backward-compatible health check endpoint for legacy diagnose scripts
+router.get("/status", (_req, res) => {
+  const data = HealthCheckResponse.parse({ status: "ok" });
+  res.json(data);
+});
+
+// Alias for loader app health checks
+router.get("/health", (_req, res) => {
+  const data = HealthCheckResponse.parse({ status: "ok" });
+  res.json(data);
+});
+
 export default router;

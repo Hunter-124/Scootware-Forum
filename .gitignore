@@ -47,3 +47,13 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment Configuration - protect environment-specific secrets
+.env.local
+.env.production
+.env.*.local
+.env.*.production
+
+# Database files (local development/testing only, never deploy)
+.pglite-data/
+pglite-data/

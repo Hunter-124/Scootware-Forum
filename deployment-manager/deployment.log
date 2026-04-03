@@ -1,0 +1,1284 @@
+2026-03-30 18:50:24 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 18:50:49 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 18:51:20 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 18:51:35 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 18:54:00 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 18:54:07 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 18:55:05 - deployment_manager - INFO - [OK] Update command executed
+2026-03-30 18:55:20 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-30 18:55:35 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 18:57:03 - deployment_manager - INFO - [OK] Update command executed
+2026-03-30 18:59:17 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 19:05:16 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:05:18 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:08:20 - deployment_manager - ERROR - Failed to stop services: Failed to stop services: [PM2][WARN] No process found
+
+
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 648, in execute
+    raise Exception(f"Failed to stop services: {stderr}")
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+2026-03-30 19:10:12 - deployment_manager - ERROR - Failed to stop services: Failed to stop services: [PM2][WARN] No process found
+
+
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 648, in execute
+    raise Exception(f"Failed to stop services: {stderr}")
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+2026-03-30 19:10:20 - deployment_manager - INFO - [OK] Services started
+2026-03-30 19:10:39 - deployment_manager - INFO - [OK] Services started
+2026-03-30 19:18:32 - deployment_manager - ERROR - Command execution failed: Command failed with code 1:
+
+
+Exception: Command failed with code 1:
+
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 513, in execute
+    self._append_deploy_output("\n[OK] Code files uploaded successfully.\n")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception: Command failed with code 1:
+
+
+2026-03-30 19:19:17 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:19:20 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:19:46 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 19:21:05 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:21:10 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:24:51 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 19:27:52 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:27:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:28:10 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 19:45:47 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:45:51 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:45:58 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-30 19:48:05 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:48:08 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:48:14 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-30 19:48:29 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:48:32 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:48:33 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:48:43 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-30 19:48:54 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 19:52:06 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:52:09 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:52:27 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-30 19:53:19 - deployment_manager - ERROR - Upload failed: Upload failed: [Errno 2] No such file
+
+Exception: Upload failed: [Errno 2] No such file
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 523, in action
+    raise Exception(msg)
+Exception: Upload failed: [Errno 2] No such file
+
+2026-03-30 19:55:06 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 19:55:09 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 19:55:59 - deployment_manager - ERROR - Upload failed: Upload failed: [Errno 2] No such file
+
+Exception: Upload failed: [Errno 2] No such file
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 530, in action
+    raise Exception(msg)
+Exception: Upload failed: [Errno 2] No such file
+
+2026-03-30 20:00:36 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:00:39 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:04:57 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 20:15:20 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:15:24 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:17:23 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:17:28 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:22:50 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:22:53 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:27:13 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:27:16 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:39:15 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:39:22 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:41:41 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:41:45 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:42:51 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:45:25 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 20:48:39 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 20:48:42 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 20:56:26 - deployment_manager - INFO - [OK] Build command executed
+2026-03-30 20:56:41 - deployment_manager - INFO - [OK] Services started
+2026-03-30 20:56:54 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 21:05:39 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 21:15:46 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 21:49:17 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 21:49:55 - deployment_manager - INFO - ======================================================================
+2026-03-30 21:49:55 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-03-30 21:49:55 - deployment_manager - INFO - ======================================================================
+2026-03-30 21:49:55 - deployment_manager - INFO - Deployment Configuration:
+2026-03-30 21:49:55 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-03-30 21:49:55 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-03-30 21:49:55 - deployment_manager - INFO -   Project Root: .
+2026-03-30 21:49:55 - deployment_manager - INFO - Connecting to VPS...
+2026-03-30 21:49:56 - deployment_manager - INFO - SSH connection established
+2026-03-30 21:49:56 - deployment_manager - INFO - Creating project archive...
+2026-03-30 21:49:56 - deployment_manager - ERROR - Deployment failed: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Exception: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy_now.py", line 67, in <module>
+    success, tarball_path = ArchiveUploader.create_tarball(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+2026-03-30 21:50:34 - deployment_manager - INFO - ======================================================================
+2026-03-30 21:50:34 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-03-30 21:50:34 - deployment_manager - INFO - ======================================================================
+2026-03-30 21:50:34 - deployment_manager - INFO - Deployment Configuration:
+2026-03-30 21:50:34 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-03-30 21:50:34 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-03-30 21:50:34 - deployment_manager - INFO -   Project Root: .
+2026-03-30 21:50:34 - deployment_manager - INFO - Connecting to VPS...
+2026-03-30 21:50:35 - deployment_manager - INFO - SSH connection established
+2026-03-30 21:50:35 - deployment_manager - INFO - Uploading project files...
+2026-03-30 21:50:35 - deployment_manager - INFO - [START] Beginning file upload...
+2026-03-30 21:50:35 - deployment_manager - INFO - [SCAN] Found 25 files (0.2 MB)
+2026-03-30 21:50:35 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
+2026-03-30 21:50:35 - deployment_manager - INFO - [UPLOAD] Starting transfer...
+2026-03-30 21:50:38 - deployment_manager - INFO - [OK] Successfully uploaded 25 files
+2026-03-30 21:50:38 - deployment_manager - INFO - Files uploaded successfully
+2026-03-30 21:50:38 - deployment_manager - INFO - Running remote deployment script (all)...
+2026-03-30 21:50:38 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
+
+2026-03-30 21:50:42 - deployment_manager - INFO - Scope: all 10 workspace projects
+
+2026-03-30 21:50:45 - deployment_manager - INFO - Progress: resolved 0, reused 1, downloaded 0, added 0
+
+2026-03-30 21:50:47 - deployment_manager - INFO - Progress: resolved 10, reused 8, downloaded 0, added 0
+
+2026-03-30 21:50:48 - deployment_manager - INFO - Progress: resolved 19, reused 17, downloaded 0, added 0
+
+2026-03-30 21:50:49 - deployment_manager - INFO - Progress: resolved 23, reused 22, downloaded 0, added 0
+
+2026-03-30 21:50:53 - deployment_manager - INFO - Progress: resolved 23, reused 23, downloaded 0, added 0
+
+2026-03-30 21:50:54 - deployment_manager - INFO - Progress: resolved 37, reused 36, downloaded 0, added 0
+
+2026-03-30 21:50:55 - deployment_manager - INFO - Progress: resolved 78, reused 77, downloaded 0, added 0
+
+2026-03-30 21:50:57 - deployment_manager - INFO - Progress: resolved 78, reused 78, downloaded 0, added 0
+
+2026-03-30 21:50:58 - deployment_manager - INFO - Progress: resolved 85, reused 84, downloaded 0, added 0
+
+2026-03-30 21:50:59 - deployment_manager - INFO - Progress: resolved 110, reused 109, downloaded 0, added 0
+
+2026-03-30 21:51:00 - deployment_manager - INFO - Progress: resolved 110, reused 110, downloaded 0, added 0
+
+2026-03-30 21:51:02 - deployment_manager - INFO - Progress: resolved 126, reused 125, downloaded 0, added 0
+
+2026-03-30 21:51:03 - deployment_manager - INFO - Progress: resolved 192, reused 143, downloaded 0, added 0
+
+2026-03-30 21:51:04 - deployment_manager - INFO - Progress: resolved 207, reused 152, downloaded 0, added 0
+
+2026-03-30 21:51:06 - deployment_manager - INFO - Progress: resolved 218, reused 156, downloaded 0, added 0
+
+2026-03-30 21:51:07 - deployment_manager - INFO - Progress: resolved 254, reused 191, downloaded 0, added 0
+
+2026-03-30 21:51:10 - deployment_manager - INFO - Progress: resolved 262, reused 199, downloaded 0, added 0
+
+2026-03-30 21:51:11 - deployment_manager - INFO - Progress: resolved 293, reused 223, downloaded 0, added 0
+
+2026-03-30 21:51:12 - deployment_manager - INFO - Progress: resolved 318, reused 246, downloaded 0, added 0
+
+2026-03-30 21:51:13 - deployment_manager - INFO - Progress: resolved 331, reused 248, downloaded 0, added 0
+
+2026-03-30 21:51:14 - deployment_manager - INFO - Progress: resolved 335, reused 252, downloaded 0, added 0
+
+2026-03-30 21:51:15 - deployment_manager - INFO - Progress: resolved 346, reused 252, downloaded 0, added 0
+
+2026-03-30 21:51:17 - deployment_manager - INFO - Progress: resolved 349, reused 255, downloaded 0, added 0
+
+2026-03-30 21:51:18 - deployment_manager - INFO - Progress: resolved 358, reused 264, downloaded 0, added 0
+
+2026-03-30 21:51:19 - deployment_manager - INFO - Progress: resolved 402, reused 283, downloaded 0, added 0
+
+2026-03-30 21:51:20 - deployment_manager - INFO - Progress: resolved 419, reused 288, downloaded 0, added 0
+
+2026-03-30 21:51:21 - deployment_manager - INFO - Progress: resolved 451, reused 320, downloaded 0, added 0
+
+2026-03-30 21:51:22 - deployment_manager - INFO - Progress: resolved 465, reused 334, downloaded 0, added 0
+
+2026-03-30 21:51:23 - deployment_manager - INFO - Progress: resolved 489, reused 358, downloaded 0, added 0
+
+2026-03-30 21:51:25 - deployment_manager - INFO - Progress: resolved 510, reused 379, downloaded 0, added 0
+
+2026-03-30 21:51:26 - deployment_manager - INFO - Progress: resolved 514, reused 385, downloaded 1, added 0
+
+2026-03-30 21:51:27 - deployment_manager - INFO - Progress: resolved 547, reused 424, downloaded 1, added 0
+
+2026-03-30 21:51:28 - deployment_manager - INFO - Progress: resolved 592, reused 466, downloaded 1, added 0
+
+2026-03-30 21:51:29 - deployment_manager - INFO - Progress: resolved 683, reused 545, downloaded 1, added 0
+
+2026-03-30 21:51:30 - deployment_manager - INFO - Progress: resolved 722, reused 580, downloaded 1, added 0
+
+2026-03-30 21:51:31 - deployment_manager - INFO - Progress: resolved 778, reused 636, downloaded 1, added 0
+
+2026-03-30 21:51:32 - deployment_manager - INFO - Progress: resolved 795, reused 654, downloaded 1, added 0
+
+2026-03-30 21:51:33 - deployment_manager - INFO - Progress: resolved 834, reused 691, downloaded 1, added 0
+
+2026-03-30 21:51:34 - deployment_manager - INFO - Progress: resolved 880, reused 737, downloaded 1, added 0
+
+2026-03-30 21:51:35 - deployment_manager - INFO - Progress: resolved 930, reused 791, downloaded 1, added 0
+
+2026-03-30 21:51:36 - deployment_manager - INFO - Progress: resolved 952, reused 813, downloaded 1, added 0
+
+2026-03-30 21:51:44 - deployment_manager - INFO - Packages: +1
++
+
+2026-03-30 21:51:46 - deployment_manager - INFO - Progress: resolved 952, reused 813, downloaded 1, added 1
+Progress: resolved 952, reused 813, downloaded 1, added 1, done
+
+2026-03-30 21:51:57 - deployment_manager - INFO - 
+
+2026-03-30 21:51:57 - deployment_manager - INFO - Done in 1m 18.9s using pnpm v10.33.0
+
+2026-03-30 21:52:01 - deployment_manager - INFO - 
+> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
+> drizzle-kit push --force --config ./drizzle.config.ts
+
+
+2026-03-30 21:52:03 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
+
+2026-03-30 21:52:06 - deployment_manager - INFO - Using 'pg' driver for database querying
+
+2026-03-30 21:52:12 - deployment_manager - INFO - --- Building Production Bundles ---
+
+2026-03-30 21:52:15 - deployment_manager - INFO - 
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --if-present run build
+
+
+2026-03-30 21:52:19 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+
+
+2026-03-30 21:52:23 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+
+2026-03-30 21:52:28 - deployment_manager - INFO - Scope: 5 of 10 workspace projects
+
+2026-03-30 21:52:33 - deployment_manager - INFO - Scope: 9 of 10 workspace projects
+
+2026-03-30 21:52:33 - deployment_manager - INFO - artifacts/mockup-sandbox build$ vite build
+
+2026-03-30 21:52:37 - deployment_manager - INFO - artifacts/mockup-sandbox build: vite v7.3.1 building client environment for production...
+
+2026-03-30 21:52:38 - deployment_manager - INFO - artifacts/mockup-sandbox build: transforming...
+
+2026-03-30 21:52:57 - deployment_manager - INFO - artifacts/mockup-sandbox build: rendering chunks...
+
+2026-03-30 21:52:57 - deployment_manager - INFO - artifacts/mockup-sandbox build: computing gzip size...
+
+2026-03-30 21:52:58 - deployment_manager - INFO - artifacts/mockup-sandbox build: Done
+artifacts/api-server build$ node ./build.mjs
+artifacts/forum build$ vite build --config vite.config.ts
+
+2026-03-30 21:53:07 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
+
+2026-03-30 21:53:09 - deployment_manager - INFO - artifacts/forum build: transforming...
+
+2026-03-30 21:53:14 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+
+2026-03-30 21:53:15 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+
+2026-03-30 21:53:15 - deployment_manager - INFO - artifacts/api-server build: Done
+
+2026-03-30 21:53:15 - deployment_manager - INFO - artifacts/next-app build$ next build
+
+2026-03-30 21:53:23 - deployment_manager - INFO - artifacts/forum build: src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+
+2026-03-30 21:53:30 - deployment_manager - INFO - artifacts/next-app build:   Creating an optimized production build ...
+
+2026-03-30 21:55:31 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
+
+2026-03-30 21:55:31 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
+
+2026-03-30 21:55:32 - deployment_manager - INFO - artifacts/forum build: (!) Some chunks are larger than 500 kB after minification. Consider:
+artifacts/forum build: - Using dynamic import() to code-split the application
+artifacts/forum build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+artifacts/forum build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+2026-03-30 21:55:32 - deployment_manager - INFO - artifacts/forum build: Done
+
+2026-03-30 21:56:19 - deployment_manager - INFO - artifacts/next-app build:   Running TypeScript ...
+
+2026-03-30 21:58:33 - deployment_manager - INFO - artifacts/next-app build:   Finished TypeScript in 2.2min ...
+
+2026-03-30 21:58:33 - deployment_manager - INFO - artifacts/next-app build:   Collecting page data using 1 worker ...
+
+2026-03-30 21:58:38 - deployment_manager - INFO - artifacts/next-app build: Local admin created: local-admin / localadmin123
+artifacts/next-app build: Mattshanks42 privileges checked/granted.
+
+2026-03-30 21:58:39 - deployment_manager - INFO - artifacts/next-app build:   Generating static pages using 1 worker (0/6) ...
+
+2026-03-30 21:58:40 - deployment_manager - INFO - artifacts/next-app build:   Generating static pages using 1 worker (1/6) 
+
+2026-03-30 21:58:40 - deployment_manager - INFO - artifacts/next-app build:   Generating static pages using 1 worker (2/6) 
+
+2026-03-30 21:58:41 - deployment_manager - INFO - artifacts/next-app build:   Generating static pages using 1 worker (4/6) 
+
+2026-03-30 21:58:41 - deployment_manager - INFO - artifacts/next-app build:   Finalizing page optimization ...
+
+2026-03-30 21:58:41 - deployment_manager - INFO - artifacts/next-app build: Done
+
+2026-03-30 21:58:43 - deployment_manager - INFO - --- Restarting PM2 Processes ---
+
+2026-03-30 21:58:44 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+
+2026-03-30 21:58:46 - deployment_manager - INFO - [PM2][ERROR] Script not found: /home/admin/artifacts/api-server/dist/index.mjs
+
+2026-03-30 21:58:47 - deployment_manager - INFO - [PM2] Saving current process list...
+[PM2][WARN] PM2 is not managing any process, skipping save...
+
+2026-03-30 21:58:48 - deployment_manager - INFO - [PM2][WARN] To force saving use: pm2 save --force
+
+2026-03-30 21:58:48 - deployment_manager - INFO - Remote deployment script executed successfully
+2026-03-30 21:58:48 - deployment_manager - INFO - Verifying deployment...
+2026-03-30 21:58:50 - deployment_manager - INFO - API process not found in PM2
+2026-03-30 21:58:50 - deployment_manager - INFO - ======================================================================
+2026-03-30 21:58:50 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
+2026-03-30 21:58:50 - deployment_manager - INFO - ======================================================================
+2026-03-30 22:13:58 - deployment_manager - INFO - Deployment Manager started
+2026-03-30 22:14:41 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-30 22:23:02 - deployment_manager - INFO - [OK] Services stopped
+2026-03-30 22:25:57 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-30 22:32:36 - deployment_manager - INFO - [OK] Build command executed
+2026-03-30 22:32:46 - deployment_manager - INFO - [OK] Services started
+2026-03-30 22:32:56 - deployment_manager - INFO - Full diagnostics completed
+2026-03-30 23:00:27 - deployment_manager - INFO - ======================================================================
+2026-03-30 23:00:27 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-03-30 23:00:27 - deployment_manager - INFO - ======================================================================
+2026-03-30 23:00:27 - deployment_manager - INFO - Deployment Configuration:
+2026-03-30 23:00:27 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-03-30 23:00:27 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-03-30 23:00:27 - deployment_manager - INFO -   Project Root: .
+2026-03-30 23:00:27 - deployment_manager - INFO - Connecting to VPS...
+2026-03-30 23:00:27 - deployment_manager - INFO - SSH connection established
+2026-03-30 23:00:27 - deployment_manager - INFO - Creating project archive...
+2026-03-30 23:00:27 - deployment_manager - ERROR - Deployment failed: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Exception: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy_now.py", line 67, in <module>
+    success, tarball_path = ArchiveUploader.create_tarball(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+2026-03-30 23:01:10 - deployment_manager - INFO - ======================================================================
+2026-03-30 23:01:10 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-03-30 23:01:10 - deployment_manager - INFO - ======================================================================
+2026-03-30 23:01:10 - deployment_manager - INFO - Deployment Configuration:
+2026-03-30 23:01:10 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-03-30 23:01:10 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-03-30 23:01:10 - deployment_manager - INFO -   Project Root: .
+2026-03-30 23:01:10 - deployment_manager - INFO - Connecting to VPS...
+2026-03-30 23:01:10 - deployment_manager - INFO - SSH connection established
+2026-03-30 23:01:10 - deployment_manager - INFO - Uploading project files...
+2026-03-30 23:01:10 - deployment_manager - INFO - [START] Beginning file upload...
+2026-03-30 23:01:10 - deployment_manager - INFO - [SCAN] Found 25 files (0.2 MB)
+2026-03-30 23:01:10 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
+2026-03-30 23:01:10 - deployment_manager - INFO - [UPLOAD] Starting transfer...
+2026-03-30 23:01:11 - deployment_manager - INFO - [OK] Successfully uploaded 1 files (skipped 24 unchanged files)
+2026-03-30 23:01:11 - deployment_manager - INFO - Files uploaded successfully
+2026-03-30 23:01:11 - deployment_manager - INFO - Running remote deployment script (all)...
+2026-03-30 23:01:11 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
+
+2026-03-30 23:01:15 - deployment_manager - INFO - Scope: all 10 workspace projects
+
+2026-03-30 23:01:17 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
+
+2026-03-30 23:01:20 - deployment_manager - INFO - Already up to date
+
+2026-03-30 23:01:37 - deployment_manager - INFO - 
+
+2026-03-30 23:01:40 - deployment_manager - INFO - Done in 28.6s using pnpm v10.33.0
+
+2026-03-30 23:01:44 - deployment_manager - INFO - 
+> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
+> drizzle-kit push --force --config ./drizzle.config.ts
+
+
+2026-03-30 23:01:45 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
+
+2026-03-30 23:01:48 - deployment_manager - INFO - Using 'pg' driver for database querying
+
+2026-03-30 23:01:53 - deployment_manager - INFO - [i] No changes detected
+
+2026-03-30 23:01:53 - deployment_manager - INFO - --- Building Production Bundles ---
+
+2026-03-30 23:01:56 - deployment_manager - INFO - 
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --filter '!@workspace/next-app' --if-present run build
+
+
+2026-03-30 23:02:00 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
+
+
+2026-03-30 23:02:04 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+
+2026-03-30 23:02:10 - deployment_manager - INFO - Scope: 5 of 10 workspace projects
+
+2026-03-30 23:02:14 - deployment_manager - INFO - No projects matched the filters "@workspace/next-app" in "/home/admin/Scootware-Forum"
+
+2026-03-30 23:02:14 - deployment_manager - INFO - Scope: all 10 workspace projects
+
+2026-03-30 23:02:14 - deployment_manager - INFO - artifacts/mockup-sandbox build$ vite build
+
+2026-03-30 23:02:19 - deployment_manager - INFO - artifacts/mockup-sandbox build: vite v7.3.1 building client environment for production...
+
+2026-03-30 23:02:20 - deployment_manager - INFO - artifacts/mockup-sandbox build: transforming...
+
+2026-03-31 11:45:54 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 11:46:02 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 11:46:12 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 11:48:37 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 11:48:51 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 11:48:59 - deployment_manager - INFO - [OK] Services started
+2026-03-31 11:49:06 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 11:50:25 - deployment_manager - INFO - [OK] Services started
+2026-03-31 12:00:43 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:00:45 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:00:50 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:01:59 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 12:02:37 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:02:40 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:02:55 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-31 12:03:05 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:05:31 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:06:02 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:09:22 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:09:45 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:09:58 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:11:58 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:12:03 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:13:24 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:13:26 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:13:26 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:13:37 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:15:57 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:16:10 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:16:18 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:16:26 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:18:24 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:18:50 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:19:42 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 12:23:53 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:23:55 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:24:40 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:25:53 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:26:05 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 12:26:48 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:27:12 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:32:54 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:32:58 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:33:07 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:33:26 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:33:35 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:33:46 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 12:37:09 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:37:18 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:37:22 - deployment_manager - ERROR - Upload failed: Upload failed: type object 'DirectUploader' has no attribute '_should_exclude'
+
+Exception: Upload failed: type object 'DirectUploader' has no attribute '_should_exclude'
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 531, in action
+    raise Exception(msg)
+Exception: Upload failed: type object 'DirectUploader' has no attribute '_should_exclude'
+
+2026-03-31 12:38:16 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:38:17 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:38:30 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:38:48 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:38:52 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:39:34 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 12:43:31 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:43:33 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:43:49 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:44:11 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:44:17 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:50:55 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:55:03 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:55:16 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:58:00 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 12:58:09 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 12:58:21 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 12:58:50 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 12:58:56 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 12:59:08 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 13:01:58 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 13:01:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 13:02:12 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 13:02:38 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 13:02:49 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 13:03:10 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 13:45:02 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 13:45:08 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 13:45:21 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 13:45:43 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 13:45:47 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 13:47:01 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 13:54:11 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 13:54:14 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 13:54:26 - deployment_manager - INFO - [OK] Setup command executed
+2026-03-31 13:54:39 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 13:55:04 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 13:55:11 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 13:55:21 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 14:05:42 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:05:54 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:06:09 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:06:19 - deployment_manager - INFO - [OK] Update command executed
+2026-03-31 14:06:30 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 14:06:33 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 14:09:01 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:09:03 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:09:15 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:09:33 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 14:09:36 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 14:10:26 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 14:12:12 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 14:18:43 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:18:49 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:24:41 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:30:06 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:30:07 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:30:24 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:30:47 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 14:33:12 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:33:13 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:33:27 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:46:48 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:46:54 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:47:07 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:48:38 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:48:39 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:48:54 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:50:10 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:50:11 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:50:26 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:51:15 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:51:16 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:51:29 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:52:37 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:52:38 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:52:50 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:53:59 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:54:02 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:54:14 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:55:19 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:55:20 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:55:34 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:57:58 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:57:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 14:58:11 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 14:59:53 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 14:59:55 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:00:09 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:02:25 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:04:49 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 15:04:53 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:05:07 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:25:57 - deployment_manager - INFO - Deployment Manager started
+2026-03-31 15:25:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:31:23 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:32:32 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:32:52 - deployment_manager - ERROR - Upload failed: 'DeploymentGUI' object has no attribute '_get_project_root'
+
+Exception: 'DeploymentGUI' object has no attribute '_get_project_root'
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 61, in action
+    source_path = self._get_project_root()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DeploymentGUI' object has no attribute '_get_project_root'. Did you mean: '_browse_project_root'?
+
+2026-03-31 15:33:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:33:55 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:34:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:34:55 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:39:29 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:39:34 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:39:54 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:39:58 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:40:39 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:40:45 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:41:23 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:41:27 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:43:28 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:43:33 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:45:14 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:45:19 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 15:55:44 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:59:04 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 15:59:08 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:22:15 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:23:12 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:24:53 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:28:19 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:30:00 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:30:08 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:31:17 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:34:17 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 16:37:35 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:37:43 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:38:04 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:38:16 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 16:41:14 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 16:58:46 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 16:58:55 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 16:59:08 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:02:13 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 17:07:08 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 17:09:44 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 17:09:49 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:10:20 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:10:35 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 17:13:25 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 17:36:31 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 17:36:40 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:37:12 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:40:04 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 17:45:24 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:48:14 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 17:48:33 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 17:55:53 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 17:56:23 - deployment_manager - ERROR - Fix deployment failed: Fix deployment failed with code -1:
+STDOUT:
+=== COMPLETE SCOOTWARE ASSET & PROXY FIX ===
+
+[1/7] Rebuilding API server with port 3000...
+
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
+
+
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
+
+
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+No projects matched the filters "@workspace/next-app" in "/home/admin/Scootware-Forum"
+Scope: 4 of 10 workspace projects
+
+STDERR:
+
+
+Exception: Fix deployment failed with code -1:
+STDOUT:
+=== COMPLETE SCOOTWARE ASSET & PROXY FIX ===
+
+[1/7] Rebuilding API server with port 3000...
+
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
+
+
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
+
+
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+No projects matched the filters "@workspace/next-app" in "/home/admin/Scootware-Forum"
+Scope: 4 of 10 workspace projects
+
+STDERR:
+
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 200, in execute
+    raise Exception(combined)
+Exception: Fix deployment failed with code -1:
+STDOUT:
+=== COMPLETE SCOOTWARE ASSET & PROXY FIX ===
+
+[1/7] Rebuilding API server with port 3000...
+
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
+
+
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
+
+
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+No projects matched the filters "@workspace/next-app" in "/home/admin/Scootware-Forum"
+Scope: 4 of 10 workspace projects
+
+STDERR:
+
+
+2026-03-31 17:56:41 - deployment_manager - ERROR - Connection test failed: Connection error: timed out
+2026-03-31 17:56:54 - deployment_manager - ERROR - Connection test failed: Connection error: timed out
+2026-03-31 17:56:55 - deployment_manager - ERROR - Connection test failed: Connection error: [Errno None] Unable to connect to port 22 on [VPS_IP]
+2026-03-31 17:56:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 17:57:36 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 17:57:54 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 17:58:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 18:01:14 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 18:02:15 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 18:02:36 - deployment_manager - ERROR - Failed to stop services: Failed to stop services: [PM2][WARN] No process found
+
+
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 939, in execute
+    raise Exception(f"Failed to stop services: {stderr}")
+Exception: Failed to stop services: [PM2][WARN] No process found
+
+
+2026-03-31 18:05:25 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 18:09:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 18:09:25 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:09:48 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:12:47 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 18:24:55 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:27:51 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 18:36:23 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:39:14 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 18:49:47 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 18:49:54 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:50:05 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 18:52:59 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 19:07:00 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 19:16:54 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 19:16:59 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 19:17:11 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 19:24:00 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 19:25:13 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 19:30:30 - deployment_manager - INFO - [OK] Services stopped
+2026-03-31 19:44:50 - deployment_manager - INFO - [OK] Full upload after clearing hashcache
+2026-03-31 19:54:40 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 19:54:47 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 19:55:06 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 20:02:36 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 20:05:40 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 20:06:41 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 20:07:12 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 20:07:25 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 20:23:04 - deployment_manager - INFO - [OK] Full upload after clearing hashcache
+2026-03-31 20:27:50 - deployment_manager - INFO - [OK] Update command executed
+2026-03-31 20:29:36 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 20:33:22 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-03-31 20:33:30 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 20:34:23 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 20:34:33 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 20:46:16 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 20:46:23 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 20:49:43 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 21:23:55 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 21:23:59 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 21:42:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 21:43:01 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 21:53:21 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 21:53:26 - deployment_manager - INFO - Full diagnostics completed
+2026-03-31 22:01:10 - deployment_manager - INFO - [OK] SSH connection established
+2026-03-31 22:01:15 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 22:01:25 - deployment_manager - INFO - [OK] New code files uploaded
+2026-03-31 22:01:52 - deployment_manager - INFO - [OK] Build command executed
+2026-03-31 22:01:59 - deployment_manager - INFO - [OK] Restart command executed
+2026-03-31 22:11:13 - deployment_manager - INFO - Full diagnostics completed
+2026-04-01 11:28:37 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 11:28:42 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 11:29:14 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 11:29:35 - deployment_manager - INFO - [OK] Build command executed
+2026-04-01 11:30:14 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-01 11:30:19 - deployment_manager - INFO - Full diagnostics completed
+2026-04-01 11:45:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 11:46:08 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 11:46:44 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 11:52:43 - deployment_manager - INFO - [OK] Build command executed
+2026-04-01 11:53:53 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-01 20:05:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 20:06:07 - deployment_manager - INFO - [OK] Services stopped
+2026-04-01 20:16:39 - deployment_manager - INFO - [OK] Full upload after clearing hashcache
+2026-04-01 20:31:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 20:45:14 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 21:31:47 - deployment_manager - ERROR - Full upload failed: Upload failed: Socket is closed
+
+Exception: Upload failed: Socket is closed
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 64, in action
+    raise Exception(msg)
+Exception: Upload failed: Socket is closed
+
+2026-04-01 21:31:48 - deployment_manager - WARNING - Failed to copy to clipboard: Error calling OpenClipboard ([WinError 0] The operation completed successfully.)
+2026-04-01 21:33:31 - deployment_manager - ERROR - Upload failed: Upload failed: SSH session not active
+
+Exception: Upload failed: SSH session not active
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 182, in action
+    raise Exception(msg)
+Exception: Upload failed: SSH session not active
+
+2026-04-01 21:34:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 22:04:35 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 22:04:42 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 22:06:33 - deployment_manager - ERROR - Upload failed: Upload failed: SSH session not active
+
+Exception: Upload failed: SSH session not active
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 182, in action
+    raise Exception(msg)
+Exception: Upload failed: SSH session not active
+
+2026-04-01 22:07:04 - deployment_manager - ERROR - Full upload failed: Upload failed: SSH session not active
+
+Exception: Upload failed: SSH session not active
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 64, in action
+    raise Exception(msg)
+Exception: Upload failed: SSH session not active
+
+2026-04-01 22:08:37 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 23:08:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 23:12:14 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 23:13:44 - deployment_manager - INFO - [OK] Full upload after clearing hashcache
+2026-04-01 23:16:18 - deployment_manager - INFO - [OK] Update command executed
+2026-04-01 23:18:19 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 23:19:19 - deployment_manager - INFO - [OK] Build command executed
+2026-04-01 23:19:27 - deployment_manager - INFO - [OK] Services started
+2026-04-01 23:21:03 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-04-01 23:23:47 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-04-01 23:24:12 - deployment_manager - INFO - Full diagnostics completed
+2026-04-01 23:24:35 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-01 23:24:45 - deployment_manager - INFO - [OK] Services stopped
+2026-04-01 23:36:48 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-01 23:36:58 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-01 23:44:12 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-01 23:48:20 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 00:04:33 - deployment_manager - INFO - Full diagnostics completed
+2026-04-02 00:17:50 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 00:18:30 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 00:23:31 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 00:23:41 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-02 00:24:07 - deployment_manager - INFO - [OK] Services stopped
+2026-04-02 00:24:45 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 00:27:53 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-04-02 00:31:09 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 00:31:48 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 00:34:05 - deployment_manager - INFO - [OK] Complete asset fix deployed
+2026-04-02 01:15:30 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-02 01:16:04 - deployment_manager - INFO - Full diagnostics completed
+2026-04-02 02:20:19 - deployment_manager - INFO - ======================================================================
+2026-04-02 02:20:19 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-04-02 02:20:19 - deployment_manager - INFO - ======================================================================
+2026-04-02 02:20:19 - deployment_manager - INFO - Deployment Configuration:
+2026-04-02 02:20:19 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-04-02 02:20:19 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-04-02 02:20:19 - deployment_manager - INFO -   Project Root: ../
+2026-04-02 02:20:19 - deployment_manager - INFO - Connecting to VPS...
+2026-04-02 02:20:19 - deployment_manager - INFO - SSH connection established
+2026-04-02 02:20:19 - deployment_manager - INFO - Uploading project files...
+2026-04-02 02:20:19 - deployment_manager - INFO - [START] Beginning file upload...
+2026-04-02 02:20:19 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 25
+2026-04-02 02:20:19 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local.venv, venv, __pycache__...
+2026-04-02 02:20:20 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/.agents
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/.git
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/.github
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/.venv/Lib/site-packages/__pycache__
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
+2026-04-02 02:20:20 - deployment_manager - INFO -        ... and 7 more
+2026-04-02 02:20:20 - deployment_manager - INFO - [SCAN] Found 6095 files (293.7 MB)
+2026-04-02 02:20:20 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
+2026-04-02 02:20:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
+2026-04-02 02:20:20 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
+2026-04-02 02:20:20 - deployment_manager - INFO - [UPLOAD] Starting transfer...
+2026-04-02 02:20:23 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
+2026-04-02 02:20:26 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
+2026-04-02 02:20:30 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
+2026-04-02 02:20:33 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
+2026-04-02 02:20:36 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
+2026-04-02 02:20:39 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
+2026-04-02 02:20:42 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
+2026-04-02 02:20:45 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
+2026-04-02 02:20:48 - deployment_manager - INFO -   [PROGRESS] 450 files uploaded...
+2026-04-02 02:20:50 - deployment_manager - INFO -   [PROGRESS] 500 files uploaded...
+2026-04-02 02:20:54 - deployment_manager - INFO -   [PROGRESS] 550 files uploaded...
+2026-04-02 02:20:57 - deployment_manager - INFO -   [PROGRESS] 600 files uploaded...
+2026-04-02 02:21:00 - deployment_manager - INFO -   [PROGRESS] 650 files uploaded...
+2026-04-02 02:21:02 - deployment_manager - INFO -   [PROGRESS] 700 files uploaded...
+2026-04-02 02:21:05 - deployment_manager - INFO -   [PROGRESS] 750 files uploaded...
+2026-04-02 02:21:08 - deployment_manager - INFO -   [PROGRESS] 800 files uploaded...
+2026-04-02 02:21:12 - deployment_manager - INFO -   [PROGRESS] 850 files uploaded...
+2026-04-02 02:21:17 - deployment_manager - INFO -   [PROGRESS] 900 files uploaded...
+2026-04-02 02:21:22 - deployment_manager - INFO -   [PROGRESS] 950 files uploaded...
+2026-04-02 02:21:25 - deployment_manager - INFO -   [PROGRESS] 1000 files uploaded...
+2026-04-02 02:21:28 - deployment_manager - INFO -   [PROGRESS] 1050 files uploaded...
+2026-04-02 02:21:31 - deployment_manager - INFO -   [PROGRESS] 1100 files uploaded...
+2026-04-02 02:21:34 - deployment_manager - INFO -   [PROGRESS] 1150 files uploaded...
+2026-04-02 02:21:37 - deployment_manager - INFO -   [PROGRESS] 1200 files uploaded...
+2026-04-02 02:21:40 - deployment_manager - INFO -   [PROGRESS] 1250 files uploaded...
+2026-04-02 02:21:43 - deployment_manager - INFO -   [PROGRESS] 1300 files uploaded...
+2026-04-02 02:21:46 - deployment_manager - INFO -   [PROGRESS] 1350 files uploaded...
+2026-04-02 02:21:49 - deployment_manager - INFO -   [PROGRESS] 1400 files uploaded...
+2026-04-02 02:21:52 - deployment_manager - INFO -   [PROGRESS] 1450 files uploaded...
+2026-04-02 02:21:55 - deployment_manager - INFO -   [PROGRESS] 1500 files uploaded...
+2026-04-02 02:21:58 - deployment_manager - INFO -   [PROGRESS] 1550 files uploaded...
+2026-04-02 02:22:02 - deployment_manager - INFO -   [PROGRESS] 1600 files uploaded...
+2026-04-02 02:22:05 - deployment_manager - INFO -   [PROGRESS] 1650 files uploaded...
+2026-04-02 02:22:08 - deployment_manager - INFO -   [PROGRESS] 1700 files uploaded...
+2026-04-02 02:22:15 - deployment_manager - INFO -   [PROGRESS] 1750 files uploaded...
+2026-04-02 02:22:37 - deployment_manager - INFO -   [PROGRESS] 1800 files uploaded...
+2026-04-02 02:22:47 - deployment_manager - INFO -   [PROGRESS] 1850 files uploaded...
+2026-04-02 02:22:53 - deployment_manager - INFO -   [PROGRESS] 1900 files uploaded...
+2026-04-02 02:22:57 - deployment_manager - INFO -   [PROGRESS] 1950 files uploaded...
+2026-04-02 02:23:00 - deployment_manager - INFO -   [PROGRESS] 2000 files uploaded...
+2026-04-02 02:23:03 - deployment_manager - INFO -   [PROGRESS] 2050 files uploaded...
+2026-04-02 02:23:05 - deployment_manager - INFO -   [PROGRESS] 2100 files uploaded...
+2026-04-02 02:23:08 - deployment_manager - INFO -   [PROGRESS] 2150 files uploaded...
+2026-04-02 02:23:11 - deployment_manager - INFO -   [PROGRESS] 2200 files uploaded...
+2026-04-02 02:23:14 - deployment_manager - INFO -   [PROGRESS] 2250 files uploaded...
+2026-04-02 02:23:17 - deployment_manager - INFO -   [PROGRESS] 2300 files uploaded...
+2026-04-02 02:23:19 - deployment_manager - INFO -   [PROGRESS] 2350 files uploaded...
+2026-04-02 02:24:08 - deployment_manager - INFO - ======================================================================
+2026-04-02 02:24:08 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-04-02 02:24:08 - deployment_manager - INFO - ======================================================================
+2026-04-02 02:24:08 - deployment_manager - INFO - Deployment Configuration:
+2026-04-02 02:24:08 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-04-02 02:24:08 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-04-02 02:24:08 - deployment_manager - INFO -   Project Root: ../
+2026-04-02 02:24:08 - deployment_manager - INFO - Connecting to VPS...
+2026-04-02 02:24:08 - deployment_manager - INFO - SSH connection established
+2026-04-02 02:24:08 - deployment_manager - INFO - Uploading project files...
+2026-04-02 02:24:08 - deployment_manager - INFO - [START] Beginning file upload...
+2026-04-02 02:24:08 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
+2026-04-02 02:24:08 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .env, .venv...
+2026-04-02 02:24:09 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/.agents
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/.git
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/.github
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/.venv
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
+2026-04-02 02:24:09 - deployment_manager - INFO -        ... and 7 more
+2026-04-02 02:24:09 - deployment_manager - INFO - [SCAN] Found 1664 files (67.3 MB)
+2026-04-02 02:24:09 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
+2026-04-02 02:24:09 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
+2026-04-02 02:24:09 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
+2026-04-02 02:24:09 - deployment_manager - INFO - [UPLOAD] Starting transfer...
+2026-04-02 02:24:11 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
+2026-04-02 02:24:18 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
+2026-04-02 02:24:20 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
+2026-04-02 02:24:22 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
+2026-04-02 02:24:25 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
+2026-04-02 02:24:27 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
+2026-04-02 02:24:29 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
+2026-04-02 02:24:32 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
+2026-04-02 02:24:34 - deployment_manager - INFO -   [PROGRESS] 450 files uploaded...
+2026-04-02 02:24:36 - deployment_manager - INFO -   [PROGRESS] 500 files uploaded...
+2026-04-02 02:24:39 - deployment_manager - INFO -   [PROGRESS] 550 files uploaded...
+2026-04-02 02:24:42 - deployment_manager - INFO -   [PROGRESS] 600 files uploaded...
+2026-04-02 02:24:44 - deployment_manager - INFO -   [PROGRESS] 650 files uploaded...
+2026-04-02 02:24:46 - deployment_manager - INFO -   [PROGRESS] 700 files uploaded...
+2026-04-02 02:24:49 - deployment_manager - INFO -   [PROGRESS] 750 files uploaded...
+2026-04-02 02:24:51 - deployment_manager - INFO -   [PROGRESS] 800 files uploaded...
+2026-04-02 02:24:53 - deployment_manager - INFO -   [PROGRESS] 850 files uploaded...
+2026-04-02 02:24:56 - deployment_manager - INFO -   [PROGRESS] 900 files uploaded...
+2026-04-02 02:24:58 - deployment_manager - INFO -   [PROGRESS] 950 files uploaded...
+2026-04-02 02:25:00 - deployment_manager - INFO -   [PROGRESS] 1000 files uploaded...
+2026-04-02 02:25:03 - deployment_manager - INFO -   [PROGRESS] 1050 files uploaded...
+2026-04-02 02:25:05 - deployment_manager - INFO -   [PROGRESS] 1100 files uploaded...
+2026-04-02 02:25:10 - deployment_manager - INFO -   [PROGRESS] 1150 files uploaded...
+2026-04-02 02:25:14 - deployment_manager - INFO -   [PROGRESS] 1200 files uploaded...
+2026-04-02 02:25:17 - deployment_manager - INFO -   [PROGRESS] 1250 files uploaded...
+2026-04-02 02:25:19 - deployment_manager - INFO -   [PROGRESS] 1300 files uploaded...
+2026-04-02 02:25:22 - deployment_manager - INFO -   [PROGRESS] 1350 files uploaded...
+2026-04-02 02:25:25 - deployment_manager - INFO -   [PROGRESS] 1400 files uploaded...
+2026-04-02 02:25:27 - deployment_manager - INFO -   [PROGRESS] 1450 files uploaded...
+2026-04-02 02:25:30 - deployment_manager - INFO -   [PROGRESS] 1500 files uploaded...
+2026-04-02 02:25:32 - deployment_manager - INFO -   [PROGRESS] 1550 files uploaded...
+2026-04-02 02:25:34 - deployment_manager - INFO -   [PROGRESS] 1600 files uploaded...
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/tsconfig.json
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/tsconfig.tsbuildinfo
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts.map
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
+2026-04-02 02:25:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=True
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts.map
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0000_slippery_chimera.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0002_crypto_payments.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0003_login_events.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0004_invites.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0005_subscription_posting.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0006_fix_upgrade_type_enum.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0007_password_reset.sql
+2026-04-02 02:25:36 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/meta/0000_snapshot.json
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/meta/_journal.json
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/pg-update.mjs
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -   [PROGRESS] 1650 files uploaded...
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
+2026-04-02 02:25:37 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
+2026-04-02 02:25:38 - deployment_manager - INFO - [OK] Successfully uploaded 1664 files
+2026-04-02 02:25:38 - deployment_manager - INFO - Files uploaded successfully
+2026-04-02 02:25:38 - deployment_manager - INFO - Running remote deployment script (all)...
+2026-04-02 02:25:38 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
+  Running: pnpm install
+
+2026-04-02 02:25:39 - deployment_manager - INFO - Scope: all 9 workspace projects
+
+2026-04-02 02:25:39 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
+
+2026-04-02 02:25:40 - deployment_manager - INFO - Already up to date
+
+2026-04-02 02:25:44 - deployment_manager - INFO - 
+
+2026-04-02 02:25:44 - deployment_manager - INFO - Done in 6.3s using pnpm v10.33.0
+
+2026-04-02 02:25:45 - deployment_manager - INFO - 
+> workspace@0.0.0 build /home/admin/Scootware-Forum
+> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
+
+
+2026-04-02 02:25:46 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
+> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
+
+
+2026-04-02 02:25:46 - deployment_manager - INFO - 
+> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
+> tsc --build
+
+
+2026-04-02 02:25:48 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
+
+2026-04-02 02:25:48 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
+
+2026-04-02 02:25:49 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
+
+2026-04-02 02:25:49 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
+
+2026-04-02 02:25:49 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
+
+2026-04-02 02:25:51 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
+
+2026-04-02 02:25:51 - deployment_manager - INFO - artifacts/forum build: transforming...
+
+2026-04-02 02:25:52 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+
+2026-04-02 02:25:52 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+
+2026-04-02 02:25:52 - deployment_manager - INFO - artifacts/api-server build: Done
+
+2026-04-02 02:26:08 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
+
+2026-04-02 02:26:08 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
+
+2026-04-02 02:26:08 - deployment_manager - INFO - artifacts/forum build: - Using dynamic import() to code-split the application
+artifacts/forum build: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+artifacts/forum build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+2026-04-02 02:26:08 - deployment_manager - INFO - artifacts/forum build: Done
+
+2026-04-02 02:26:08 - deployment_manager - INFO - --- Restarting PM2 Processes ---
+
+2026-04-02 02:26:09 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+
+2026-04-02 02:26:09 - deployment_manager - INFO - [PM2][WARN] No process found
+
+2026-04-02 02:26:09 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
+
+2026-04-02 02:26:09 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
+
+2026-04-02 02:26:10 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
+
+2026-04-02 02:26:10 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
+
+2026-04-02 02:26:10 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
+
+2026-04-02 02:26:10 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
+
+2026-04-02 02:26:11 - deployment_manager - INFO - [PM2] Saving current process list...
+
+2026-04-02 02:26:11 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
+
+2026-04-02 02:26:11 - deployment_manager - INFO - [PM2] Init System found: systemd
+[PM2] To setup the Startup Script, copy/paste the following command:
+
+2026-04-02 02:26:11 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
+
+2026-04-02 02:26:11 - deployment_manager - INFO - Remote deployment script executed successfully
+2026-04-02 02:26:11 - deployment_manager - INFO - Verifying deployment...
+2026-04-02 02:26:11 - deployment_manager - INFO - Deployment verification: API is running
+2026-04-02 02:26:11 - deployment_manager - INFO - ======================================================================
+2026-04-02 02:26:11 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
+2026-04-02 02:26:11 - deployment_manager - INFO - ======================================================================
+2026-04-02 12:34:47 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 12:36:08 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 12:39:15 - deployment_manager - INFO - [OK] Build command executed
+2026-04-02 12:39:35 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-02 12:39:44 - deployment_manager - INFO - Full diagnostics completed
+2026-04-02 12:39:45 - deployment_manager - INFO - Full diagnostics completed
+2026-04-02 17:29:02 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 17:31:58 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 17:45:18 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 18:09:02 - deployment_manager - ERROR - Upload failed: Upload failed: Socket is closed
+
+Exception: Upload failed: Socket is closed
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 221, in action
+    raise Exception(msg)
+Exception: Upload failed: Socket is closed
+
+2026-04-02 18:15:10 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 18:17:34 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-02 18:18:17 - deployment_manager - INFO - [OK] Build command executed
+2026-04-02 18:19:31 - deployment_manager - INFO - [OK] Restart command executed
+2026-04-02 18:20:17 - deployment_manager - INFO - Full diagnostics completed
+2026-04-02 20:33:18 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 22:08:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 22:12:02 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-02 22:18:06 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-02 22:21:12 - deployment_manager - INFO - [OK] Build command executed
+2026-04-02 22:57:49 - deployment_manager - ERROR - Deployment failed: SSH session not active
+
+Exception: SSH session not active
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 1038, in execute
+    sftp = self.ssh_manager.client.open_sftp()
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\client.py", line 608, in open_sftp
+    return self._transport.open_sftp_client()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\transport.py", line 1181, in open_sftp_client
+    return SFTPClient.from_transport(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 164, in from_transport
+    chan = t.open_session(
+        window_size=window_size, max_packet_size=max_packet_size
+    )
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\transport.py", line 959, in open_session
+    return self.open_channel(
+           ~~~~~~~~~~~~~~~~~^
+        "session",
+        ^^^^^^^^^^
+    ...<2 lines>...
+        timeout=timeout,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\transport.py", line 1053, in open_channel
+    raise SSHException("SSH session not active")
+paramiko.ssh_exception.SSHException: SSH session not active
+
+2026-04-02 22:57:54 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-02 22:59:11 - deployment_manager - INFO - [OK] Full API deployment completed

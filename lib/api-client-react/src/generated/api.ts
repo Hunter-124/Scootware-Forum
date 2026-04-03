@@ -32,22 +32,33 @@ import type {
   GetThreadParams,
   GetThreadsParams,
   HealthStatus,
+  LinkedProvidersResponse,
   LoginRequest,
   MessageResponse,
   Post,
+  Product,
   ProfilePost,
-  PurchaseUpgradeRequest,
+  PurchaseIntentResponse,
+  PurchaseProductRequest,
   RegisterRequest,
+  RequestInvite200,
+  RequestInviteAuthenticatedRequest,
+  RequestInviteBody,
   ShoutboxMessage,
   SiteConfig,
+  SsoCreateRequest,
+  SsoLinkRequest,
+  SsoPendingResponse,
+  SubforumDetail,
   Thread,
   ThreadDetail,
   ThreadsResponse,
-  Upgrade,
   UploadAvatarBody,
   User,
+  UserInvitesResponse,
   UserProfile,
   VerifyEmailParams,
+  VerifyPaymentBody,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -545,6 +556,167 @@ export function useGetMe<
 }
 
 /**
+ * @summary Get public site configuration (invite and registration settings)
+ */
+export const getGetSiteConfigUrl = () => {
+  return `/api/auth/site-config`;
+};
+
+export const getSiteConfig = async (
+  options?: RequestInit,
+): Promise<SiteConfig> => {
+  return customFetch<SiteConfig>(getGetSiteConfigUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetSiteConfigQueryKey = () => {
+  return [`/api/auth/site-config`] as const;
+};
+
+export const getGetSiteConfigQueryOptions = <
+  TData = Awaited<ReturnType<typeof getSiteConfig>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getSiteConfig>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetSiteConfigQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSiteConfig>>> = ({
+    signal,
+  }) => getSiteConfig({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getSiteConfig>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetSiteConfigQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getSiteConfig>>
+>;
+export type GetSiteConfigQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get public site configuration (invite and registration settings)
+ */
+
+export function useGetSiteConfig<
+  TData = Awaited<ReturnType<typeof getSiteConfig>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getSiteConfig>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetSiteConfigQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Request an invite code
+ */
+export const getRequestInviteUrl = () => {
+  return `/api/auth/request-invite`;
+};
+
+export const requestInvite = async (
+  requestInviteBody: RequestInviteBody,
+  options?: RequestInit,
+): Promise<RequestInvite200> => {
+  return customFetch<RequestInvite200>(getRequestInviteUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(requestInviteBody),
+  });
+};
+
+export const getRequestInviteMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestInvite>>,
+    TError,
+    { data: BodyType<RequestInviteBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestInvite>>,
+  TError,
+  { data: BodyType<RequestInviteBody> },
+  TContext
+> => {
+  const mutationKey = ["requestInvite"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestInvite>>,
+    { data: BodyType<RequestInviteBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return requestInvite(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestInviteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof requestInvite>>
+>;
+export type RequestInviteMutationBody = BodyType<RequestInviteBody>;
+export type RequestInviteMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Request an invite code
+ */
+export const useRequestInvite = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestInvite>>,
+    TError,
+    { data: BodyType<RequestInviteBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof requestInvite>>,
+  TError,
+  { data: BodyType<RequestInviteBody> },
+  TContext
+> => {
+  return useMutation(getRequestInviteMutationOptions(options));
+};
+
+/**
  * @summary Initiate Google SSO
  */
 export const getSsoGoogleUrl = () => {
@@ -746,6 +918,635 @@ export function useSsoSteam<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Get pending SSO session data
+ */
+export const getSsoPendingUrl = () => {
+  return `/api/auth/sso/pending`;
+};
+
+export const ssoPending = async (
+  options?: RequestInit,
+): Promise<SsoPendingResponse> => {
+  return customFetch<SsoPendingResponse>(getSsoPendingUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getSsoPendingQueryKey = () => {
+  return [`/api/auth/sso/pending`] as const;
+};
+
+export const getSsoPendingQueryOptions = <
+  TData = Awaited<ReturnType<typeof ssoPending>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof ssoPending>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSsoPendingQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof ssoPending>>> = ({
+    signal,
+  }) => ssoPending({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof ssoPending>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type SsoPendingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof ssoPending>>
+>;
+export type SsoPendingQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get pending SSO session data
+ */
+
+export function useSsoPending<
+  TData = Awaited<ReturnType<typeof ssoPending>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof ssoPending>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getSsoPendingQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Link pending SSO to existing account
+ */
+export const getSsoLinkUrl = () => {
+  return `/api/auth/sso/link`;
+};
+
+export const ssoLink = async (
+  ssoLinkRequest: SsoLinkRequest,
+  options?: RequestInit,
+): Promise<AuthResponse> => {
+  return customFetch<AuthResponse>(getSsoLinkUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(ssoLinkRequest),
+  });
+};
+
+export const getSsoLinkMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ssoLink>>,
+    TError,
+    { data: BodyType<SsoLinkRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof ssoLink>>,
+  TError,
+  { data: BodyType<SsoLinkRequest> },
+  TContext
+> => {
+  const mutationKey = ["ssoLink"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof ssoLink>>,
+    { data: BodyType<SsoLinkRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return ssoLink(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SsoLinkMutationResult = NonNullable<
+  Awaited<ReturnType<typeof ssoLink>>
+>;
+export type SsoLinkMutationBody = BodyType<SsoLinkRequest>;
+export type SsoLinkMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Link pending SSO to existing account
+ */
+export const useSsoLink = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ssoLink>>,
+    TError,
+    { data: BodyType<SsoLinkRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof ssoLink>>,
+  TError,
+  { data: BodyType<SsoLinkRequest> },
+  TContext
+> => {
+  return useMutation(getSsoLinkMutationOptions(options));
+};
+
+/**
+ * @summary Create new account from pending SSO
+ */
+export const getSsoCreateUrl = () => {
+  return `/api/auth/sso/create`;
+};
+
+export const ssoCreate = async (
+  ssoCreateRequest: SsoCreateRequest,
+  options?: RequestInit,
+): Promise<AuthResponse> => {
+  return customFetch<AuthResponse>(getSsoCreateUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(ssoCreateRequest),
+  });
+};
+
+export const getSsoCreateMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ssoCreate>>,
+    TError,
+    { data: BodyType<SsoCreateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof ssoCreate>>,
+  TError,
+  { data: BodyType<SsoCreateRequest> },
+  TContext
+> => {
+  const mutationKey = ["ssoCreate"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof ssoCreate>>,
+    { data: BodyType<SsoCreateRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return ssoCreate(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SsoCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof ssoCreate>>
+>;
+export type SsoCreateMutationBody = BodyType<SsoCreateRequest>;
+export type SsoCreateMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Create new account from pending SSO
+ */
+export const useSsoCreate = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof ssoCreate>>,
+    TError,
+    { data: BodyType<SsoCreateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof ssoCreate>>,
+  TError,
+  { data: BodyType<SsoCreateRequest> },
+  TContext
+> => {
+  return useMutation(getSsoCreateMutationOptions(options));
+};
+
+/**
+ * @summary Get linked SSO providers for current user
+ */
+export const getGetLinkedProvidersUrl = () => {
+  return `/api/auth/user/linked-providers`;
+};
+
+export const getLinkedProviders = async (
+  options?: RequestInit,
+): Promise<LinkedProvidersResponse> => {
+  return customFetch<LinkedProvidersResponse>(getGetLinkedProvidersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetLinkedProvidersQueryKey = () => {
+  return [`/api/auth/user/linked-providers`] as const;
+};
+
+export const getGetLinkedProvidersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLinkedProviders>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLinkedProviders>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLinkedProvidersQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getLinkedProviders>>
+  > = ({ signal }) => getLinkedProviders({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getLinkedProviders>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetLinkedProvidersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLinkedProviders>>
+>;
+export type GetLinkedProvidersQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get linked SSO providers for current user
+ */
+
+export function useGetLinkedProviders<
+  TData = Awaited<ReturnType<typeof getLinkedProviders>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLinkedProviders>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetLinkedProvidersQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Initiate Google SSO linking for authenticated user
+ */
+export const getLinkSsoGoogleUrl = () => {
+  return `/api/auth/user/link-sso/google`;
+};
+
+export const linkSsoGoogle = async (
+  options?: RequestInit,
+): Promise<unknown> => {
+  return customFetch<unknown>(getLinkSsoGoogleUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getLinkSsoGoogleQueryKey = () => {
+  return [`/api/auth/user/link-sso/google`] as const;
+};
+
+export const getLinkSsoGoogleQueryOptions = <
+  TData = Awaited<ReturnType<typeof linkSsoGoogle>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoGoogle>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getLinkSsoGoogleQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof linkSsoGoogle>>> = ({
+    signal,
+  }) => linkSsoGoogle({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoGoogle>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type LinkSsoGoogleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof linkSsoGoogle>>
+>;
+export type LinkSsoGoogleQueryError = ErrorType<void | ErrorResponse>;
+
+/**
+ * @summary Initiate Google SSO linking for authenticated user
+ */
+
+export function useLinkSsoGoogle<
+  TData = Awaited<ReturnType<typeof linkSsoGoogle>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoGoogle>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getLinkSsoGoogleQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Initiate Discord SSO linking for authenticated user
+ */
+export const getLinkSsoDiscordUrl = () => {
+  return `/api/auth/user/link-sso/discord`;
+};
+
+export const linkSsoDiscord = async (
+  options?: RequestInit,
+): Promise<unknown> => {
+  return customFetch<unknown>(getLinkSsoDiscordUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getLinkSsoDiscordQueryKey = () => {
+  return [`/api/auth/user/link-sso/discord`] as const;
+};
+
+export const getLinkSsoDiscordQueryOptions = <
+  TData = Awaited<ReturnType<typeof linkSsoDiscord>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoDiscord>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getLinkSsoDiscordQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof linkSsoDiscord>>> = ({
+    signal,
+  }) => linkSsoDiscord({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoDiscord>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type LinkSsoDiscordQueryResult = NonNullable<
+  Awaited<ReturnType<typeof linkSsoDiscord>>
+>;
+export type LinkSsoDiscordQueryError = ErrorType<void | ErrorResponse>;
+
+/**
+ * @summary Initiate Discord SSO linking for authenticated user
+ */
+
+export function useLinkSsoDiscord<
+  TData = Awaited<ReturnType<typeof linkSsoDiscord>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoDiscord>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getLinkSsoDiscordQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Initiate Steam SSO linking for authenticated user
+ */
+export const getLinkSsoSteamUrl = () => {
+  return `/api/auth/user/link-sso/steam`;
+};
+
+export const linkSsoSteam = async (options?: RequestInit): Promise<unknown> => {
+  return customFetch<unknown>(getLinkSsoSteamUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getLinkSsoSteamQueryKey = () => {
+  return [`/api/auth/user/link-sso/steam`] as const;
+};
+
+export const getLinkSsoSteamQueryOptions = <
+  TData = Awaited<ReturnType<typeof linkSsoSteam>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoSteam>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getLinkSsoSteamQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof linkSsoSteam>>> = ({
+    signal,
+  }) => linkSsoSteam({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoSteam>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type LinkSsoSteamQueryResult = NonNullable<
+  Awaited<ReturnType<typeof linkSsoSteam>>
+>;
+export type LinkSsoSteamQueryError = ErrorType<void | ErrorResponse>;
+
+/**
+ * @summary Initiate Steam SSO linking for authenticated user
+ */
+
+export function useLinkSsoSteam<
+  TData = Awaited<ReturnType<typeof linkSsoSteam>>,
+  TError = ErrorType<void | ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof linkSsoSteam>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getLinkSsoSteamQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Unlink SSO provider from authenticated user
+ */
+export const getUnlinkSsoUrl = (provider: "google" | "discord" | "steam") => {
+  return `/api/auth/user/unlink-sso/${provider}`;
+};
+
+export const unlinkSso = async (
+  provider: "google" | "discord" | "steam",
+  options?: RequestInit,
+): Promise<MessageResponse> => {
+  return customFetch<MessageResponse>(getUnlinkSsoUrl(provider), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getUnlinkSsoMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unlinkSso>>,
+    TError,
+    { provider: "google" | "discord" | "steam" },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unlinkSso>>,
+  TError,
+  { provider: "google" | "discord" | "steam" },
+  TContext
+> => {
+  const mutationKey = ["unlinkSso"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof unlinkSso>>,
+    { provider: "google" | "discord" | "steam" }
+  > = (props) => {
+    const { provider } = props ?? {};
+
+    return unlinkSso(provider, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UnlinkSsoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof unlinkSso>>
+>;
+
+export type UnlinkSsoMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Unlink SSO provider from authenticated user
+ */
+export const useUnlinkSso = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unlinkSso>>,
+    TError,
+    { provider: "google" | "discord" | "steam" },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof unlinkSso>>,
+  TError,
+  { provider: "google" | "discord" | "steam" },
+  TContext
+> => {
+  return useMutation(getUnlinkSsoMutationOptions(options));
+};
 
 /**
  * @summary Get user profile
@@ -1099,6 +1900,168 @@ export const useCreateProfilePost = <
   TContext
 > => {
   return useMutation(getCreateProfilePostMutationOptions(options));
+};
+
+/**
+ * @summary Get current user's issued invites and their usage
+ */
+export const getGetMyInvitesUrl = () => {
+  return `/api/users/me/invites`;
+};
+
+export const getMyInvites = async (
+  options?: RequestInit,
+): Promise<UserInvitesResponse> => {
+  return customFetch<UserInvitesResponse>(getGetMyInvitesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetMyInvitesQueryKey = () => {
+  return [`/api/users/me/invites`] as const;
+};
+
+export const getGetMyInvitesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyInvites>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMyInvites>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyInvitesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyInvites>>> = ({
+    signal,
+  }) => getMyInvites({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyInvites>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMyInvitesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyInvites>>
+>;
+export type GetMyInvitesQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get current user's issued invites and their usage
+ */
+
+export function useGetMyInvites<
+  TData = Awaited<ReturnType<typeof getMyInvites>>,
+  TError = ErrorType<ErrorResponse>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMyInvites>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMyInvitesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Request an invite (authenticated users in invite-only mode)
+ */
+export const getRequestInviteAuthenticatedUrl = () => {
+  return `/api/users/me/request-invite`;
+};
+
+export const requestInviteAuthenticated = async (
+  requestInviteAuthenticatedRequest?: RequestInviteAuthenticatedRequest,
+  options?: RequestInit,
+): Promise<MessageResponse> => {
+  return customFetch<MessageResponse>(getRequestInviteAuthenticatedUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(requestInviteAuthenticatedRequest),
+  });
+};
+
+export const getRequestInviteAuthenticatedMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestInviteAuthenticated>>,
+    TError,
+    { data: BodyType<RequestInviteAuthenticatedRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof requestInviteAuthenticated>>,
+  TError,
+  { data: BodyType<RequestInviteAuthenticatedRequest> },
+  TContext
+> => {
+  const mutationKey = ["requestInviteAuthenticated"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof requestInviteAuthenticated>>,
+    { data: BodyType<RequestInviteAuthenticatedRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return requestInviteAuthenticated(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RequestInviteAuthenticatedMutationResult = NonNullable<
+  Awaited<ReturnType<typeof requestInviteAuthenticated>>
+>;
+export type RequestInviteAuthenticatedMutationBody =
+  BodyType<RequestInviteAuthenticatedRequest>;
+export type RequestInviteAuthenticatedMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Request an invite (authenticated users in invite-only mode)
+ */
+export const useRequestInviteAuthenticated = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof requestInviteAuthenticated>>,
+    TError,
+    { data: BodyType<RequestInviteAuthenticatedRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof requestInviteAuthenticated>>,
+  TError,
+  { data: BodyType<RequestInviteAuthenticatedRequest> },
+  TContext
+> => {
+  return useMutation(getRequestInviteAuthenticatedMutationOptions(options));
 };
 
 /**
@@ -1464,6 +2427,93 @@ export function useGetThread<
 }
 
 /**
+ * @summary Get a specific subforum with details
+ */
+export const getGetSubforumUrl = (subforumId: number) => {
+  return `/api/forum/subforums/${subforumId}`;
+};
+
+export const getSubforum = async (
+  subforumId: number,
+  options?: RequestInit,
+): Promise<SubforumDetail> => {
+  return customFetch<SubforumDetail>(getGetSubforumUrl(subforumId), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetSubforumQueryKey = (subforumId: number) => {
+  return [`/api/forum/subforums/${subforumId}`] as const;
+};
+
+export const getGetSubforumQueryOptions = <
+  TData = Awaited<ReturnType<typeof getSubforum>>,
+  TError = ErrorType<unknown>,
+>(
+  subforumId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getSubforum>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetSubforumQueryKey(subforumId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSubforum>>> = ({
+    signal,
+  }) => getSubforum(subforumId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!subforumId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getSubforum>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetSubforumQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getSubforum>>
+>;
+export type GetSubforumQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get a specific subforum with details
+ */
+
+export function useGetSubforum<
+  TData = Awaited<ReturnType<typeof getSubforum>>,
+  TError = ErrorType<unknown>,
+>(
+  subforumId: number,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getSubforum>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetSubforumQueryOptions(subforumId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary Reply to a thread
  */
 export const getCreatePostUrl = () => {
@@ -1737,117 +2787,40 @@ export const usePostShoutboxMessage = <
 };
 
 /**
- * @summary Get available account upgrades
+ * @summary Delete a shoutbox message (admin only)
  */
-export const getGetUpgradesUrl = () => {
-  return `/api/upgrades`;
+export const getDeleteShoutboxMessageUrl = (id: number) => {
+  return `/api/shoutbox/${id}`;
 };
 
-export const getUpgrades = async (
-  options?: RequestInit,
-): Promise<Upgrade[]> => {
-  return customFetch<Upgrade[]>(getGetUpgradesUrl(), {
-    ...options,
-    method: "GET",
-  });
-};
-
-export const getGetUpgradesQueryKey = () => {
-  return [`/api/upgrades`] as const;
-};
-
-export const getGetUpgradesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getUpgrades>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getUpgrades>>,
-    TError,
-    TData
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetUpgradesQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUpgrades>>> = ({
-    signal,
-  }) => getUpgrades({ signal, ...requestOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getUpgrades>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetUpgradesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getUpgrades>>
->;
-export type GetUpgradesQueryError = ErrorType<unknown>;
-
-/**
- * @summary Get available account upgrades
- */
-
-export function useGetUpgrades<
-  TData = Awaited<ReturnType<typeof getUpgrades>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getUpgrades>>,
-    TError,
-    TData
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetUpgradesQueryOptions(options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-/**
- * @summary Purchase an account upgrade
- */
-export const getPurchaseUpgradeUrl = () => {
-  return `/api/upgrades/purchase`;
-};
-
-export const purchaseUpgrade = async (
-  purchaseUpgradeRequest: PurchaseUpgradeRequest,
+export const deleteShoutboxMessage = async (
+  id: number,
   options?: RequestInit,
 ): Promise<MessageResponse> => {
-  return customFetch<MessageResponse>(getPurchaseUpgradeUrl(), {
+  return customFetch<MessageResponse>(getDeleteShoutboxMessageUrl(id), {
     ...options,
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...options?.headers },
-    body: JSON.stringify(purchaseUpgradeRequest),
+    method: "DELETE",
   });
 };
 
-export const getPurchaseUpgradeMutationOptions = <
-  TError = ErrorType<unknown>,
+export const getDeleteShoutboxMessageMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof purchaseUpgrade>>,
+    Awaited<ReturnType<typeof deleteShoutboxMessage>>,
     TError,
-    { data: BodyType<PurchaseUpgradeRequest> },
+    { id: number },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof purchaseUpgrade>>,
+  Awaited<ReturnType<typeof deleteShoutboxMessage>>,
   TError,
-  { data: BodyType<PurchaseUpgradeRequest> },
+  { id: number },
   TContext
 > => {
-  const mutationKey = ["purchaseUpgrade"];
+  const mutationKey = ["deleteShoutboxMessage"];
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -1857,44 +2830,291 @@ export const getPurchaseUpgradeMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof purchaseUpgrade>>,
-    { data: BodyType<PurchaseUpgradeRequest> }
+    Awaited<ReturnType<typeof deleteShoutboxMessage>>,
+    { id: number }
   > = (props) => {
-    const { data } = props ?? {};
+    const { id } = props ?? {};
 
-    return purchaseUpgrade(data, requestOptions);
+    return deleteShoutboxMessage(id, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PurchaseUpgradeMutationResult = NonNullable<
-  Awaited<ReturnType<typeof purchaseUpgrade>>
+export type DeleteShoutboxMessageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteShoutboxMessage>>
 >;
-export type PurchaseUpgradeMutationBody = BodyType<PurchaseUpgradeRequest>;
-export type PurchaseUpgradeMutationError = ErrorType<unknown>;
+
+export type DeleteShoutboxMessageMutationError = ErrorType<ErrorResponse>;
 
 /**
- * @summary Purchase an account upgrade
+ * @summary Delete a shoutbox message (admin only)
  */
-export const usePurchaseUpgrade = <
-  TError = ErrorType<unknown>,
+export const useDeleteShoutboxMessage = <
+  TError = ErrorType<ErrorResponse>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof purchaseUpgrade>>,
+    Awaited<ReturnType<typeof deleteShoutboxMessage>>,
     TError,
-    { data: BodyType<PurchaseUpgradeRequest> },
+    { id: number },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseMutationResult<
-  Awaited<ReturnType<typeof purchaseUpgrade>>,
+  Awaited<ReturnType<typeof deleteShoutboxMessage>>,
   TError,
-  { data: BodyType<PurchaseUpgradeRequest> },
+  { id: number },
   TContext
 > => {
-  return useMutation(getPurchaseUpgradeMutationOptions(options));
+  return useMutation(getDeleteShoutboxMessageMutationOptions(options));
+};
+
+/**
+ * @summary Get available gaming products
+ */
+export const getGetProductsUrl = () => {
+  return `/api/products`;
+};
+
+export const getProducts = async (
+  options?: RequestInit,
+): Promise<Product[]> => {
+  return customFetch<Product[]>(getGetProductsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetProductsQueryKey = () => {
+  return [`/api/products`] as const;
+};
+
+export const getGetProductsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getProducts>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetProductsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProducts>>> = ({
+    signal,
+  }) => getProducts({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getProducts>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetProductsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getProducts>>
+>;
+export type GetProductsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get available gaming products
+ */
+
+export function useGetProducts<
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getProducts>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetProductsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Purchase a gaming product
+ */
+export const getPurchaseProductUrl = () => {
+  return `/api/products/purchase`;
+};
+
+export const purchaseProduct = async (
+  purchaseProductRequest: PurchaseProductRequest,
+  options?: RequestInit,
+): Promise<PurchaseIntentResponse> => {
+  return customFetch<PurchaseIntentResponse>(getPurchaseProductUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(purchaseProductRequest),
+  });
+};
+
+export const getPurchaseProductMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof purchaseProduct>>,
+    TError,
+    { data: BodyType<PurchaseProductRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof purchaseProduct>>,
+  TError,
+  { data: BodyType<PurchaseProductRequest> },
+  TContext
+> => {
+  const mutationKey = ["purchaseProduct"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof purchaseProduct>>,
+    { data: BodyType<PurchaseProductRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return purchaseProduct(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PurchaseProductMutationResult = NonNullable<
+  Awaited<ReturnType<typeof purchaseProduct>>
+>;
+export type PurchaseProductMutationBody = BodyType<PurchaseProductRequest>;
+export type PurchaseProductMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Purchase a gaming product
+ */
+export const usePurchaseProduct = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof purchaseProduct>>,
+    TError,
+    { data: BodyType<PurchaseProductRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof purchaseProduct>>,
+  TError,
+  { data: BodyType<PurchaseProductRequest> },
+  TContext
+> => {
+  return useMutation(getPurchaseProductMutationOptions(options));
+};
+
+/**
+ * @summary Verify payment completion
+ */
+export const getVerifyPaymentUrl = () => {
+  return `/api/products/verify-payment`;
+};
+
+export const verifyPayment = async (
+  verifyPaymentBody: VerifyPaymentBody,
+  options?: RequestInit,
+): Promise<MessageResponse> => {
+  return customFetch<MessageResponse>(getVerifyPaymentUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(verifyPaymentBody),
+  });
+};
+
+export const getVerifyPaymentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyPayment>>,
+    TError,
+    { data: BodyType<VerifyPaymentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyPayment>>,
+  TError,
+  { data: BodyType<VerifyPaymentBody> },
+  TContext
+> => {
+  const mutationKey = ["verifyPayment"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyPayment>>,
+    { data: BodyType<VerifyPaymentBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return verifyPayment(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyPaymentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof verifyPayment>>
+>;
+export type VerifyPaymentMutationBody = BodyType<VerifyPaymentBody>;
+export type VerifyPaymentMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Verify payment completion
+ */
+export const useVerifyPayment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyPayment>>,
+    TError,
+    { data: BodyType<VerifyPaymentBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof verifyPayment>>,
+  TError,
+  { data: BodyType<VerifyPaymentBody> },
+  TContext
+> => {
+  return useMutation(getVerifyPaymentMutationOptions(options));
 };
 
 /**

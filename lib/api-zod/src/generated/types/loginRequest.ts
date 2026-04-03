@@ -7,6 +7,8 @@
  */
 
 export interface LoginRequest {
-  email: string;
+  /** Email address or username */
+  identifier?: string;
+  email?: string;
   password: string;
 }

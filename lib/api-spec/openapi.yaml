@@ -19,8 +19,8 @@ tags:
     description: Shoutbox operations
   - name: admin
     description: Admin operations
-  - name: upgrades
-    description: Account upgrade operations
+  - name: products
+    description: Gaming product and access operations
 
 paths:
   /healthz:
@@ -143,6 +143,57 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /auth/site-config:
+    get:
+      operationId: getSiteConfig
+      tags: [auth]
+      summary: Get public site configuration (invite and registration settings)
+      responses:
+        "200":
+          description: Site configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
+
+  /auth/request-invite:
+    post:
+      operationId: requestInvite
+      tags: [auth]
+      summary: Request an invite code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                username:
+                  type: string
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Request accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  inviteCode:
+                    type: string
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /auth/sso/google:
     get:
       operationId: ssoGoogle
@@ -169,6 +220,171 @@ paths:
       responses:
         "302":
           description: Redirect to Steam
+
+  /auth/sso/pending:
+    get:
+      operationId: ssoPending
+      tags: [auth]
+      summary: Get pending SSO session data
+      responses:
+        "200":
+          description: Pending SSO data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SsoPendingResponse"
+        "404":
+          description: No pending SSO session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/sso/link:
+    post:
+      operationId: ssoLink
+      tags: [auth]
+      summary: Link pending SSO to existing account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoLinkRequest"
+      responses:
+        "200":
+          description: Account linked and logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/sso/create:
+    post:
+      operationId: ssoCreate
+      tags: [auth]
+      summary: Create new account from pending SSO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SsoCreateRequest"
+      responses:
+        "200":
+          description: Account created and logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user/linked-providers:
+    get:
+      operationId: getLinkedProviders
+      tags: [auth]
+      summary: Get linked SSO providers for current user
+      responses:
+        "200":
+          description: List of linked providers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LinkedProvidersResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user/link-sso/google:
+    get:
+      operationId: linkSsoGoogle
+      tags: [auth]
+      summary: Initiate Google SSO linking for authenticated user
+      responses:
+        "302":
+          description: Redirect to Google OAuth
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user/link-sso/discord:
+    get:
+      operationId: linkSsoDiscord
+      tags: [auth]
+      summary: Initiate Discord SSO linking for authenticated user
+      responses:
+        "302":
+          description: Redirect to Discord OAuth
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user/link-sso/steam:
+    get:
+      operationId: linkSsoSteam
+      tags: [auth]
+      summary: Initiate Steam SSO linking for authenticated user
+      responses:
+        "302":
+          description: Redirect to Steam OpenID
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/user/unlink-sso/{provider}:
+    post:
+      operationId: unlinkSso
+      tags: [auth]
+      summary: Unlink SSO provider from authenticated user
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [google, discord, steam]
+      responses:
+        "200":
+          description: Provider unlinked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Cannot unlink only auth method
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /users/{userId}:
     get:
@@ -274,6 +490,56 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProfilePost"
 
+  /users/me/invites:
+    get:
+      operationId: getMyInvites
+      tags: [users]
+      summary: Get current user's issued invites and their usage
+      responses:
+        "200":
+          description: User invites data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInvitesResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/me/request-invite:
+    post:
+      operationId: requestInviteAuthenticated
+      tags: [users]
+      summary: Request an invite (authenticated users in invite-only mode)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestInviteAuthenticatedRequest"
+      responses:
+        "200":
+          description: Invite request submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /forum/categories:
     get:
       operationId: getCategories
@@ -354,6 +620,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/ThreadDetail"
 
+  /forum/subforums/{subforumId}:
+    get:
+      operationId: getSubforum
+      tags: [forum]
+      summary: Get a specific subforum with details
+      parameters:
+        - name: subforumId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Subforum details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubforumDetail"
+
   /forum/posts:
     post:
       operationId: createPost
@@ -411,11 +696,49 @@ paths:
               schema:
                 $ref: "#/components/schemas/ShoutboxMessage"
 
-  /upgrades:
+  /shoutbox/{id}:
+    delete:
+      operationId: deleteShoutboxMessage
+      tags: [shoutbox]
+      summary: Delete a shoutbox message (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Message deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Message not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+
+  /products:
     get:
-      operationId: getUpgrades
-      tags: [upgrades]
-      summary: Get available account upgrades
+      operationId: getProducts
+      tags: [products]
+      summary: Get available gaming products
       responses:
         "200":
           description: Available upgrades
@@ -424,22 +747,49 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Upgrade"
+                  $ref: "#/components/schemas/Product"
 
-  /upgrades/purchase:
+  /products/purchase:
     post:
-      operationId: purchaseUpgrade
-      tags: [upgrades]
-      summary: Purchase an account upgrade
+      operationId: purchaseProduct
+      tags: [products]
+      summary: Purchase a gaming product
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PurchaseUpgradeRequest"
+              $ref: "#/components/schemas/PurchaseProductRequest"
       responses:
         "200":
-          description: Upgrade purchased
+          description: Payment Intent Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseIntentResponse"
+
+  /products/verify-payment:
+    post:
+      operationId: verifyPayment
+      tags: [products]
+      summary: Verify payment completion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientSecret:
+                  type: string
+                productIds:
+                  type: array
+                  items:
+                    type: string
+              required: [clientSecret, productIds]
+      responses:
+        "200":
+          description: Payment verified
           content:
             application/json:
               schema:
@@ -608,12 +958,15 @@ components:
     LoginRequest:
       type: object
       properties:
+        identifier:
+          type: string
+          description: Email address or username
         email:
           type: string
           format: email
         password:
           type: string
-      required: [email, password]
+      required: [password]
 
     AuthResponse:
       type: object
@@ -639,10 +992,22 @@ components:
         upgradeType:
           type: string
           nullable: true
+          enum: [
+            BODYCAM_PREMIUM, BODYCAM_LIFETIME,
+            RUST_PREMIUM, RUST_LIFETIME,
+            DAYZ_PREMIUM, DAYZ_LIFETIME,
+            TARKOV_PREMIUM, TARKOV_LIFETIME,
+            SPOOFER_PREMIUM, SPOOFER_LIFETIME
+          ]
         upgradeExpiresAt:
           type: string
           format: date-time
           nullable: true
+        productAccess:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserProductAccess"
+          description: List of products the user has access to via invites or purchases
         avatarUrl:
           type: string
           nullable: true
@@ -655,7 +1020,16 @@ components:
           format: date-time
         postCount:
           type: integer
-      required: [id, username, email, role, isBanned, isEmailVerified, createdAt, postCount]
+      required: [id, username, email, role, isBanned, isEmailVerified, createdAt, postCount, productAccess]
+
+    UserProductAccess:
+      type: object
+      properties:
+        productId:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
 
     UserProfile:
       type: object
@@ -706,6 +1080,9 @@ components:
         description:
           type: string
           nullable: true
+        productId:
+          type: string
+          nullable: true
         subforums:
           type: array
           items:
@@ -733,6 +1110,39 @@ components:
           type: boolean
         parentId:
           type: integer
+          nullable: true
+      required: [id, name, threadCount, postCount, requiresUpgrade]
+
+    SubforumDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        threadCount:
+          type: integer
+        postCount:
+          type: integer
+        lastPost:
+          $ref: "#/components/schemas/LastPost"
+          nullable: true
+        requiresUpgrade:
+          type: boolean
+        parentId:
+          type: integer
+          nullable: true
+        categoryId:
+          type: integer
+          nullable: true
+        categoryName:
+          type: string
+          nullable: true
+        productId:
+          type: string
           nullable: true
       required: [id, name, threadCount, postCount, requiresUpgrade]
 
@@ -904,7 +1314,7 @@ components:
           maxLength: 500
       required: [content]
 
-    Upgrade:
+    Product:
       type: object
       properties:
         id:
@@ -917,18 +1327,41 @@ components:
           type: number
         durationDays:
           type: integer
+        inviteOnly:
+          type: boolean
+          description: Whether this product can only be accessed via invite codes
         features:
           type: array
           items:
             type: string
-      required: [id, name, description, price, durationDays, features]
+      required: [id, name, description, price, durationDays, inviteOnly, features]
 
-    PurchaseUpgradeRequest:
+    PurchaseProductRequest:
       type: object
       properties:
-        upgradeId:
+        productIds:
+          type: array
+          items:
+            type: string
+      required: [productIds]
+
+    PurchaseIntentResponse:
+      type: object
+      properties:
+        totalAmount:
+          type: number
+        clientSecret:
           type: string
-      required: [upgradeId]
+        checkoutUrl:
+          type: string
+          nullable: true
+        checkoutSessionId:
+          type: string
+          nullable: true
+        config:
+          type: object
+          additionalProperties: true
+      required: [totalAmount, clientSecret, config]
 
     AdminUsersResponse:
       type: object
@@ -958,6 +1391,13 @@ components:
         upgradeType:
           type: string
           nullable: true
+          enum: [
+            BODYCAM_PREMIUM, BODYCAM_LIFETIME,
+            RUST_PREMIUM, RUST_LIFETIME,
+            DAYZ_PREMIUM, DAYZ_LIFETIME,
+            TARKOV_PREMIUM, TARKOV_LIFETIME,
+            SPOOFER_PREMIUM, SPOOFER_LIFETIME
+          ]
         upgradeExpiresAt:
           type: string
           format: date-time
@@ -983,4 +1423,140 @@ components:
           type: boolean
         requireEmailVerification:
           type: boolean
+        inviteOnlyMode:
+          type: boolean
+        inviteRequestMode:
+          type: string
+          enum: [admin, auto]
+        inviteRequestCooldownDays:
+          type: integer
+          minimum: 0
+        products:
+          type: object
+          description: >-
+            Optional mapping of productId to pricing and bulk settings. Each property
+            should be an object with `price`, optional `bulkQuantity`, and optional
+            `bulkDiscountPercent` (0-100).
+          additionalProperties:
+            type: object
+            properties:
+              price:
+                type: number
+              bulkQuantity:
+                type: integer
+              bulkDiscountPercent:
+                type: number
+            required: [price]
       required: [siteName, siteDescription, maintenanceMode, allowRegistration, requireEmailVerification]
+
+    SsoPendingResponse:
+      type: object
+      properties:
+        provider:
+          type: string
+          enum: [google, discord, steam]
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        suggestedUsername:
+          type: string
+        email:
+          type: string
+          nullable: true
+      required: [provider, displayName, suggestedUsername]
+
+    SsoLinkRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+
+    SsoCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+      required: [username]
+
+    LinkedProvidersResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            type: object
+            properties:
+              provider:
+                type: string
+                enum: [google, discord, steam]
+              linked:
+                type: boolean
+            required: [provider, linked]
+      required: [providers]
+
+    UserInvitesResponse:
+      type: object
+      properties:
+        invites:
+          type: array
+          items:
+            $ref: "#/components/schemas/InviteCodeWithUsageInfo"
+      required: [invites]
+
+    InviteCodeWithUsageInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        productId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        isUsed:
+          type: boolean
+        usedBy:
+          type: integer
+          nullable: true
+        usedByUsername:
+          type: string
+          nullable: true
+        usedByAvatarUrl:
+          type: string
+          nullable: true
+        usedAt:
+          type: string
+          format: date-time
+          nullable: true
+        isBanned:
+          type: boolean
+      required: [id, code, createdAt, isUsed, isBanned]
+
+    RequestInviteAuthenticatedRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 1000
+          description: Optional reason for requesting an invite

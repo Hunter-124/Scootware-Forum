@@ -1,0 +1,43 @@
+# VPS Deployment Command Checklist - Scootware.us
+# -----------------------------------------------------------------------------
+# Follow these steps in order to launch the forum on your Linux VPS.
+
+# 1. SSH into the server as 'ubuntu' or 'root'
+ssh ubuntu@scootware.us
+
+# 2. Run the initial AWS setup script (Only do this once on a fresh server)
+cd /home/admin/Scootware-Forum/live-deployment
+sudo bash setup-aws.sh
+
+# 3. Create your production environment file
+# Paste your actual secrets (Database, SMTP, Discord, etc.) into this file
+nano /home/admin/Scootware-Forum/.env
+
+# 4. Install production dependencies
+cd /home/admin/Scootware-Forum
+pnpm install
+
+# 5. Run Database Migrations (Required for user tables and crypto requests)
+pnpm --filter @workspace/db run push --force
+
+# 6. Build the Application (Frontend & API)
+pnpm run build
+
+# 7. Start the API with PM2 (Ensures the app stays online 24/7)
+pm2 delete all || true
+pm2 start artifacts/api-server/dist/index.mjs --name "scootware-api"
+pm2 save
+pm2 startup
+
+# 8. Restart Nginx to pick up the build artifacts
+sudo systemctl restart nginx
+
+# -----------------------------------------------------------------------------
+# 🛠️ POST-DEPLOYMENT CHECKS:
+# -----------------------------------------------------------------------------
+# Check logs: pm2 logs scootware-api
+# Check status: pm2 status
+# Check Nginx config: sudo nginx -t
+# Reload Nginx: sudo systemctl reload nginx
+# Check Node processes: ps aux | grep node
+# -----------------------------------------------------------------------------

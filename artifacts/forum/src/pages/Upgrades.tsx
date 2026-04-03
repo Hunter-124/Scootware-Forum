@@ -1,115 +1,182 @@
-import React from "react";
-import { useGetUpgrades, usePurchaseUpgrade } from "@workspace/api-client-react";
-import { Button } from "@/components/ui/button";
-import { Sparkles, Check, Cpu } from "lucide-react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, Check, Zap, ShoppingCart, Calendar } from "lucide-react";
+import { useGetProducts } from "@workspace/api-client-react";
+import { formatDistanceToNow } from "date-fns";
 
 export default function Upgrades() {
-  const { data: upgrades, isLoading } = useGetUpgrades();
-  const { isAuthenticated } = useAuth();
-  const purchase = usePurchaseUpgrade();
+  const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
+  const { data: products } = useGetProducts();
 
-  const handlePurchase = (upgradeId: string) => {
-    // In a real app this would redirect to stripe
-    alert("Payment integration simulation: Initiating secure handshake...");
-    purchase.mutate({ data: { upgradeId } }, {
-      onSuccess: () => alert("Handshake successful. Upgrade applied.")
-    });
-  };
+  const currentProduct = user?.upgradeType ? products?.find(p => p.id === user.upgradeType) : null;
+  const hasActiveSubscription = currentProduct && user?.upgradeExpiresAt && new Date(user.upgradeExpiresAt) > new Date();
+
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    if (!hasActiveSubscription) {
+      setLocation(`/profile/${user.id}`);
+    }
+  }, [isAuthenticated, user, hasActiveSubscription, setLocation]);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="glass-panel p-12 text-center rounded-2xl border-destructive/30">
+          <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4 opacity-50" />
+          <h2 className="text-2xl font-display font-bold text-white mb-2">Authentication Required</h2>
+          <p className="text-muted-foreground mb-6">Please log in to view your subscription status.</p>
+          <Button variant="glow" onClick={() => setLocation("/login")}>Initialize Login</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasActiveSubscription) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="glass-panel p-12 text-center rounded-2xl border-primary/30">
+          <p className="text-muted-foreground">No active subscription found—redirecting to your profile.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
-      <div className="text-center mb-16">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/20 text-accent mb-6 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
-          <Sparkles className="w-8 h-8" />
+    <div className="container mx-auto px-4 py-12 max-w-4xl">
+      {/* Header */}
+      <div className="mb-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold tracking-widest mb-6 uppercase">
+          <Zap className="w-3 h-3" /> Subscription Portal
         </div>
-        <h1 className="text-4xl md:text-5xl font-display font-extrabold text-white mb-4 tracking-tight">
-          ELEVATE YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">CAPABILITIES</span>
+        <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          Your Upgrades
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
-          Unlock restricted sectors, gain access to specialized driver configurations, and establish dominance with premium hardware integrations.
+        <p className="text-lg text-muted-foreground">
+          Manage and view your active subscriptions and upgrade options.
         </p>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[1, 2, 3].map(i => <div key={i} className="h-96 rounded-2xl bg-white/5 animate-pulse" />)}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
-          {upgrades?.map((upgrade, idx) => {
-            const isPopular = upgrade.name.toLowerCase().includes('premium');
-            
-            return (
-              <div 
-                key={upgrade.id} 
-                className={`relative glass-panel rounded-3xl p-8 flex flex-col border overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-                  isPopular 
-                    ? "border-primary/50 shadow-[0_0_30px_rgba(168,85,247,0.15)] md:-mt-8 md:pb-12" 
-                    : "border-white/10"
-                }`}
-              >
-                {isPopular && (
-                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary to-accent" />
-                )}
-                
-                <div className="mb-8">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-2xl font-display font-bold text-white uppercase tracking-wider">{upgrade.name}</h3>
-                    {isPopular && <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Most Popular</span>}
-                  </div>
-                  <p className="text-sm text-muted-foreground h-10">{upgrade.description}</p>
-                </div>
-                
-                <div className="mb-8 flex items-baseline gap-2">
-                  <span className="text-5xl font-display font-bold text-white">${upgrade.price}</span>
-                  <span className="text-muted-foreground">/{upgrade.durationDays === 36500 ? 'lifetime' : `${upgrade.durationDays}d`}</span>
-                </div>
+      {/* Current Subscription Status */}
+      <div className="glass-panel p-8 rounded-xl border border-white/10 mb-12">
+        <h2 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-3">
+          <Zap className="w-6 h-6 text-accent" />
+          Current Subscription
+        </h2>
 
-                <div className="mb-8 relative w-32 h-32 mx-auto mix-blend-screen opacity-80">
-                   {/* We use an image depending on the upgrade name to make it look cool */}
-                   <img 
-                     src={`${import.meta.env.BASE_URL}images/upgrade-${upgrade.name.toLowerCase()}.png`} 
-                     onError={(e) => { e.currentTarget.style.display='none' }}
-                     className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" 
-                     alt=""
-                   />
+        {hasActiveSubscription ? (
+          <div className="space-y-6">
+            <div className="bg-primary/5 border border-primary/30 rounded-lg p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">{currentProduct?.name}</h3>
+                  <p className="text-muted-foreground">{currentProduct?.description}</p>
                 </div>
-
-                <ul className="space-y-4 mb-8 flex-1">
-                  {upgrade.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                      <div className="mt-0.5 rounded-full bg-primary/20 p-0.5 border border-primary/30 shrink-0">
-                        <Check className="w-3 h-3 text-primary" />
-                      </div>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {!isAuthenticated ? (
-                  <Link href="/login" className="mt-auto">
-                    <Button variant={isPopular ? "glow" : "secondary"} className="w-full py-6 text-lg rounded-xl">Initialize Login</Button>
-                  </Link>
-                ) : (
-                  <Button 
-                    variant={isPopular ? "glow" : "outline"} 
-                    className={`w-full py-6 text-lg rounded-xl ${!isPopular && 'border-white/20 hover:bg-white/10'}`}
-                    onClick={() => handlePurchase(upgrade.id)}
-                    disabled={purchase.isPending}
-                  >
-                    {purchase.isPending ? "Processing..." : "Acquire Access"}
-                  </Button>
-                )}
+                <Check className="w-8 h-8 text-accent flex-shrink-0 mt-1" />
               </div>
-            );
-          })}
-        </div>
-      )}
-      
-      <div className="mt-16 p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-4 text-muted-foreground text-sm max-w-2xl mx-auto text-center">
-        <Cpu className="w-5 h-5 opacity-50" /> All transactions are encrypted. Instant hardware access upon confirmation.
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-primary/20">
+                <div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Status</div>
+                  <div className="text-lg font-bold text-accent">Active</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Expires In</div>
+                  <div className="text-lg font-bold text-white">
+                    {formatDistanceToNow(new Date(user?.upgradeExpiresAt || Date.now()), { addSuffix: true })}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Price</div>
+                  <div className="text-lg font-bold text-white">${currentProduct?.price.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Next Billing</div>
+                  <div className="text-lg font-bold text-white">
+                    {new Date(user?.upgradeExpiresAt || Date.now()).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button variant="outline" className="flex-1" onClick={() => setLocation("/store")}>
+                <ShoppingCart className="w-4 h-4 mr-2" /> Manage Subscription
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-muted/30 border border-muted/50 rounded-lg p-8 text-center">
+            <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+            <h3 className="text-xl font-bold text-white mb-2">No Active Subscription</h3>
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+              You don't currently have an active subscription. Upgrade now to access premium features and exclusive content.
+            </p>
+            <Button variant="glow" onClick={() => setLocation("/store")}>
+              <ShoppingCart className="w-4 h-4 mr-2" /> View Store
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Available Upgrades */}
+      <div className="glass-panel p-8 rounded-xl border border-white/10">
+        <h2 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-3">
+          <ShoppingCart className="w-6 h-6 text-primary" />
+          Available Upgrades
+        </h2>
+
+        {products && products.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => {
+              const isCurrentPlan = user?.upgradeType === product.id;
+              return (
+                <div
+                  key={product.id}
+                  className={`rounded-lg border p-6 transition-all ${
+                    isCurrentPlan
+                      ? "border-primary/50 bg-primary/5"
+                      : "border-white/10 bg-white/5 hover:border-primary/30"
+                  }`}
+                >
+                  <h3 className="text-lg font-bold text-white mb-2">{product.name}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">{product.description}</p>
+                  
+                  <div className="mb-6 pt-4 border-t border-white/5">
+                    <div className="text-3xl font-bold text-white">
+                      ${product.price.toFixed(2)}
+                    </div>
+                  </div>
+
+                  {isCurrentPlan ? (
+                    <Button
+                      disabled
+                      className="w-full"
+                      variant="outline"
+                    >
+                      <Check className="w-4 h-4 mr-2" /> Current Plan
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="glow"
+                      className="w-full"
+                      onClick={() => setLocation("/store")}
+                    >
+                      Upgrade Now
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No upgrades available at this time.
+          </div>
+        )}
       </div>
     </div>
   );

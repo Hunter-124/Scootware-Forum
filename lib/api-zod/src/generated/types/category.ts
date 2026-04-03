@@ -11,5 +11,6 @@ export interface Category {
   id: number;
   name: string;
   description?: string | null;
+  productId?: string | null;
   subforums: Subforum[];
 }

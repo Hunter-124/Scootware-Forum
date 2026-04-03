@@ -7,7 +7,8 @@ export const categoriesTable = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
-  driverId: text("driver_id"),
+  productId: text("product_id"),
+  allowUserPosting: boolean("allow_user_posting").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

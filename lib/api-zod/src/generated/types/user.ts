@@ -5,15 +5,19 @@
  * Scootware Forum API
  * OpenAPI spec version: 0.1.0
  */
+import type { UserProductAccess } from "./userProductAccess";
 import type { UserRole } from "./userRole";
+import type { UserUpgradeType } from "./userUpgradeType";
 
 export interface User {
   id: number;
   username: string;
   email: string;
   role: UserRole;
-  upgradeType?: string | null;
+  upgradeType?: UserUpgradeType;
   upgradeExpiresAt?: Date | null;
+  /** List of products the user has access to via invites or purchases */
+  productAccess: UserProductAccess[];
   avatarUrl?: string | null;
   isBanned: boolean;
   isEmailVerified: boolean;

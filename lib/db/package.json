@@ -12,9 +12,12 @@
     "push-force": "drizzle-kit push --force --config ./drizzle.config.ts"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.14",
     "drizzle-orm": "catalog:",
     "drizzle-zod": "^0.8.3",
     "pg": "^8.20.0",
+    "dotenv": "^17.3.1",
+    "bcrypt": "^6.0.0",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -1,26 +1,39 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useGetShoutboxMessages, usePostShoutboxMessage } from "@workspace/api-client-react";
+import { useGetShoutboxMessages, usePostShoutboxMessage, useDeleteShoutboxMessage } from "@workspace/api-client-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Terminal } from "lucide-react";
+import { Send, Terminal, X } from "lucide-react";
 import { cn, formatShortDate, getRoleColor } from "@/lib/utils";
 import { Link } from "wouter";
 
 export function Shoutbox({ hideHeader = false }: { hideHeader?: boolean }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { data: messages = [], refetch } = useGetShoutboxMessages(
     { limit: 50 },
-    { query: { refetchInterval: 10000 } }
+    { 
+      query: { 
+        refetchInterval: 30000,
+        retry: false 
+      } as any 
+    }
   );
 
   const postMutation = usePostShoutboxMessage({
     mutation: {
       onSuccess: () => {
         setMessage("");
+        refetch();
+      }
+    }
+  });
+
+  const deleteMutation = useDeleteShoutboxMessage({
+    mutation: {
+      onSuccess: () => {
         refetch();
       }
     }
@@ -56,14 +69,28 @@ export function Shoutbox({ hideHeader = false }: { hideHeader?: boolean }) {
             No communications yet.
           </div>
         ) : (
-          messages.slice().reverse().map((msg) => (
+          messages.map((msg) => (
             <div key={msg.id} className="text-sm break-words group">
               <div className="flex items-baseline gap-2 mb-0.5">
                 <Link href={`/profile/${msg.authorId}`} className={cn("font-bold hover:underline", getRoleColor(msg.authorRole).split(' ')[0])}>
                   {msg.authorUsername}
                 </Link>
-                <span className="text-[10px] text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[10px] text-muted-foreground/50 flex items-center gap-1.5 h-4">
                   {formatShortDate(msg.createdAt)}
+                  {isAdmin && (
+                    <button
+                      onClick={() => {
+                        if (confirm("Delete this message?")) {
+                          deleteMutation.mutate({ id: msg.id });
+                        }
+                      }}
+                      className="ml-2 p-0.5 hover:text-red-500 transition-colors bg-white/5 rounded"
+                      title="Delete message"
+                      aria-label="Delete shoutbox message"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
                 </span>
               </div>
               <div className="text-gray-300 leading-snug bg-white/5 rounded-r-lg rounded-bl-lg px-3 py-2 inline-block">

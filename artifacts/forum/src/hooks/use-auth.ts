@@ -8,7 +8,7 @@ export function useAuth() {
     query: {
       retry: false,
       staleTime: 5 * 60 * 1000, // 5 mins
-    }
+    } as any
   });
 
   const invalidateAuth = () => {
@@ -21,6 +21,35 @@ export function useAuth() {
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     error,
-    invalidateAuth
+    invalidateAuth,
+    isSubscribed: (productId?: string) => {
+      if (!productId) return false;
+      if (!user) return false;
+      
+      // Check legacy upgradeType first
+      if (user.upgradeType && user.upgradeType !== productId) return false;
+      if (user.upgradeType === productId) {
+        if (!user.upgradeExpiresAt) return true;
+        try {
+          return new Date(user.upgradeExpiresAt) > new Date();
+        } catch {
+          return false;
+        }
+      }
+      
+      // Check new productAccess list
+      if (user.productAccess && Array.isArray(user.productAccess)) {
+        const access = user.productAccess.find(p => p.productId === productId);
+        if (access && access.expiresAt) {
+          try {
+            return new Date(access.expiresAt) > new Date();
+          } catch {
+            return false;
+          }
+        }
+      }
+      
+      return false;
+    }
   };
 }

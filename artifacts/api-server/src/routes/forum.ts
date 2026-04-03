@@ -1,9 +1,9 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import {
-  categoriesTable, subforumsTable, threadsTable, postsTable, usersTable,
+  categoriesTable, subforumsTable, threadsTable, postsTable, usersTable, productAccessTable,
 } from "@workspace/db";
-import { eq, desc, sql, and, asc } from "drizzle-orm";
+import { eq, desc, sql, and, asc, gt } from "drizzle-orm";
 import { z } from "zod";
 
 const router: IRouter = Router();
@@ -29,6 +29,23 @@ function requireUpgrade(req: Request, res: Response, next: any) {
   next();
 }
 
+// Helper function to check if user has active product subscription
+async function checkProductAccess(userId: number, productId: string | null): Promise<boolean> {
+  if (!productId) return true; // No product restriction
+  
+  const now = new Date();
+  const [access] = await db.select()
+    .from(productAccessTable)
+    .where(and(
+      eq(productAccessTable.userId, userId),
+      eq(productAccessTable.productId, productId),
+      gt(productAccessTable.expiresAt, now)
+    ))
+    .limit(1);
+  
+  return !!access;
+}
+
 router.get("/categories", async (req: Request, res: Response) => {
   try {
     const categories = await db.select().from(categoriesTable).orderBy(asc(categoriesTable.sortOrder));
@@ -51,13 +68,14 @@ router.get("/categories", async (req: Request, res: Response) => {
       });
     }
 
-    const result = categories.map((cat) => ({
+    const result = categories.map((cat: any) => ({
       id: cat.id,
       name: cat.name,
       description: cat.description ?? null,
+      productId: cat.productId ?? null,
       subforums: subforums
-        .filter((sf) => sf.categoryId === cat.id)
-        .map((sf) => ({
+        .filter((sf: any) => sf.categoryId === cat.id)
+        .map((sf: any) => ({
           id: sf.id,
           name: sf.name,
           description: sf.description ?? null,
@@ -131,7 +149,7 @@ router.get("/threads", async (req: Request, res: Response) => {
       .offset((page - 1) * PAGE_SIZE);
 
     res.json({
-      threads: threads.map(t => ({
+      threads: threads.map((t: any) => ({
         ...t,
         authorUsername: t.authorUsername || "Unknown",
         authorAvatarUrl: t.authorAvatarUrl ?? null,
@@ -180,6 +198,26 @@ router.post("/threads", requireAuth, async (req: Request, res: Response) => {
       }
     }
 
+    // Get the category to check posting permissions
+    const [category] = await db.select().from(categoriesTable).where(eq(categoriesTable.id, subforum.categoryId)).limit(1);
+    
+    if (user.role !== "admin") {
+      // Only admins can post in categories that don't allow user posting
+      if (!category?.allowUserPosting) {
+        res.status(403).json({ error: "Only administrators can post in this category" });
+        return;
+      }
+      
+      // Check if user has active subscription to the product
+      if (category?.productId) {
+        const hasAccess = await checkProductAccess(user.id, category.productId);
+        if (!hasAccess) {
+          res.status(403).json({ error: "You must have an active subscription to this product to post here" });
+          return;
+        }
+      }
+    }
+
     const now = new Date();
     const [thread] = await db.insert(threadsTable).values({
       title,
@@ -225,7 +263,7 @@ router.post("/threads", requireAuth, async (req: Request, res: Response) => {
 });
 
 router.get("/threads/:threadId", async (req: Request, res: Response) => {
-  const threadId = parseInt(req.params.threadId);
+  const threadId = parseInt(req.params.threadId as string);
   const page = Math.max(1, parseInt(String(req.query.page || "1")));
 
   if (isNaN(threadId)) {
@@ -305,7 +343,7 @@ router.get("/threads/:threadId", async (req: Request, res: Response) => {
         authorAvatarUrl: threadRow.authorAvatarUrl ?? null,
         lastPostAt: threadRow.lastPostAt ?? null,
       },
-      posts: posts.map(p => ({
+      posts: posts.map((p: any) => ({
         ...p,
         authorUsername: p.authorUsername || "Unknown",
         authorAvatarUrl: p.authorAvatarUrl ?? null,
@@ -351,6 +389,30 @@ router.post("/posts", requireAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    // Get subforum and category to check posting permissions
+    const [subforum] = await db.select().from(subforumsTable).where(eq(subforumsTable.id, thread.subforumId)).limit(1);
+    
+    if (subforum) {
+      const [category] = await db.select().from(categoriesTable).where(eq(categoriesTable.id, subforum.categoryId)).limit(1);
+      
+      if (user.role !== "admin") {
+        // Only admins can post in categories that don't allow user posting
+        if (!category?.allowUserPosting) {
+          res.status(403).json({ error: "Only administrators can post in this category" });
+          return;
+        }
+        
+        // Check if user has active subscription to the product
+        if (category?.productId) {
+          const hasAccess = await checkProductAccess(user.id, category.productId);
+          if (!hasAccess) {
+            res.status(403).json({ error: "You must have an active subscription to this product to post here" });
+            return;
+          }
+        }
+      }
+    }
+
     const now = new Date();
     const [post] = await db.insert(postsTable).values({
       content,
@@ -387,6 +449,59 @@ router.post("/posts", requireAuth, async (req: Request, res: Response) => {
     });
   } catch (err) {
     req.log.error({ err }, "Create post error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/subforums/:subforumId", async (req: Request, res: Response) => {
+  const subforumId = parseInt(req.params.subforumId as string);
+
+  if (isNaN(subforumId)) {
+    res.status(400).json({ error: "Invalid subforum ID" });
+    return;
+  }
+
+  try {
+    const [subforum] = await db.select().from(subforumsTable).where(eq(subforumsTable.id, subforumId)).limit(1);
+    if (!subforum) {
+      res.status(404).json({ error: "Subforum not found" });
+      return;
+    }
+
+    // Get the parent category
+    const [category] = await db.select().from(categoriesTable).where(eq(categoriesTable.id, subforum.categoryId)).limit(1);
+
+    // Get last post info
+    const lastPosts = await db.execute(sql`
+      SELECT DISTINCT ON (t.subforum_id) t.subforum_id, t.title as thread_title, u.username, t.last_post_at as created_at
+      FROM threads t
+      JOIN users u ON t.author_id = u.id
+      WHERE t.subforum_id = ${subforumId}
+      ORDER BY t.subforum_id, t.last_post_at DESC NULLS LAST
+      LIMIT 1
+    `);
+
+    const lastPost = lastPosts.rows && lastPosts.rows.length > 0 ? (lastPosts.rows[0] as any) : null;
+
+    res.json({
+      id: subforum.id,
+      name: subforum.name,
+      description: subforum.description ?? null,
+      threadCount: subforum.threadCount,
+      postCount: subforum.postCount,
+      requiresUpgrade: subforum.requiresUpgrade,
+      parentId: subforum.parentId ?? null,
+      categoryId: category?.id ?? null,
+      categoryName: category?.name ?? null,
+      productId: category?.productId ?? null,
+      lastPost: lastPost ? {
+        threadTitle: (lastPost as any).thread_title,
+        username: (lastPost as any).username,
+        createdAt: (lastPost as any).created_at,
+      } : null,
+    });
+  } catch (err) {
+    req.log.error({ err }, "Get subforum error");
     res.status(500).json({ error: "Internal server error" });
   }
 });

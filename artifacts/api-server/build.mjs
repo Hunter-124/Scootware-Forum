@@ -3,7 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
-import { rm } from "node:fs/promises";
+import { rm, cp } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -118,6 +119,34 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     `,
     },
   });
+
+  // Copy PGLite assets to dist (required for bundled usage)
+  const possiblePaths = [
+    path.resolve(artifactDir, "../../node_modules/@electric-sql/pglite/dist"),
+    path.resolve(artifactDir, "../../node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist"),
+    path.resolve(artifactDir, "node_modules/@electric-sql/pglite/dist")
+  ];
+
+  try {
+    const pkgPath = globalThis.require.resolve("@electric-sql/pglite/package.json");
+    possiblePaths.unshift(path.join(path.dirname(pkgPath), "dist"));
+  } catch (e) {}
+
+  let pgliteDist = possiblePaths.find(p => existsSync(p));
+
+  if (pgliteDist) {
+    const assets = ["postgres.data", "postgres.wasm"];
+    for (const asset of assets) {
+      const src = path.join(pgliteDist, asset);
+      const dest = path.join(distDir, asset);
+      if (existsSync(src)) {
+        await cp(src, dest);
+        console.log(`Copied ${asset} to dist from ${pgliteDist}`);
+      }
+    }
+  } else {
+    console.warn("Could not find PGLite assets in any of these paths:", possiblePaths);
+  }
 }
 
 buildAll().catch((err) => {

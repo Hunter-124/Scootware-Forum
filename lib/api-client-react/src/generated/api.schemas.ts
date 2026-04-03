@@ -29,7 +29,9 @@ export interface RegisterRequest {
 }
 
 export interface LoginRequest {
-  email: string;
+  /** Email address or username */
+  identifier?: string;
+  email?: string;
   password: string;
 }
 
@@ -40,13 +42,37 @@ export const UserRole = {
   admin: "admin",
 } as const;
 
+export type UserUpgradeType =
+  | (typeof UserUpgradeType)[keyof typeof UserUpgradeType]
+  | null;
+
+export const UserUpgradeType = {
+  BODYCAM_PREMIUM: "BODYCAM_PREMIUM",
+  BODYCAM_LIFETIME: "BODYCAM_LIFETIME",
+  RUST_PREMIUM: "RUST_PREMIUM",
+  RUST_LIFETIME: "RUST_LIFETIME",
+  DAYZ_PREMIUM: "DAYZ_PREMIUM",
+  DAYZ_LIFETIME: "DAYZ_LIFETIME",
+  TARKOV_PREMIUM: "TARKOV_PREMIUM",
+  TARKOV_LIFETIME: "TARKOV_LIFETIME",
+  SPOOFER_PREMIUM: "SPOOFER_PREMIUM",
+  SPOOFER_LIFETIME: "SPOOFER_LIFETIME",
+} as const;
+
+export interface UserProductAccess {
+  productId?: string;
+  expiresAt?: string;
+}
+
 export interface User {
   id: number;
   username: string;
   email: string;
   role: UserRole;
-  upgradeType?: string | null;
+  upgradeType?: UserUpgradeType;
   upgradeExpiresAt?: string | null;
+  /** List of products the user has access to via invites or purchases */
+  productAccess: UserProductAccess[];
   avatarUrl?: string | null;
   isBanned: boolean;
   isEmailVerified: boolean;
@@ -102,7 +128,22 @@ export interface Category {
   id: number;
   name: string;
   description?: string | null;
+  productId?: string | null;
   subforums: Subforum[];
+}
+
+export interface SubforumDetail {
+  id: number;
+  name: string;
+  description?: string | null;
+  threadCount: number;
+  postCount: number;
+  lastPost?: LastPost | null;
+  requiresUpgrade: boolean;
+  parentId?: number | null;
+  categoryId?: number | null;
+  categoryName?: string | null;
+  productId?: string | null;
 }
 
 export interface Thread {
@@ -191,17 +232,29 @@ export interface CreateShoutboxMessageRequest {
   content: string;
 }
 
-export interface Upgrade {
+export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
   durationDays: number;
+  /** Whether this product can only be accessed via invite codes */
+  inviteOnly: boolean;
   features: string[];
 }
 
-export interface PurchaseUpgradeRequest {
-  upgradeId: string;
+export interface PurchaseProductRequest {
+  productIds: string[];
+}
+
+export type PurchaseIntentResponseConfig = { [key: string]: unknown };
+
+export interface PurchaseIntentResponse {
+  totalAmount: number;
+  clientSecret: string;
+  checkoutUrl?: string | null;
+  checkoutSessionId?: string | null;
+  config: PurchaseIntentResponseConfig;
 }
 
 export interface AdminUsersResponse {
@@ -219,6 +272,23 @@ export const AdminUpdateUserRequestRole = {
   admin: "admin",
 } as const;
 
+export type AdminUpdateUserRequestUpgradeType =
+  | (typeof AdminUpdateUserRequestUpgradeType)[keyof typeof AdminUpdateUserRequestUpgradeType]
+  | null;
+
+export const AdminUpdateUserRequestUpgradeType = {
+  BODYCAM_PREMIUM: "BODYCAM_PREMIUM",
+  BODYCAM_LIFETIME: "BODYCAM_LIFETIME",
+  RUST_PREMIUM: "RUST_PREMIUM",
+  RUST_LIFETIME: "RUST_LIFETIME",
+  DAYZ_PREMIUM: "DAYZ_PREMIUM",
+  DAYZ_LIFETIME: "DAYZ_LIFETIME",
+  TARKOV_PREMIUM: "TARKOV_PREMIUM",
+  TARKOV_LIFETIME: "TARKOV_LIFETIME",
+  SPOOFER_PREMIUM: "SPOOFER_PREMIUM",
+  SPOOFER_LIFETIME: "SPOOFER_LIFETIME",
+} as const;
+
 export interface AdminUpdateUserRequest {
   /**
    * @minLength 3
@@ -226,7 +296,7 @@ export interface AdminUpdateUserRequest {
    */
   username?: string;
   role?: AdminUpdateUserRequestRole;
-  upgradeType?: string | null;
+  upgradeType?: AdminUpdateUserRequestUpgradeType;
   upgradeExpiresAt?: string | null;
 }
 
@@ -234,16 +304,129 @@ export interface BanUserRequest {
   reason: string;
 }
 
+export type SiteConfigInviteRequestMode =
+  (typeof SiteConfigInviteRequestMode)[keyof typeof SiteConfigInviteRequestMode];
+
+export const SiteConfigInviteRequestMode = {
+  admin: "admin",
+  auto: "auto",
+} as const;
+
+/**
+ * Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100).
+ */
+export type SiteConfigProducts = {
+  [key: string]: {
+    price: number;
+    bulkQuantity?: number;
+    bulkDiscountPercent?: number;
+  };
+};
+
 export interface SiteConfig {
   siteName: string;
   siteDescription: string;
   maintenanceMode: boolean;
   allowRegistration: boolean;
   requireEmailVerification: boolean;
+  inviteOnlyMode?: boolean;
+  inviteRequestMode?: SiteConfigInviteRequestMode;
+  /** @minimum 0 */
+  inviteRequestCooldownDays?: number;
+  /** Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100). */
+  products?: SiteConfigProducts;
+}
+
+export type SsoPendingResponseProvider =
+  (typeof SsoPendingResponseProvider)[keyof typeof SsoPendingResponseProvider];
+
+export const SsoPendingResponseProvider = {
+  google: "google",
+  discord: "discord",
+  steam: "steam",
+} as const;
+
+export interface SsoPendingResponse {
+  provider: SsoPendingResponseProvider;
+  displayName: string;
+  avatarUrl?: string | null;
+  suggestedUsername: string;
+  email?: string | null;
+}
+
+export interface SsoLinkRequest {
+  email: string;
+  password: string;
+}
+
+export interface SsoCreateRequest {
+  /**
+   * @minLength 3
+   * @maxLength 30
+   */
+  username: string;
+  email?: string;
+  /** @minLength 8 */
+  password?: string;
+}
+
+export type LinkedProvidersResponseProvidersItemProvider =
+  (typeof LinkedProvidersResponseProvidersItemProvider)[keyof typeof LinkedProvidersResponseProvidersItemProvider];
+
+export const LinkedProvidersResponseProvidersItemProvider = {
+  google: "google",
+  discord: "discord",
+  steam: "steam",
+} as const;
+
+export type LinkedProvidersResponseProvidersItem = {
+  provider: LinkedProvidersResponseProvidersItemProvider;
+  linked: boolean;
+};
+
+export interface LinkedProvidersResponse {
+  providers: LinkedProvidersResponseProvidersItem[];
+}
+
+export interface InviteCodeWithUsageInfo {
+  id: number;
+  code: string;
+  productId?: string | null;
+  createdAt: string;
+  expiresAt?: string | null;
+  isUsed: boolean;
+  usedBy?: number | null;
+  usedByUsername?: string | null;
+  usedByAvatarUrl?: string | null;
+  usedAt?: string | null;
+  isBanned: boolean;
+}
+
+export interface UserInvitesResponse {
+  invites: InviteCodeWithUsageInfo[];
+}
+
+export interface RequestInviteAuthenticatedRequest {
+  /**
+   * Optional reason for requesting an invite
+   * @maxLength 1000
+   */
+  reason?: string;
 }
 
 export type VerifyEmailParams = {
   token: string;
+};
+
+export type RequestInviteBody = {
+  email?: string;
+  username?: string;
+  reason?: string;
+};
+
+export type RequestInvite200 = {
+  message?: string;
+  inviteCode?: string;
 };
 
 export type UploadAvatarBody = {
@@ -261,6 +444,11 @@ export type GetThreadParams = {
 
 export type GetShoutboxMessagesParams = {
   limit?: number;
+};
+
+export type VerifyPaymentBody = {
+  clientSecret: string;
+  productIds: string[];
 };
 
 export type AdminGetUsersParams = {

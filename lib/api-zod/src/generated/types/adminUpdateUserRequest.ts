@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { AdminUpdateUserRequestRole } from "./adminUpdateUserRequestRole";
+import type { AdminUpdateUserRequestUpgradeType } from "./adminUpdateUserRequestUpgradeType";
 
 export interface AdminUpdateUserRequest {
   /**
@@ -14,6 +15,6 @@ export interface AdminUpdateUserRequest {
    */
   username?: string;
   role?: AdminUpdateUserRequestRole;
-  upgradeType?: string | null;
+  upgradeType?: AdminUpdateUserRequestUpgradeType;
   upgradeExpiresAt?: Date | null;
 }

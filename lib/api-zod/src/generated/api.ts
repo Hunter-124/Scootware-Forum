@@ -35,7 +35,8 @@ export const RegisterBody = zod.object({
  * @summary Login with email and password
  */
 export const LoginBody = zod.object({
-  email: zod.string().email(),
+  identifier: zod.string().optional().describe("Email address or username"),
+  email: zod.string().email().optional(),
   password: zod.string(),
 });
 
@@ -45,8 +46,31 @@ export const LoginResponse = zod.object({
     username: zod.string(),
     email: zod.string(),
     role: zod.enum(["user", "admin"]),
-    upgradeType: zod.string().nullish(),
+    upgradeType: zod
+      .enum([
+        "BODYCAM_PREMIUM",
+        "BODYCAM_LIFETIME",
+        "RUST_PREMIUM",
+        "RUST_LIFETIME",
+        "DAYZ_PREMIUM",
+        "DAYZ_LIFETIME",
+        "TARKOV_PREMIUM",
+        "TARKOV_LIFETIME",
+        "SPOOFER_PREMIUM",
+        "SPOOFER_LIFETIME",
+      ])
+      .nullish(),
     upgradeExpiresAt: zod.coerce.date().nullish(),
+    productAccess: zod
+      .array(
+        zod.object({
+          productId: zod.string().optional(),
+          expiresAt: zod.coerce.date().optional(),
+        }),
+      )
+      .describe(
+        "List of products the user has access to via invites or purchases",
+      ),
     avatarUrl: zod.string().nullish(),
     isBanned: zod.boolean(),
     isEmailVerified: zod.boolean(),
@@ -82,13 +106,221 @@ export const GetMeResponse = zod.object({
   username: zod.string(),
   email: zod.string(),
   role: zod.enum(["user", "admin"]),
-  upgradeType: zod.string().nullish(),
+  upgradeType: zod
+    .enum([
+      "BODYCAM_PREMIUM",
+      "BODYCAM_LIFETIME",
+      "RUST_PREMIUM",
+      "RUST_LIFETIME",
+      "DAYZ_PREMIUM",
+      "DAYZ_LIFETIME",
+      "TARKOV_PREMIUM",
+      "TARKOV_LIFETIME",
+      "SPOOFER_PREMIUM",
+      "SPOOFER_LIFETIME",
+    ])
+    .nullish(),
   upgradeExpiresAt: zod.coerce.date().nullish(),
+  productAccess: zod
+    .array(
+      zod.object({
+        productId: zod.string().optional(),
+        expiresAt: zod.coerce.date().optional(),
+      }),
+    )
+    .describe(
+      "List of products the user has access to via invites or purchases",
+    ),
   avatarUrl: zod.string().nullish(),
   isBanned: zod.boolean(),
   isEmailVerified: zod.boolean(),
   createdAt: zod.coerce.date(),
   postCount: zod.number(),
+});
+
+/**
+ * @summary Get public site configuration (invite and registration settings)
+ */
+export const getSiteConfigResponseInviteRequestCooldownDaysMin = 0;
+
+export const GetSiteConfigResponse = zod.object({
+  siteName: zod.string(),
+  siteDescription: zod.string(),
+  maintenanceMode: zod.boolean(),
+  allowRegistration: zod.boolean(),
+  requireEmailVerification: zod.boolean(),
+  inviteOnlyMode: zod.boolean().optional(),
+  inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
+  inviteRequestCooldownDays: zod
+    .number()
+    .min(getSiteConfigResponseInviteRequestCooldownDaysMin)
+    .optional(),
+  products: zod
+    .record(
+      zod.string(),
+      zod.object({
+        price: zod.number(),
+        bulkQuantity: zod.number().optional(),
+        bulkDiscountPercent: zod.number().optional(),
+      }),
+    )
+    .optional()
+    .describe(
+      "Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100).",
+    ),
+});
+
+/**
+ * @summary Request an invite code
+ */
+export const RequestInviteBody = zod.object({
+  email: zod.string().email().optional(),
+  username: zod.string().optional(),
+  reason: zod.string().optional(),
+});
+
+export const RequestInviteResponse = zod.object({
+  message: zod.string().optional(),
+  inviteCode: zod.string().optional(),
+});
+
+/**
+ * @summary Get pending SSO session data
+ */
+export const SsoPendingResponse = zod.object({
+  provider: zod.enum(["google", "discord", "steam"]),
+  displayName: zod.string(),
+  avatarUrl: zod.string().nullish(),
+  suggestedUsername: zod.string(),
+  email: zod.string().nullish(),
+});
+
+/**
+ * @summary Link pending SSO to existing account
+ */
+export const SsoLinkBody = zod.object({
+  email: zod.string().email(),
+  password: zod.string(),
+});
+
+export const SsoLinkResponse = zod.object({
+  user: zod.object({
+    id: zod.number(),
+    username: zod.string(),
+    email: zod.string(),
+    role: zod.enum(["user", "admin"]),
+    upgradeType: zod
+      .enum([
+        "BODYCAM_PREMIUM",
+        "BODYCAM_LIFETIME",
+        "RUST_PREMIUM",
+        "RUST_LIFETIME",
+        "DAYZ_PREMIUM",
+        "DAYZ_LIFETIME",
+        "TARKOV_PREMIUM",
+        "TARKOV_LIFETIME",
+        "SPOOFER_PREMIUM",
+        "SPOOFER_LIFETIME",
+      ])
+      .nullish(),
+    upgradeExpiresAt: zod.coerce.date().nullish(),
+    productAccess: zod
+      .array(
+        zod.object({
+          productId: zod.string().optional(),
+          expiresAt: zod.coerce.date().optional(),
+        }),
+      )
+      .describe(
+        "List of products the user has access to via invites or purchases",
+      ),
+    avatarUrl: zod.string().nullish(),
+    isBanned: zod.boolean(),
+    isEmailVerified: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    postCount: zod.number(),
+  }),
+  message: zod.string().optional(),
+});
+
+/**
+ * @summary Create new account from pending SSO
+ */
+export const ssoCreateBodyUsernameMin = 3;
+export const ssoCreateBodyUsernameMax = 30;
+
+export const ssoCreateBodyPasswordMin = 8;
+
+export const SsoCreateBody = zod.object({
+  username: zod
+    .string()
+    .min(ssoCreateBodyUsernameMin)
+    .max(ssoCreateBodyUsernameMax),
+  email: zod.string().email().optional(),
+  password: zod.string().min(ssoCreateBodyPasswordMin).optional(),
+});
+
+export const SsoCreateResponse = zod.object({
+  user: zod.object({
+    id: zod.number(),
+    username: zod.string(),
+    email: zod.string(),
+    role: zod.enum(["user", "admin"]),
+    upgradeType: zod
+      .enum([
+        "BODYCAM_PREMIUM",
+        "BODYCAM_LIFETIME",
+        "RUST_PREMIUM",
+        "RUST_LIFETIME",
+        "DAYZ_PREMIUM",
+        "DAYZ_LIFETIME",
+        "TARKOV_PREMIUM",
+        "TARKOV_LIFETIME",
+        "SPOOFER_PREMIUM",
+        "SPOOFER_LIFETIME",
+      ])
+      .nullish(),
+    upgradeExpiresAt: zod.coerce.date().nullish(),
+    productAccess: zod
+      .array(
+        zod.object({
+          productId: zod.string().optional(),
+          expiresAt: zod.coerce.date().optional(),
+        }),
+      )
+      .describe(
+        "List of products the user has access to via invites or purchases",
+      ),
+    avatarUrl: zod.string().nullish(),
+    isBanned: zod.boolean(),
+    isEmailVerified: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    postCount: zod.number(),
+  }),
+  message: zod.string().optional(),
+});
+
+/**
+ * @summary Get linked SSO providers for current user
+ */
+export const GetLinkedProvidersResponse = zod.object({
+  providers: zod.array(
+    zod.object({
+      provider: zod.enum(["google", "discord", "steam"]),
+      linked: zod.boolean(),
+    }),
+  ),
+});
+
+/**
+ * @summary Unlink SSO provider from authenticated user
+ */
+export const UnlinkSsoParams = zod.object({
+  provider: zod.enum(["google", "discord", "steam"]),
+});
+
+export const UnlinkSsoResponse = zod.object({
+  message: zod.string(),
 });
 
 /**
@@ -104,8 +336,31 @@ export const GetUserProfileResponse = zod.object({
     username: zod.string(),
     email: zod.string(),
     role: zod.enum(["user", "admin"]),
-    upgradeType: zod.string().nullish(),
+    upgradeType: zod
+      .enum([
+        "BODYCAM_PREMIUM",
+        "BODYCAM_LIFETIME",
+        "RUST_PREMIUM",
+        "RUST_LIFETIME",
+        "DAYZ_PREMIUM",
+        "DAYZ_LIFETIME",
+        "TARKOV_PREMIUM",
+        "TARKOV_LIFETIME",
+        "SPOOFER_PREMIUM",
+        "SPOOFER_LIFETIME",
+      ])
+      .nullish(),
     upgradeExpiresAt: zod.coerce.date().nullish(),
+    productAccess: zod
+      .array(
+        zod.object({
+          productId: zod.string().optional(),
+          expiresAt: zod.coerce.date().optional(),
+        }),
+      )
+      .describe(
+        "List of products the user has access to via invites or purchases",
+      ),
     avatarUrl: zod.string().nullish(),
     isBanned: zod.boolean(),
     isEmailVerified: zod.boolean(),
@@ -172,12 +427,51 @@ export const CreateProfilePostBody = zod.object({
 });
 
 /**
+ * @summary Get current user's issued invites and their usage
+ */
+export const GetMyInvitesResponse = zod.object({
+  invites: zod.array(
+    zod.object({
+      id: zod.number(),
+      code: zod.string(),
+      productId: zod.string().nullish(),
+      createdAt: zod.coerce.date(),
+      expiresAt: zod.coerce.date().nullish(),
+      isUsed: zod.boolean(),
+      usedBy: zod.number().nullish(),
+      usedByUsername: zod.string().nullish(),
+      usedByAvatarUrl: zod.string().nullish(),
+      usedAt: zod.coerce.date().nullish(),
+      isBanned: zod.boolean(),
+    }),
+  ),
+});
+
+/**
+ * @summary Request an invite (authenticated users in invite-only mode)
+ */
+export const requestInviteAuthenticatedBodyReasonMax = 1000;
+
+export const RequestInviteAuthenticatedBody = zod.object({
+  reason: zod
+    .string()
+    .max(requestInviteAuthenticatedBodyReasonMax)
+    .optional()
+    .describe("Optional reason for requesting an invite"),
+});
+
+export const RequestInviteAuthenticatedResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
  * @summary Get forum categories and subforums
  */
 export const GetCategoriesResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
   description: zod.string().nullish(),
+  productId: zod.string().nullish(),
   subforums: zod.array(
     zod.object({
       id: zod.number(),
@@ -298,6 +592,33 @@ export const GetThreadResponse = zod.object({
 });
 
 /**
+ * @summary Get a specific subforum with details
+ */
+export const GetSubforumParams = zod.object({
+  subforumId: zod.coerce.number(),
+});
+
+export const GetSubforumResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string().nullish(),
+  threadCount: zod.number(),
+  postCount: zod.number(),
+  lastPost: zod
+    .object({
+      threadTitle: zod.string(),
+      username: zod.string(),
+      createdAt: zod.coerce.date(),
+    })
+    .nullish(),
+  requiresUpgrade: zod.boolean(),
+  parentId: zod.number().nullish(),
+  categoryId: zod.number().nullish(),
+  categoryName: zod.string().nullish(),
+  productId: zod.string().nullish(),
+});
+
+/**
  * @summary Reply to a thread
  */
 export const createPostBodyContentMax = 50000;
@@ -339,26 +660,56 @@ export const PostShoutboxMessageBody = zod.object({
 });
 
 /**
- * @summary Get available account upgrades
+ * @summary Delete a shoutbox message (admin only)
  */
-export const GetUpgradesResponseItem = zod.object({
+export const DeleteShoutboxMessageParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteShoutboxMessageResponse = zod.object({
+  message: zod.string(),
+});
+
+/**
+ * @summary Get available gaming products
+ */
+export const GetProductsResponseItem = zod.object({
   id: zod.string(),
   name: zod.string(),
   description: zod.string(),
   price: zod.number(),
   durationDays: zod.number(),
+  inviteOnly: zod
+    .boolean()
+    .describe("Whether this product can only be accessed via invite codes"),
   features: zod.array(zod.string()),
 });
-export const GetUpgradesResponse = zod.array(GetUpgradesResponseItem);
+export const GetProductsResponse = zod.array(GetProductsResponseItem);
 
 /**
- * @summary Purchase an account upgrade
+ * @summary Purchase a gaming product
  */
-export const PurchaseUpgradeBody = zod.object({
-  upgradeId: zod.string(),
+export const PurchaseProductBody = zod.object({
+  productIds: zod.array(zod.string()),
 });
 
-export const PurchaseUpgradeResponse = zod.object({
+export const PurchaseProductResponse = zod.object({
+  totalAmount: zod.number(),
+  clientSecret: zod.string(),
+  checkoutUrl: zod.string().nullish(),
+  checkoutSessionId: zod.string().nullish(),
+  config: zod.record(zod.string(), zod.unknown()),
+});
+
+/**
+ * @summary Verify payment completion
+ */
+export const VerifyPaymentBody = zod.object({
+  clientSecret: zod.string(),
+  productIds: zod.array(zod.string()),
+});
+
+export const VerifyPaymentResponse = zod.object({
   message: zod.string(),
 });
 
@@ -379,8 +730,31 @@ export const AdminGetUsersResponse = zod.object({
       username: zod.string(),
       email: zod.string(),
       role: zod.enum(["user", "admin"]),
-      upgradeType: zod.string().nullish(),
+      upgradeType: zod
+        .enum([
+          "BODYCAM_PREMIUM",
+          "BODYCAM_LIFETIME",
+          "RUST_PREMIUM",
+          "RUST_LIFETIME",
+          "DAYZ_PREMIUM",
+          "DAYZ_LIFETIME",
+          "TARKOV_PREMIUM",
+          "TARKOV_LIFETIME",
+          "SPOOFER_PREMIUM",
+          "SPOOFER_LIFETIME",
+        ])
+        .nullish(),
       upgradeExpiresAt: zod.coerce.date().nullish(),
+      productAccess: zod
+        .array(
+          zod.object({
+            productId: zod.string().optional(),
+            expiresAt: zod.coerce.date().optional(),
+          }),
+        )
+        .describe(
+          "List of products the user has access to via invites or purchases",
+        ),
       avatarUrl: zod.string().nullish(),
       isBanned: zod.boolean(),
       isEmailVerified: zod.boolean(),
@@ -410,7 +784,20 @@ export const AdminUpdateUserBody = zod.object({
     .max(adminUpdateUserBodyUsernameMax)
     .optional(),
   role: zod.enum(["user", "admin"]).optional(),
-  upgradeType: zod.string().nullish(),
+  upgradeType: zod
+    .enum([
+      "BODYCAM_PREMIUM",
+      "BODYCAM_LIFETIME",
+      "RUST_PREMIUM",
+      "RUST_LIFETIME",
+      "DAYZ_PREMIUM",
+      "DAYZ_LIFETIME",
+      "TARKOV_PREMIUM",
+      "TARKOV_LIFETIME",
+      "SPOOFER_PREMIUM",
+      "SPOOFER_LIFETIME",
+    ])
+    .nullish(),
   upgradeExpiresAt: zod.coerce.date().nullish(),
 });
 
@@ -419,8 +806,31 @@ export const AdminUpdateUserResponse = zod.object({
   username: zod.string(),
   email: zod.string(),
   role: zod.enum(["user", "admin"]),
-  upgradeType: zod.string().nullish(),
+  upgradeType: zod
+    .enum([
+      "BODYCAM_PREMIUM",
+      "BODYCAM_LIFETIME",
+      "RUST_PREMIUM",
+      "RUST_LIFETIME",
+      "DAYZ_PREMIUM",
+      "DAYZ_LIFETIME",
+      "TARKOV_PREMIUM",
+      "TARKOV_LIFETIME",
+      "SPOOFER_PREMIUM",
+      "SPOOFER_LIFETIME",
+    ])
+    .nullish(),
   upgradeExpiresAt: zod.coerce.date().nullish(),
+  productAccess: zod
+    .array(
+      zod.object({
+        productId: zod.string().optional(),
+        expiresAt: zod.coerce.date().optional(),
+      }),
+    )
+    .describe(
+      "List of products the user has access to via invites or purchases",
+    ),
   avatarUrl: zod.string().nullish(),
   isBanned: zod.boolean(),
   isEmailVerified: zod.boolean(),
@@ -457,24 +867,68 @@ export const AdminUnbanUserResponse = zod.object({
 /**
  * @summary Get site configuration
  */
+export const adminGetConfigResponseInviteRequestCooldownDaysMin = 0;
+
 export const AdminGetConfigResponse = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
   allowRegistration: zod.boolean(),
   requireEmailVerification: zod.boolean(),
+  inviteOnlyMode: zod.boolean().optional(),
+  inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
+  inviteRequestCooldownDays: zod
+    .number()
+    .min(adminGetConfigResponseInviteRequestCooldownDaysMin)
+    .optional(),
+  products: zod
+    .record(
+      zod.string(),
+      zod.object({
+        price: zod.number(),
+        bulkQuantity: zod.number().optional(),
+        bulkDiscountPercent: zod.number().optional(),
+      }),
+    )
+    .optional()
+    .describe(
+      "Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100).",
+    ),
 });
 
 /**
  * @summary Update site configuration
  */
+export const adminUpdateConfigBodyInviteRequestCooldownDaysMin = 0;
+
 export const AdminUpdateConfigBody = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
   allowRegistration: zod.boolean(),
   requireEmailVerification: zod.boolean(),
+  inviteOnlyMode: zod.boolean().optional(),
+  inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
+  inviteRequestCooldownDays: zod
+    .number()
+    .min(adminUpdateConfigBodyInviteRequestCooldownDaysMin)
+    .optional(),
+  products: zod
+    .record(
+      zod.string(),
+      zod.object({
+        price: zod.number(),
+        bulkQuantity: zod.number().optional(),
+        bulkDiscountPercent: zod.number().optional(),
+      }),
+    )
+    .optional()
+    .describe(
+      "Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100).",
+    ),
 });
+
+export const adminUpdateConfigResponseInviteRequestCooldownDaysMin = 0;
 
 export const AdminUpdateConfigResponse = zod.object({
   siteName: zod.string(),
@@ -482,4 +936,23 @@ export const AdminUpdateConfigResponse = zod.object({
   maintenanceMode: zod.boolean(),
   allowRegistration: zod.boolean(),
   requireEmailVerification: zod.boolean(),
+  inviteOnlyMode: zod.boolean().optional(),
+  inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
+  inviteRequestCooldownDays: zod
+    .number()
+    .min(adminUpdateConfigResponseInviteRequestCooldownDaysMin)
+    .optional(),
+  products: zod
+    .record(
+      zod.string(),
+      zod.object({
+        price: zod.number(),
+        bulkQuantity: zod.number().optional(),
+        bulkDiscountPercent: zod.number().optional(),
+      }),
+    )
+    .optional()
+    .describe(
+      "Optional mapping of productId to pricing and bulk settings. Each property should be an object with `price`, optional `bulkQuantity`, and optional `bulkDiscountPercent` (0-100).",
+    ),
 });

@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useLogout } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, User as UserIcon, Shield, Sparkles, MessageSquare, Download } from "lucide-react";
+import { LogOut, Menu, User as UserIcon, Shield, Sparkles, MessageSquare, Download, Settings } from "lucide-react";
 import { cn, getRoleColor } from "@/lib/utils";
 import { Shoutbox } from "./Shoutbox";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,9 +16,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [shoutboxOpen, setShoutboxOpen] = useState(false);
 
   const handleLogout = async () => {
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if (!confirmed) return;
     await logout.mutateAsync();
     invalidateAuth();
-    setLocation("/");
+    // Reload the page to ensure auth state is cleared everywhere
+    window.location.reload();
   };
 
   return (
@@ -37,9 +40,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </Link>
             
             <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
-              <Link href="/" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors">Forum</Link>
-              <Link href="/upgrades" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-accent" /> Upgrades
+              <Link href="/" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-primary" /> Forum
+              </Link>
+              <Link href="/products" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-accent" /> Products
               </Link>
               <Link href="/loader" className="px-4 py-2 rounded-md hover:bg-white/5 text-muted-foreground hover:text-white transition-colors flex items-center gap-2">
                 <Download className="w-4 h-4 text-primary" /> Loader
@@ -58,22 +63,28 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   </Link>
                 )}
                 
-                <Link href={`/profile/${user.id}`}>
+                <Link href={`/profile/${user?.id}`}>
                   <div className="flex items-center gap-3 cursor-pointer group px-2 py-1 rounded-md hover:bg-white/5 transition-colors">
                     <div className="text-right hidden lg:block">
-                      <div className="text-sm font-medium text-white group-hover:text-primary transition-colors">{user.username}</div>
-                      <div className={cn("text-[10px] uppercase font-bold px-1.5 rounded inline-block mt-0.5", getRoleColor(user.role, user.upgradeType))}>
-                        {user.upgradeType || user.role}
-                      </div>
+                      <span className="text-white font-bold">{user?.username}</span>
+                      <span className={cn("text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border border-white/10", getRoleColor(user?.role || "user", user?.upgradeType))}>
+                        {user?.upgradeType || user?.role}
+                      </span>
                     </div>
                     <div className="w-9 h-9 rounded-full bg-secondary border-2 border-primary/30 overflow-hidden group-hover:border-primary transition-colors">
-                      {user.avatarUrl ? (
+                      {user?.avatarUrl ? (
                         <img src={user.avatarUrl} alt={user.username} className="w-full h-full object-cover" />
                       ) : (
                         <UserIcon className="w-full h-full p-2 text-muted-foreground" />
                       )}
                     </div>
                   </div>
+                </Link>
+
+                <Link href="/account">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                    <Settings className="w-5 h-5" />
+                  </Button>
                 </Link>
 
                 <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-destructive">
@@ -111,9 +122,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               className="md:hidden border-t border-white/10 bg-card/95 backdrop-blur-xl overflow-hidden"
             >
               <div className="p-4 flex flex-col gap-3">
-                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium">Forum</Link>
-                <Link href="/upgrades" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-accent" /> Upgrades
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-primary" /> Forum
+                </Link>
+                <Link href="/products" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-accent" /> Products
                 </Link>
                 <Link href="/loader" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-2">
                   <Download className="w-4 h-4 text-primary" /> Loader
@@ -122,8 +135,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 {isAuthenticated ? (
                   <>
                     <div className="h-px bg-white/10 my-2" />
-                    <Link href={`/profile/${user.id}`} onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-3">
+                    <Link href={`/profile/${user?.id}`} onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-3">
                        <UserIcon className="w-5 h-5" /> Profile
+                    </Link>
+                    <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium flex items-center gap-3">
+                       <Settings className="w-5 h-5" /> Account Settings
                     </Link>
                     {isAdmin && (
                       <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-md hover:bg-white/5 font-medium text-amber-500 flex items-center gap-3">
@@ -154,19 +170,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Main Layout Grid */}
-      <div className="flex-1 container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        {/* Content Area */}
-        <main className="flex-1 min-w-0 flex flex-col gap-8">
-          {children}
-        </main>
-
-        {/* Desktop Sidebar / Shoutbox */}
-        <aside className="hidden lg:block w-80 shrink-0">
-          <div className="sticky top-24">
-            <Shoutbox />
-          </div>
-        </aside>
-      </div>
+      <main className="flex-1 w-full relative">
+        {children}
+      </main>
 
       {/* Mobile Floating Shoutbox Drawer */}
       <AnimatePresence>

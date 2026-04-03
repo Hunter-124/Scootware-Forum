@@ -15,6 +15,7 @@ router.use("/users", usersRouter);
 router.use("/forum", forumRouter);
 router.use("/shoutbox", shoutboxRouter);
 router.use("/upgrades", upgradesRouter);
+router.use("/products", upgradesRouter); // Added for React Products.tsx expecting /api/products
 router.use("/admin", adminRouter);
 
 export default router;

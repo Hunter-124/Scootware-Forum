@@ -1,0 +1,16 @@
+# WinSCP Script for Scootware Live Deployment
+# Parameter %1% is the absolute path to the local project root.
+
+# 1. Connect to VPS using Private Key
+# We're using the .ppk file for automatic authentication.
+open sftp://admin@[VPS_IP]/ -hostkey="*" -privatekey="%1%\scootwareppk.ppk"
+
+# 2. Set Remote Path
+cd /home/admin/Scootware-Forum
+
+# 3. Synchronize Files (Upload)
+# Using %1% to ensure the absolute local path is correctly resolved.
+synchronize remote -delete -filemask="| node_modules/; .git/; .pglite-data/; artifacts/api-server/dist/; artifacts/forum/dist/; artifacts/mockup-sandbox/; local-deployment/; live-deployment/; deployment-manager/; *.log; *.md; *.markdown; docs/" "%1%" ./
+
+# 4. Close Connection
+exit
