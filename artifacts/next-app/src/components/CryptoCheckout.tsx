@@ -51,11 +51,15 @@ export function CryptoCheckout({ productIds, onSuccess }: CryptoCheckoutProps) {
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const sseRef = useRef<EventSource | null>(null);
 
   // 1. Initial Health Check
   useEffect(() => {
     checkHealth();
-    return () => stopPolling();
+    return () => {
+      stopPolling();
+      stopSSE();
+    };
   }, []);
 
   const checkHealth = async () => {
@@ -113,6 +117,13 @@ export function CryptoCheckout({ productIds, onSuccess }: CryptoCheckoutProps) {
   // 3. Status Polling
   const startPolling = (requestId: number) => {
     stopPolling();
+    stopSSE();
+    
+    // Start SSE subscription for real-time notifications
+    startSSE(requestId);
+    
+    // Keep polling as fallback (every 10 seconds in next-app)
+    const POLL_INTERVAL_MS = 10000;
     pollingRef.current = setInterval(async () => {
       try {
         const res = await fetch(`/api/products/crypto/status/${requestId}`);
@@ -123,16 +134,74 @@ export function CryptoCheckout({ productIds, onSuccess }: CryptoCheckoutProps) {
         
         if (data.status === "confirmed") {
           stopPolling();
-          onSuccess(requestId);
+          stopSSE();
+          // Show brief success animation before calling onSuccess
+          setTimeout(() => onSuccess(requestId), 1500);
         } else if (data.status === "expired") {
           stopPolling();
+          stopSSE();
           setStep("error");
           setError("This payment request has expired. Please create a new one.");
         }
       } catch (err) {
         console.warn("Polling error:", err);
       }
-    }, 10000); // Check every 10 seconds
+    }, POLL_INTERVAL_MS);
+  };
+
+  // 3b. Server-Sent Events subscription
+  const startSSE = (requestId: number) => {
+    try {
+      const sse = new EventSource("/api/upgrades/crypto/subscribe");
+      
+      sse.addEventListener("message", (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          
+          if (data.type === "payment-confirmed" && data.requestId === requestId) {
+            // Payment detected immediately!
+            setPaymentStatus("confirmed");
+            stopPolling();
+            stopSSE();
+            
+            // Show success animation before calling onSuccess
+            setTimeout(() => onSuccess(requestId), 1500);
+            
+            // Optional: Play a success sound or notification
+            try {
+              const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBg==");
+              audio.play().catch(() => {}); // Silently fail if audio fails
+            } catch {}
+          }
+        } catch (e) {
+          console.warn("Failed to parse SSE message:", e);
+        }
+      });
+      
+      sse.onerror = () => {
+        console.warn("SSE connection error, relying on polling");
+        stopSSE();
+      };
+      
+      sseRef.current = sse;
+    } catch (err) {
+      console.warn("Failed to start SSE:", err);
+      // Fallback to polling only
+    }
+  };
+
+  const stopSSE = () => {
+    if (sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
+    }
+  };
+
+  const stopSSE = () => {
+    if (sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
+    }
   };
 
   const stopPolling = () => {

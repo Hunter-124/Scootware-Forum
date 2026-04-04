@@ -8,6 +8,62 @@
       "when": 1774746044044,
       "tag": "0000_slippery_chimera",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0002_crypto_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0003_login_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0004_invites",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0005_subscription_posting",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0006_fix_upgrade_type_enum",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0007_password_reset",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0008_profile_posts_updated",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774746044044,
+      "tag": "0009_attachments",
+      "breakpoints": true
     }
   ]
 }

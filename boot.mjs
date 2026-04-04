@@ -23,7 +23,15 @@ function loadEnvFile(envPath) {
       value = value.slice(1, -1);
     }
     
-    if (!(key in process.env)) {
+    // CRITICAL: Always set DATABASE_URL from .env - never let it be empty in production
+    const isCriticalVar = ['DATABASE_URL', 'PG_CONNECTION_STRING'].includes(key);
+    const isValidValue = value && value !== '""' && value !== "''";
+    
+    if (isCriticalVar && isValidValue) {
+      // Critical variables: always override with non-empty values from .env
+      process.env[key] = value;
+    } else if (!isCriticalVar && !(key in process.env)) {
+      // Non-critical variables: only set if not already present
       process.env[key] = value;
     }
   }

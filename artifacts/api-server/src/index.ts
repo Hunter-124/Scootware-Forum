@@ -22,6 +22,6 @@ const server = app.listen(port, (err) => {
 });
 
 // Export a close function for graceful shutdown
-export function close(cb) {
+export function close(cb: (err?: Error) => void) {
   server.close(cb);
 }

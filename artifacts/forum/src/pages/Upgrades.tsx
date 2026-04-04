@@ -11,8 +11,21 @@ export default function Upgrades() {
   const [, setLocation] = useLocation();
   const { data: products } = useGetProducts();
 
-  const currentProduct = user?.upgradeType ? products?.find(p => p.id === user.upgradeType) : null;
-  const hasActiveSubscription = currentProduct && user?.upgradeExpiresAt && new Date(user.upgradeExpiresAt) > new Date();
+  // Get active products from user.activeProducts array
+  const activeProducts = user?.activeProducts?.filter((p: any) => 
+    p.expiresAt && new Date(p.expiresAt) > new Date()
+  ) || [];
+  
+  const hasActiveSubscription = activeProducts.length > 0;
+  
+  // Map product IDs to product details
+  const activeProductDetails = activeProducts.map((ap: any) => {
+    const product = products?.find(p => p.id === ap.productId);
+    return {
+      ...product,
+      expiresAt: ap.expiresAt,
+    };
+  }).filter(Boolean);
 
   useEffect(() => {
     if (!isAuthenticated || !user) return;
@@ -60,51 +73,59 @@ export default function Upgrades() {
         </p>
       </div>
 
-      {/* Current Subscription Status */}
+      {/* Current Active Subscriptions */}
       <div className="glass-panel p-8 rounded-xl border border-white/10 mb-12">
         <h2 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-3">
           <Zap className="w-6 h-6 text-accent" />
-          Current Subscription
+          Active Subscriptions ({activeProductDetails.length})
         </h2>
 
         {hasActiveSubscription ? (
           <div className="space-y-6">
-            <div className="bg-primary/5 border border-primary/30 rounded-lg p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">{currentProduct?.name}</h3>
-                  <p className="text-muted-foreground">{currentProduct?.description}</p>
+            {activeProductDetails.map((product: any) => (
+              <div key={product.id} className="bg-primary/5 border border-primary/30 rounded-lg p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
+                    <p className="text-muted-foreground">{product.description}</p>
+                  </div>
+                  <Check className="w-8 h-8 text-accent flex-shrink-0 mt-1" />
                 </div>
-                <Check className="w-8 h-8 text-accent flex-shrink-0 mt-1" />
-              </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-primary/20">
-                <div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Status</div>
-                  <div className="text-lg font-bold text-accent">Active</div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Expires In</div>
-                  <div className="text-lg font-bold text-white">
-                    {formatDistanceToNow(new Date(user?.upgradeExpiresAt || Date.now()), { addSuffix: true })}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-primary/20">
+                  <div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Type</div>
+                    <div className={cn("inline-block text-sm font-bold uppercase tracking-widest px-2 py-1 rounded border", 
+                      product.tier === "lifetime"
+                        ? "bg-yellow-500/20 border-yellow-500/50 text-yellow-300"
+                        : "bg-primary/20 border-primary/50 text-primary"
+                    )}>
+                      {product.tier || "premium"}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Price</div>
-                  <div className="text-lg font-bold text-white">${currentProduct?.price.toFixed(2)}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Next Billing</div>
-                  <div className="text-lg font-bold text-white">
-                    {new Date(user?.upgradeExpiresAt || Date.now()).toLocaleDateString()}
+                  <div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Expires In</div>
+                    <div className="text-lg font-bold text-white">
+                      {formatDistanceToNow(new Date(product.expiresAt || Date.now()), { addSuffix: true })}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Price</div>
+                    <div className="text-lg font-bold text-white">${product.price?.toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold mb-2">Expires On</div>
+                    <div className="text-lg font-bold text-white">
+                      {new Date(product.expiresAt || Date.now()).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="outline" className="flex-1" onClick={() => setLocation("/store")}>
-                <ShoppingCart className="w-4 h-4 mr-2" /> Manage Subscription
+                <ShoppingCart className="w-4 h-4 mr-2" /> Buy More Products
               </Button>
             </div>
           </div>
@@ -126,18 +147,19 @@ export default function Upgrades() {
       <div className="glass-panel p-8 rounded-xl border border-white/10">
         <h2 className="text-2xl font-display font-bold text-white mb-6 flex items-center gap-3">
           <ShoppingCart className="w-6 h-6 text-primary" />
-          Available Upgrades
+          Available Products
         </h2>
 
         {products && products.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => {
-              const isCurrentPlan = user?.upgradeType === product.id;
+              const isOwned = activeProducts.some(ap => ap.productId === product.id);
+              const ownedProduct = activeProducts.find(ap => ap.productId === product.id);
               return (
                 <div
                   key={product.id}
                   className={`rounded-lg border p-6 transition-all ${
-                    isCurrentPlan
+                    isOwned
                       ? "border-primary/50 bg-primary/5"
                       : "border-white/10 bg-white/5 hover:border-primary/30"
                   }`}
@@ -147,25 +169,30 @@ export default function Upgrades() {
                   
                   <div className="mb-6 pt-4 border-t border-white/5">
                     <div className="text-3xl font-bold text-white">
-                      ${product.price.toFixed(2)}
+                      ${product.price?.toFixed(2)}
                     </div>
                   </div>
 
-                  {isCurrentPlan ? (
-                    <Button
-                      disabled
-                      className="w-full"
-                      variant="outline"
-                    >
-                      <Check className="w-4 h-4 mr-2" /> Current Plan
-                    </Button>
+                  {isOwned ? (
+                    <div>
+                      <Button
+                        disabled
+                        className="w-full mb-2"
+                        variant="outline"
+                      >
+                        <Check className="w-4 h-4 mr-2" /> Active Until
+                      </Button>
+                      <div className="text-xs text-muted-foreground text-center">
+                        {new Date(ownedProduct?.expiresAt || Date.now()).toLocaleDateString()}
+                      </div>
+                    </div>
                   ) : (
                     <Button
                       variant="glow"
                       className="w-full"
                       onClick={() => setLocation("/store")}
                     >
-                      Upgrade Now
+                      Add to Cart
                     </Button>
                   )}
                 </div>

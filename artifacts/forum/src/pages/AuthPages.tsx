@@ -563,10 +563,24 @@ export function Register() {
   const [errorMsg, setErrorMsg] = useState("");
   
   useEffect(() => {
-    fetch('/api/auth/site-config').then(res => res.json()).then(setSiteConfig).catch(() => setSiteConfig({ inviteOnlyMode: false }));
+    fetch('/api/auth/site-config').then(res => res.json()).then(setSiteConfig).catch(() => setSiteConfig({ registrationMode: "open" }));
   }, []);
 
-  const inviteOnly = siteConfig?.inviteOnlyMode === true;
+  const inviteOnly = siteConfig?.registrationMode === "invite-only";
+  const registrationClosed = siteConfig?.registrationMode === "closed";
+
+  if (registrationClosed) {
+    return (
+      <AuthLayout title="REGISTRATION CLOSED" subtitle="Registration is currently closed.">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">The system is not accepting new registrations at this time.</p>
+          {siteConfig?.inviteRequestMode && (
+            <p className="text-sm text-muted-foreground">You can request an invite to be considered for early access.</p>
+          )}
+        </div>
+      </AuthLayout>
+    );
+  }
 
   const registerMutation = useRegister({
     mutation: {

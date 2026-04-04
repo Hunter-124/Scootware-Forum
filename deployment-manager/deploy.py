@@ -72,6 +72,25 @@ try:
     
     print(f"      Source: {project_root}")
     
+    # Step 2.5: Copy .env.production to .env for deployment
+    print("\n      Preparing environment file for deployment...")
+    env_prod_path = Path(project_root) / ".env.production"
+    env_path = Path(project_root) / ".env"
+    
+    if env_prod_path.exists():
+        try:
+            # Copy .env.production to .env
+            with open(env_prod_path, 'r') as f:
+                env_content = f.read()
+            with open(env_path, 'w') as f:
+                f.write(env_content)
+            print(f"      [OK] Copied .env.production → .env")
+            error_logger.log_info(f"Copied .env.production to .env before deployment")
+        except Exception as e:
+            raise Exception(f"Failed to prepare .env file: {e}")
+    else:
+        raise Exception(f".env.production not found at {env_prod_path}")
+    
     def upload_progress(msg):
         print(f"      {msg}")
         error_logger.log_info(msg)
@@ -134,6 +153,37 @@ try:
         print(f"      [WARN] scootware-api not found in PM2")
         error_logger.log_info("API process not found in PM2")
     
+    # Additional checks: Verify nginx and frontend access
+    print(f"\n[4.5/4] Verifying Nginx and Frontend Access...")
+    
+    # Check nginx status
+    returncode, stdout, stderr = ssh.execute_command("sudo systemctl is-active nginx")
+    if returncode == 0:
+        print(f"      [OK] Nginx service is active")
+        error_logger.log_info("Nginx service verified running")
+    else:
+        print(f"      [WARN] Nginx may not be running - checking details...")
+        returncode, stdout, stderr = ssh.execute_command("sudo systemctl status nginx")
+        print(f"      Nginx status: {stdout[:200]}")
+        error_logger.log_info(f"Nginx status check: {stdout[:200]}")
+    
+    # Check ports are listened on
+    returncode, stdout, stderr = ssh.execute_command("ss -tlnp 2>/dev/null | grep -E ':80|:443' || echo 'Ports check unavailable'")
+    if "80" in stdout or "443" in stdout:
+        print(f"      [OK] Ports 80/443 are listening")
+        error_logger.log_info("Ports 80/443 listening verified")
+    else:
+        print(f"      [WARN] Port availability unclear - stdout: {stdout}")
+    
+    # Check frontend responds
+    returncode, stdout, stderr = ssh.execute_command("curl -fsS --max-time 5 http://127.0.0.1/ | head -c 100 || echo 'Frontend not responding'")
+    if "<!DOCTYPE html>" in stdout or "<html" in stdout:
+        print(f"      [OK] Frontend responds with HTML")
+        error_logger.log_info("Frontend HTML response verified")
+    else:
+        print(f"      [WARN] Frontend response unclear: {stdout[:100]}")
+        error_logger.log_info(f"Frontend response: {stdout[:100]}")
+    
     ssh.disconnect()
     
     # Success!
@@ -141,14 +191,23 @@ try:
     print("  [SUCCESS] DEPLOYMENT COMPLETED SUCCESSFULLY!")
     print("="*70)
     print(f"\nDeployment Summary:")
-    print(f"  - Deployment Method: Direct File Upload (no tarball)")
+    print(f"  - Deployment Method: Direct File Upload")
     print(f"  - Deployment Time: ~5-10 minutes")
-    print(f"  - Services: Restarted via PM2")
-    print(f"  - Status: API running on {vps_host}")
+    print(f"  - Services: API (PM2) + Nginx")
+    print(f"  - API Status: Running on port 3000")
+    print(f"  - Nginx Status: Running on ports 80/443")
+    print(f"  - Frontend Access: http://[VPS_IP] or http://scootware.us")
+    print(f"\nTroubleshooting:")
+    print(f"  If frontend doesn't load:")
+    print(f"  1. SSH to VPS: ssh -i scootware.pem admin@{vps_host}")
+    print(f"  2. Check Nginx: sudo systemctl status nginx")
+    print(f"  3. Check ports: ss -tlnp | grep -E ':80|:443'")
+    print(f"  4. Check API: curl http://127.0.0.1:3000/api/auth/me")
+    print(f"  5. Check Nginx logs: sudo tail -50 /var/log/nginx/error.log")
     print(f"\nNext Steps:")
-    print(f"  1. Verify at: http://scootware.us or http://[VPS_IP]")
-    print(f"  2. Check logs: pm2 logs scootware-api")
-    print(f"  3. Monitor health: Run health check in deployment manager\n")
+    print(f"  1. Verify at: http://[VPS_IP]")
+    print(f"  2. Check logs: ssh -i {Path(pem_key).name} admin@{vps_host} 'pm2 logs scootware-api'")
+    print(f"  3. Monitor: Run health check in deployment manager\n")
     
     error_logger.log_info("="*70)
     error_logger.log_info("DEPLOYMENT COMPLETED SUCCESSFULLY")

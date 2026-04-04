@@ -19,7 +19,9 @@ export default function Subforum() {
   
   const productId = subforum?.productId ?? undefined;
   const isConfigSection = /config/i.test(subforum?.name || "");
-  const { isAuthenticated, isSubscribed } = useAuth();
+  const isShowcaseSection = subforum?.name === "Feature Showcase";
+  const { isAuthenticated, isSubscribed, user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const { data, isLoading, error } = useGetThreads({ subforumId, page: 1 }, {
     query: { enabled: !!subforumId } as any,
@@ -58,7 +60,10 @@ export default function Subforum() {
           </div>
           
           {isAuthenticated && (
-            !isConfigSection || isSubscribed(productId) ? (
+            (isShowcaseSection && !isAdmin) ? (
+              // No button for non-admin users in showcase sections
+              <div className="text-sm text-muted-foreground italic">Admin-only section</div>
+            ) : !isConfigSection || isSubscribed(productId) ? (
               <Link href={`/forum/${subforumId}/new`}>
                 <Button variant="glow" className="gap-2">
                   <PlusCircle className="w-4 h-4" /> Initialize Thread

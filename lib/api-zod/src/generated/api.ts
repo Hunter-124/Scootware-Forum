@@ -147,9 +147,8 @@ export const GetSiteConfigResponse = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
-  allowRegistration: zod.boolean(),
+  registrationMode: zod.enum(["open", "invite-only", "closed"]),
   requireEmailVerification: zod.boolean(),
-  inviteOnlyMode: zod.boolean().optional(),
   inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
   inviteRequestCooldownDays: zod
     .number()
@@ -873,9 +872,8 @@ export const AdminGetConfigResponse = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
-  allowRegistration: zod.boolean(),
+  registrationMode: zod.enum(["open", "invite-only", "closed"]),
   requireEmailVerification: zod.boolean(),
-  inviteOnlyMode: zod.boolean().optional(),
   inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
   inviteRequestCooldownDays: zod
     .number()
@@ -905,9 +903,8 @@ export const AdminUpdateConfigBody = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
-  allowRegistration: zod.boolean(),
+  registrationMode: zod.enum(["open", "invite-only", "closed"]),
   requireEmailVerification: zod.boolean(),
-  inviteOnlyMode: zod.boolean().optional(),
   inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
   inviteRequestCooldownDays: zod
     .number()
@@ -934,9 +931,8 @@ export const AdminUpdateConfigResponse = zod.object({
   siteName: zod.string(),
   siteDescription: zod.string(),
   maintenanceMode: zod.boolean(),
-  allowRegistration: zod.boolean(),
+  registrationMode: zod.enum(["open", "invite-only", "closed"]),
   requireEmailVerification: zod.boolean(),
-  inviteOnlyMode: zod.boolean().optional(),
   inviteRequestMode: zod.enum(["admin", "auto"]).optional(),
   inviteRequestCooldownDays: zod
     .number()

@@ -84,14 +84,10 @@ export default async function HomePage() {
                           <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{subforum.description}</p>
                         </div>
 
-                        <div className="hidden lg:grid grid-cols-2 gap-8 px-8 border-x border-white/5 text-center">
+                        <div className="hidden lg:grid grid-cols-1 gap-8 px-8 border-x border-white/5 text-center">
                           <div>
                             <div className="text-sm font-bold">{subforum.threadCount}</div>
                             <div className="text-[10px] text-muted-foreground uppercase tracking-widest">Threads</div>
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold">{subforum.postCount}</div>
-                            <div className="text-[10px] text-muted-foreground uppercase tracking-widest">Posts</div>
                           </div>
                         </div>
 

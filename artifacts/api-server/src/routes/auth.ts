@@ -5,9 +5,10 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as DiscordStrategy } from "passport-discord";
+import rateLimit from "express-rate-limit";
 import { db } from "@workspace/db";
-import { usersTable, siteConfigTable, loginEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable } from "@workspace/db";
-import { eq, gt, and } from "drizzle-orm";
+import { usersTable, siteConfigTable, loginEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable, postsTable } from "@workspace/db";
+import { eq, gt, and, sql } from "drizzle-orm";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../lib/email";
 import { logger } from "../lib/logger";
 import { z } from "zod";
@@ -29,7 +30,77 @@ declare module "express-session" {
 
 const router: IRouter = Router();
 
-// ---- Passport setup ----
+// ---- Rate Limiting ----
+// Login: 5 attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: "Too many login attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req: any) => (req.user as any)?.role === "admin", // Skip for admins
+  keyGenerator: (req: any) => req.ip || "unknown",
+});
+
+// Register: 3 attempts per hour per IP
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  message: { error: "Too many registration attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: any) => req.ip || "unknown",
+});
+
+// Forgot password: 3 attempts per hour per email
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  message: { error: "Too many password reset requests, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: any) => {
+    const email = req.body?.email;
+    return email ? `forgot:${email.toLowerCase()}` : req.ip || "unknown";
+  },
+});
+
+// Reset password: 5 attempts per hour per token
+const resetPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: { error: "Too many password reset attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: any) => {
+    const token = req.body?.token;
+    return token ? `reset:${token.substring(0, 8)}` : req.ip || "unknown";
+  },
+});
+
+// SSO linking: 10 attempts per 15 minutes per IP
+const ssoLinkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: "Too many SSO linking attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req: any) => (req.user as any)?.role === "admin",
+  keyGenerator: (req: any) => req.ip || "unknown",
+});
+
+// Invite requests: 3 per 24 hours per email
+const inviteRequestLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  message: { error: "Too many invite requests, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: any) => {
+    const email = req.body?.email;
+    return email ? `invite:${email.toLowerCase()}` : req.ip || "unknown";
+  },
+});
 
 passport.serializeUser((user: any, done) => {
   done(null, user.id);
@@ -37,7 +108,45 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: number, done) => {
   try {
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        username: usersTable.username,
+        email: usersTable.email,
+        role: usersTable.role,
+        upgradeType: usersTable.upgradeType,
+        upgradeExpiresAt: usersTable.upgradeExpiresAt,
+        avatarUrl: usersTable.avatarUrl,
+        passwordHash: usersTable.passwordHash,
+        isBanned: usersTable.isBanned,
+        isEmailVerified: usersTable.isEmailVerified,
+        createdAt: usersTable.createdAt,
+        postCount: sql<number>`(SELECT COUNT(*)::int FROM ${postsTable} p WHERE p.author_id = ${usersTable.id})`,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, id))
+      .limit(1);
+    if (user) {
+      // Fetch active products for this user
+      const now = new Date();
+      const activeProducts = await db
+        .select()
+        .from(productAccessTable)
+        .where(and(eq(productAccessTable.userId, id), gt(productAccessTable.expiresAt, now)));
+      
+      // Attach products to user object
+      (user as any).activeProducts = activeProducts.map((p: any) => {
+        let tier = "premium";
+        if (p.paymentRef?.startsWith("admin-assign:")) {
+          tier = p.paymentRef.split(":")[1] || "premium";
+        }
+        return {
+          productId: p.productId,
+          expiresAt: p.expiresAt,
+          tier,
+        };
+      });
+    }
     done(null, user || null);
   } catch (err) {
     done(err, null);
@@ -184,15 +293,14 @@ async function getSiteConfig() {
     siteName: "Scootware Forum",
     siteDescription: "The official Scootware gaming products and tools",
     maintenanceMode: false,
-    allowRegistration: true,
+    registrationMode: "open",
     requireEmailVerification: true,
-    inviteOnlyMode: false,
     inviteRequestMode: "admin",
-    inviteRequestCooldownMinutes: 60,
+    inviteRequestCooldownDays: 7,
   };
 
   for (const row of rows) {
-    if (row.key === "maintenanceMode" || row.key === "allowRegistration" || row.key === "requireEmailVerification" || row.key === "inviteOnlyMode") {
+    if (row.key === "maintenanceMode" || row.key === "requireEmailVerification") {
       config[row.key] = row.value === "true";
     } else if (row.key === "inviteRequestCooldownDays") {
       config[row.key] = Number(row.value) || 0;
@@ -228,7 +336,7 @@ const loginSchema = z.object({
 
 // ---- Routes ----
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/register", registerLimiter, async (req: Request, res: Response) => {
   const parse = registerSchema.safeParse(req.body);
   if (!parse.success) {
     res.status(400).json({ error: parse.error.issues[0]?.message || "Validation error" });
@@ -244,7 +352,7 @@ router.post("/register", async (req: Request, res: Response) => {
       return;
     }
 
-    if (!config.allowRegistration && !config.inviteOnlyMode) {
+    if (config.registrationMode === "closed") {
       res.status(403).json({ error: "Registration is currently disabled." });
       return;
     }
@@ -263,8 +371,8 @@ router.post("/register", async (req: Request, res: Response) => {
       inviteRecord = invite;
     }
 
-    if (config.inviteOnlyMode && !inviteRecord) {
-      res.status(400).json({ error: "Invite code is required when invite-only mode is enabled." });
+    if (config.registrationMode === "invite-only" && !inviteRecord) {
+      res.status(400).json({ error: "Invite code is required for registration." });
       return;
     }
 
@@ -322,7 +430,7 @@ router.get('/site-config', async (_req: Request, res: Response) => {
   }
 });
 
-router.post('/request-invite', async (req: Request, res: Response) => {
+router.post('/request-invite', inviteRequestLimiter, async (req: Request, res: Response) => {
   const { email, username, reason } = req.body;
   if (!email || !username) {
     res.status(400).json({ error: 'Email and username are required to request an invite' });
@@ -365,7 +473,7 @@ router.post('/request-invite', async (req: Request, res: Response) => {
   }
 });
 
-router.post("/login", async (req: Request, res: Response, next) => {
+router.post("/login", loginLimiter, async (req: Request, res: Response, next) => {
   const loginPayload = {
     identifier: typeof req.body.identifier === "string" ? req.body.identifier : (typeof req.body.email === "string" ? req.body.email : undefined),
     email: typeof req.body.email === "string" ? req.body.email : undefined,
@@ -681,7 +789,7 @@ router.get("/sso/pending", (req: Request, res: Response) => {
 });
 
 // Link pending SSO to an existing account via email+password
-router.post("/sso/link", async (req: Request, res: Response) => {
+router.post("/sso/link", ssoLinkLimiter, async (req: Request, res: Response) => {
   const pending = req.session.ssoPending;
   if (!pending) {
     res.status(400).json({ error: "No pending SSO session. Please start the SSO flow again." });
@@ -930,7 +1038,7 @@ router.post("/user/unlink-sso/:provider", async (req: Request, res: Response) =>
 // ---- Password Reset Endpoints ----
 
 // Request password reset - sends email with reset token
-router.post("/forgot-password", async (req: Request, res: Response) => {
+router.post("/forgot-password", forgotPasswordLimiter, async (req: Request, res: Response) => {
   const { email } = req.body;
   
   if (!email || typeof email !== "string") {
@@ -1008,7 +1116,7 @@ const resetPasswordSchema = z.object({
   path: ["confirmPassword"],
 });
 
-router.post("/reset-password", async (req: Request, res: Response) => {
+router.post("/reset-password", resetPasswordLimiter, async (req: Request, res: Response) => {
   const parse = resetPasswordSchema.safeParse(req.body);
   
   if (!parse.success) {
@@ -1058,6 +1166,7 @@ function mapUser(user: any) {
     role: user.role,
     upgradeType: user.upgradeType ?? null,
     upgradeExpiresAt: user.upgradeExpiresAt ?? null,
+    activeProducts: user.activeProducts ?? [],
     avatarUrl: user.avatarUrl ?? null,
     isBanned: user.isBanned,
     isEmailVerified: user.isEmailVerified,

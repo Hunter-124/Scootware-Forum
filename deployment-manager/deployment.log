@@ -1282,3 +1282,290 @@ paramiko.ssh_exception.SSHException: SSH session not active
 
 2026-04-02 22:57:54 - deployment_manager - INFO - [OK] SSH connection established
 2026-04-02 22:59:11 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 05:38:41 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 05:38:53 - deployment_manager - INFO - [OK] Services stopped
+2026-04-03 05:40:14 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 05:40:39 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 05:41:00 - deployment_manager - ERROR - Deployment failed: PM2 restart failed with code 1
+
+Exception: PM2 restart failed with code 1
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 1075, in execute
+    raise Exception(f"PM2 restart failed with code {returncode}")
+Exception: PM2 restart failed with code 1
+
+2026-04-03 05:41:20 - deployment_manager - ERROR - Deployment failed: PM2 restart failed with code 1
+
+Exception: PM2 restart failed with code 1
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 1075, in execute
+    raise Exception(f"PM2 restart failed with code {returncode}")
+Exception: PM2 restart failed with code 1
+
+2026-04-03 05:41:55 - deployment_manager - INFO - [OK] Services started
+2026-04-03 05:42:16 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 05:42:35 - deployment_manager - INFO - Full diagnostics completed
+2026-04-03 05:43:28 - deployment_manager - INFO - [OK] Services stopped
+2026-04-03 05:43:32 - deployment_manager - INFO - [OK] Services started
+2026-04-03 05:44:08 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 07:18:08 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 07:19:41 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:21:22 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 07:21:47 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 07:28:00 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:28:37 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 07:28:58 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 07:33:05 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:34:00 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 07:35:17 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 07:48:23 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 07:53:16 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:55:25 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:56:20 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 07:57:49 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 07:59:36 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:11:59 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:15:05 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:15:19 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:15:21 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:25:40 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:26:08 - deployment_manager - ERROR - Upload failed: Upload failed: Socket is closed
+
+Exception: Upload failed: Socket is closed
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 244, in action
+    raise Exception(msg)
+Exception: Upload failed: Socket is closed
+
+2026-04-03 08:26:24 - deployment_manager - ERROR - Upload failed: Upload failed: 'NoneType' object has no attribute 'open_sftp_client'
+
+Exception: Upload failed: 'NoneType' object has no attribute 'open_sftp_client'
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 244, in action
+    raise Exception(msg)
+Exception: Upload failed: 'NoneType' object has no attribute 'open_sftp_client'
+
+2026-04-03 08:27:04 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:27:21 - deployment_manager - ERROR - Upload failed: Upload failed: Socket is closed
+
+Exception: Upload failed: Socket is closed
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 244, in action
+    raise Exception(msg)
+Exception: Upload failed: Socket is closed
+
+2026-04-03 08:28:24 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:30:04 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:33:44 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:36:22 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 08:37:45 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 08:45:03 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:46:49 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 08:47:32 - deployment_manager - ERROR - Deployment failed: Server connection dropped: 
+
+Exception: Server connection dropped: 
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 716, in putfo
+    size = self._transfer_with_callback(
+        reader=fl, writer=fr, file_size=file_size, callback=callback
+    )
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 679, in _transfer_with_callback
+    writer.write(data)
+    ~~~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\file.py", line 389, in write
+    self._write_all(data)
+    ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\file.py", line 507, in _write_all
+    count = self._write(data)
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_file.py", line 195, in _write
+    sftp_async_request = self.sftp._async_request(
+        type(None),
+    ...<3 lines>...
+        data[:chunk],
+    )
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 881, in _async_request
+    self._send_packet(t, msg)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp.py", line 209, in _send_packet
+    self._write_all(out)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp.py", line 173, in _write_all
+    n = self.sock.send(out)
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\channel.py", line 799, in send
+    return self._send(s, m)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\channel.py", line 1206, in _send
+    self.transport._send_user_message(m)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\transport.py", line 1953, in _send_user_message
+    self._send_message(data)
+    ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\transport.py", line 1929, in _send_message
+    self.packetizer.send_message(data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\packet.py", line 435, in send_message
+    self.write_all(out)
+    ~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\packet.py", line 368, in write_all
+    raise EOFError()
+EOFError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 887, in _read_response
+    t, data = self._read_packet()
+              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp.py", line 212, in _read_packet
+    x = self._read_all(4)
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp.py", line 199, in _read_all
+    raise EOFError()
+EOFError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 1061, in execute
+    sftp.put(str(item), remote_file)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 759, in put
+    return self.putfo(fl, remotepath, file_size, callback, confirm)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 714, in putfo
+    with self.file(remotepath, "wb") as fr:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\util.py", line 290, in __exit__
+    self.close()
+    ~~~~~~~~~~^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_file.py", line 82, in close
+    self._close(async_=False)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_file.py", line 104, in _close
+    self.sftp._request(CMD_CLOSE, self.handle)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 857, in _request
+    return self._read_response(num)
+           ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\nigga\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\paramiko\sftp_client.py", line 889, in _read_response
+    raise SSHException("Server connection dropped: {}".format(e))
+paramiko.ssh_exception.SSHException: Server connection dropped: 
+
+2026-04-03 08:47:37 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 08:50:03 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 08:50:44 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 09:01:49 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 09:03:43 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 09:06:18 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 09:07:06 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 09:14:35 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 09:16:24 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 09:19:57 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 09:20:44 - deployment_manager - ERROR - Connection test failed: Connection error: timed out
+2026-04-03 09:20:49 - deployment_manager - ERROR - Connection test failed: Connection error: timed out
+2026-04-03 09:20:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 09:21:38 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 09:29:01 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 09:31:53 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 09:32:48 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 10:04:39 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 10:06:31 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 10:09:06 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 10:09:59 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 10:12:05 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 10:22:20 - deployment_manager - INFO - [OK] New code files uploaded
+2026-04-03 10:24:44 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 10:27:25 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 10:39:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 10:43:24 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 10:45:29 - deployment_manager - INFO - [OK] Full upload after clearing hashcache
+2026-04-03 10:47:01 - deployment_manager - INFO - [OK] Build command executed
+2026-04-03 10:47:29 - deployment_manager - INFO - [OK] Full API deployment completed
+2026-04-03 10:49:56 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 11:22:15 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 11:45:48 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 11:47:29 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 12:36:51 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 12:37:05 - deployment_manager - ERROR - Deployment cycle failed: Invalid project root: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+
+Expected to find 'lib/' or 'artifacts/' directory.
+This should be the INNER Scootware-Forum directory, not the parent level.
+
+Currently points to: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+- Contains lib/: False
+- Contains artifacts/: False
+
+Please use the 'Browse' button to select the correct directory.
+
+Exception: Invalid project root: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+
+Expected to find 'lib/' or 'artifacts/' directory.
+This should be the INNER Scootware-Forum directory, not the parent level.
+
+Currently points to: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+- Contains lib/: False
+- Contains artifacts/: False
+
+Please use the 'Browse' button to select the correct directory.
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 92, in execute
+    source_path = self._get_project_root()
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 318, in _get_project_root
+    raise Exception(
+    ...<7 lines>...
+    )
+Exception: Invalid project root: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+
+Expected to find 'lib/' or 'artifacts/' directory.
+This should be the INNER Scootware-Forum directory, not the parent level.
+
+Currently points to: C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\w
+- Contains lib/: False
+- Contains artifacts/: False
+
+Please use the 'Browse' button to select the correct directory.
+
+2026-04-03 12:39:52 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 12:41:22 - deployment_manager - ERROR - Deployment cycle failed: Build failed with code 1: 
+
+Exception: Build failed with code 1: 
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 145, in execute
+    raise Exception(f"Build failed with code {returncode}: {stderr}")
+Exception: Build failed with code 1: 
+
+2026-04-03 12:41:49 - deployment_manager - INFO - [OK] Update command executed
+2026-04-03 12:46:21 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 12:58:29 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 13:00:15 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 13:13:03 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 14:16:16 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 14:17:58 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 15:11:16 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 15:12:39 - deployment_manager - INFO - [OK] Complete upload cycle finished successfully
+2026-04-03 20:14:40 - deployment_manager - INFO - [OK] SSH connection established
+2026-04-03 20:16:18 - deployment_manager - ERROR - Deployment cycle failed: Restart failed with code 1: 
+
+Exception: Restart failed with code 1: 
+
+Traceback:
+Traceback (most recent call last):
+  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\gui.py", line 171, in execute
+    raise Exception(f"Restart failed with code {returncode}: {stderr}")
+Exception: Restart failed with code 1: 
+

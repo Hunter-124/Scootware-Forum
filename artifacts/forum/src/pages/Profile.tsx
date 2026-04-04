@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { useGetUserProfile, useCreateProfilePost, useUploadAvatar, useGetMyInvites, useRequestInviteAuthenticated, useGetSiteConfig } from "@workspace/api-client-react";
+import { useGetUserProfile, useCreateProfilePost, useUploadAvatar, useGetSiteConfig, useUpdateProfilePost, useUploadProfilePostAttachments, useDeleteProfilePostAttachment } from "@workspace/api-client-react";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDate, getRoleColor, cn } from "@/lib/utils";
-import { User, Activity, Calendar, ShieldAlert, Upload, Send, Inbox, Mail, Check, X } from "lucide-react";
+import { User, Activity, Calendar, ShieldAlert, Upload, Send, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Shoutbox } from "@/components/layout/Shoutbox";
 import { ImageCropper } from "@/components/modals/ImageCropper";
+import { EditPostModal } from "@/components/modals/EditPostModal";
+import { AttachmentsList } from "@/components/AttachmentsList";
+import { AttachmentUpload } from "@/components/AttachmentUpload";
+import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 
 export default function UserProfile() {
   const [, params] = useRoute("/profile/:id");
@@ -15,27 +19,46 @@ export default function UserProfile() {
   
   const { data: profile, isLoading, refetch } = useGetUserProfile(userId, { query: { enabled: !!userId } as any });
   const { data: siteConfig } = useGetSiteConfig();
-  const { data: invitesData, isLoading: invitesLoading } = useGetMyInvites({ query: { enabled: isAuthenticated && userId === currentUser?.id } as any });
   const [postContent, setPostContent] = useState("");
-  const [inviteReason, setInviteReason] = useState("");
-  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [editingPostId, setEditingPostId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [showAttachmentUpload, setShowAttachmentUpload] = useState<{ [key: number]: boolean }>({});
+  const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File[] }>({});
 
   const postMutation = useCreateProfilePost({
     mutation: { onSuccess: () => { setPostContent(""); refetch(); } }
   });
 
-  const uploadMutation = useUploadAvatar({
-    mutation: { onSuccess: () => { refetch(); } }
-  });
-
-  const requestInviteMutation = useRequestInviteAuthenticated({
+  const updatePostMutation = useUpdateProfilePost({
     mutation: {
       onSuccess: () => {
-        setInviteReason("");
-        setShowRequestForm(false);
-        // Refetch invites if auto-mode
+        setEditingPostId(null);
+        setEditContent("");
+        refetch();
       }
     }
+  });
+
+  const uploadAttachmentsMutation = useUploadProfilePostAttachments({
+    mutation: {
+      onSuccess: () => {
+        setShowAttachmentUpload({});
+        setSelectedFiles({});
+        refetch();
+      }
+    }
+  });
+
+  const deleteAttachmentMutation = useDeleteProfilePostAttachment({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      }
+    }
+  });
+
+  const uploadMutation = useUploadAvatar({
+    mutation: { onSuccess: () => { refetch(); } }
   });
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -91,10 +114,8 @@ export default function UserProfile() {
 
             <div className="flex-1 pb-2">
               <h1 className="text-3xl font-display font-bold text-white">{user.username}</h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-2">
-                <span className={cn("text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded border", getRoleColor(user.role, user.upgradeType))}>
-                  {user.upgradeType || user.role}
-                </span>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-3">
+                <RoleStatusBadge role={user.role} upgradeType={user.upgradeType} />
                 {user.isBanned && <span className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded border text-destructive bg-destructive/10 border-destructive/30">Banned</span>}
                 <div className="text-muted-foreground text-sm flex items-center gap-1 ml-2">
                   <Calendar className="w-4 h-4" /> Joined {new Date(user.createdAt).getFullYear()}
@@ -121,141 +142,6 @@ export default function UserProfile() {
               </Link>
             </div>
             <p className="text-xs text-amber-500/70 mt-4 italic">Full management available in the central Admin Panel.</p>
-          </div>
-        )}
-
-        {/* Invites Section (Only visible to own profile when invite-only mode is enabled) */}
-        {isOwnProfile && siteConfig?.inviteOnlyMode && (
-          <div className="glass-panel p-6 rounded-2xl border border-primary/30 bg-primary/5">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-primary font-bold flex items-center gap-2"><Inbox className="w-5 h-5" /> Invitations</h3>
-              {!showRequestForm && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-primary/50 text-primary hover:bg-primary/10"
-                  onClick={() => setShowRequestForm(true)}
-                >
-                  <Mail className="w-4 h-4 mr-2" /> Request Invite
-                </Button>
-              )}
-            </div>
-
-            {/* Request Invite Form */}
-            {showRequestForm && (
-              <div className="mb-6 p-4 rounded-lg border border-primary/20 bg-primary/5">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    requestInviteMutation.mutate({ data: { reason: inviteReason || undefined } });
-                  }}
-                  className="space-y-3"
-                >
-                  <textarea
-                    className="w-full bg-black/40 rounded-lg p-3 text-sm text-white placeholder:text-muted-foreground border border-white/5 focus:border-primary/50 focus:outline-none resize-none"
-                    placeholder="Optional: Tell us why you're requesting an invite (optional)..."
-                    rows={3}
-                    value={inviteReason}
-                    onChange={(e) => setInviteReason(e.target.value)}
-                    maxLength={1000}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowRequestForm(false)}
-                      disabled={requestInviteMutation.isPending}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="glow"
-                      size="sm"
-                      disabled={requestInviteMutation.isPending}
-                    >
-                      {requestInviteMutation.isPending ? "Submitting..." : "Submit Request"}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Invites Table */}
-            {invitesLoading ? (
-              <div className="text-center py-8 text-muted-foreground">Loading invites...</div>
-            ) : !invitesData?.invites || invitesData.invites.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground italic">
-                You haven't issued any invites yet. {siteConfig?.inviteOnlyMode ? "Request one above!" : ""}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="text-left px-4 py-2 font-bold text-muted-foreground uppercase text-xs tracking-wider">Code</th>
-                      <th className="text-left px-4 py-2 font-bold text-muted-foreground uppercase text-xs tracking-wider">Status</th>
-                      <th className="text-left px-4 py-2 font-bold text-muted-foreground uppercase text-xs tracking-wider">Invitee</th>
-                      <th className="text-left px-4 py-2 font-bold text-muted-foreground uppercase text-xs tracking-wider">Registered</th>
-                      <th className="text-left px-4 py-2 font-bold text-muted-foreground uppercase text-xs tracking-wider">Created</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invitesData.invites.map((invite) => (
-                      <tr key={invite.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                        <td className="px-4 py-3">
-                          <code className="bg-black/40 px-2 py-1 rounded text-xs font-mono text-primary">
-                            {invite.code}
-                          </code>
-                        </td>
-                        <td className="px-4 py-3">
-                          {invite.isBanned ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-destructive uppercase">
-                              <X className="w-3 h-3" /> Banned
-                            </span>
-                          ) : invite.isUsed ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-green-500 uppercase">
-                              <Check className="w-3 h-3" /> Used
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-500 uppercase">
-                              ● Unused
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          {invite.usedByUsername ? (
-                            <Link href={`/profile/${invite.usedBy}`}>
-                              <a className="inline-flex items-center gap-2 hover:text-primary transition-colors">
-                                {invite.usedByAvatarUrl && (
-                                  <img
-                                    src={invite.usedByAvatarUrl}
-                                    alt={invite.usedByUsername}
-                                    className="w-6 h-6 rounded-full border border-white/10"
-                                  />
-                                )}
-                                <span className="text-white hover:text-primary">{invite.usedByUsername}</span>
-                              </a>
-                            </Link>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground text-xs">
-                          {invite.usedAt
-                            ? new Date(invite.usedAt).toLocaleDateString()
-                            : "-"}
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground text-xs">
-                          {new Date(invite.createdAt).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
           </div>
         )}
 
@@ -297,17 +183,85 @@ export default function UserProfile() {
                 </div>
               ) : (
                 recentPosts.map(post => (
-                  <div key={post.id} className="glass-panel p-4 rounded-xl border border-white/5 flex gap-4">
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-secondary overflow-hidden border border-white/10">
-                      {post.authorAvatarUrl ? <img src={post.authorAvatarUrl} className="w-full h-full object-cover" /> : <User className="w-full h-full p-2 text-muted-foreground" />}
-                    </div>
-                    <div>
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <span className="font-bold text-white text-sm">{post.authorUsername}</span>
-                        <span className="text-xs text-muted-foreground">{formatDate(post.createdAt)}</span>
+                  <div key={post.id} className="glass-panel p-4 rounded-xl border border-white/5 space-y-3">
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 shrink-0 rounded-full bg-secondary overflow-hidden border border-white/10">
+                        {post.authorAvatarUrl ? <img src={post.authorAvatarUrl} className="w-full h-full object-cover" /> : <User className="w-full h-full p-2 text-muted-foreground" />}
                       </div>
-                      <p className="text-sm text-gray-300">{post.content}</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-2 mb-1 justify-between">
+                          <div className="flex items-baseline gap-2 min-w-0">
+                            <span className="font-bold text-white text-sm">{post.authorUsername}</span>
+                            <span className="text-xs text-muted-foreground">{formatDate(post.createdAt)}</span>
+                            {post.updatedAt && post.createdAt !== post.updatedAt && (
+                              <span className="text-xs text-muted-foreground">(edited {formatDate(post.updatedAt)})</span>
+                            )}
+                          </div>
+                          {isAuthenticated && (currentUser?.id === post.authorId || isAdmin) && (
+                            <button
+                              onClick={() => {
+                                setEditingPostId(post.id);
+                                setEditContent(post.content);
+                              }}
+                              className="p-1 hover:bg-white/5 rounded transition-colors text-muted-foreground hover:text-white shrink-0"
+                              title="Edit post"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-300">{post.content}</p>
+                      </div>
                     </div>
+
+                    {isAuthenticated && (currentUser?.id === post.authorId || isAdmin) && (
+                      <div className="pl-14 border-t border-white/5 pt-3">
+                        {!showAttachmentUpload[post.id] ? (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setShowAttachmentUpload({ ...showAttachmentUpload, [post.id]: true })}
+                            className="text-xs"
+                          >
+                            Add Attachments
+                          </Button>
+                        ) : (
+                          <div className="space-y-3">
+                            <AttachmentUpload
+                              onFilesSelected={(files) => setSelectedFiles({ ...selectedFiles, [post.id]: files })}
+                              isUploading={uploadAttachmentsMutation.isPending}
+                              maxFiles={5}
+                            />
+                            <div className="flex gap-2 justify-end">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setShowAttachmentUpload({ ...showAttachmentUpload, [post.id]: false })}
+                                disabled={uploadAttachmentsMutation.isPending}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="glow"
+                                onClick={() => {
+                                  if (selectedFiles[post.id]?.length > 0) {
+                                    uploadAttachmentsMutation.mutate({
+                                      userId,
+                                      postId: post.id,
+                                      files: selectedFiles[post.id],
+                                    });
+                                  }
+                                }}
+                                disabled={!selectedFiles[post.id]?.length || uploadAttachmentsMutation.isPending}
+                              >
+                                Upload Files
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -322,6 +276,27 @@ export default function UserProfile() {
             <Shoutbox />
           </div>
         </aside>
+      )}
+
+      {editingPostId && (
+        <EditPostModal
+          isOpen={!!editingPostId}
+          content={editContent}
+          onContentChange={setEditContent}
+          onSave={() => {
+            updatePostMutation.mutate({
+              userId,
+              postId: editingPostId,
+              data: { content: editContent },
+            });
+          }}
+          onCancel={() => {
+            setEditingPostId(null);
+            setEditContent("");
+          }}
+          isSaving={updatePostMutation.isPending}
+          postType="profile"
+        />
       )}
 
       {selectedImage && (

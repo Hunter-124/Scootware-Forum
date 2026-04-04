@@ -29,6 +29,8 @@ import { db, cryptoPaymentRequestsTable, productAccessTable, usersTable } from "
 import { eq, and, lt } from "drizzle-orm";
 import { logger } from "./logger";
 import { PAYMENT_CONFIG } from "../config/payments";
+import { paymentNotifications } from "./payment-notifications";
+import { sendPurchaseConfirmationEmail } from "./email";
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -211,7 +213,7 @@ async function fetchLtcTransactions(address: string): Promise<Array<{ txid: stri
   }
 }
 
-/** Returns SOL transactions via Public Solana RPC */
+/** Returns SOL transactions via Public Solana RPC with batch optimization */
 async function fetchSolTransactions(address: string): Promise<Array<{ txid: string; value: number; block_height: number | null }>> {
   try {
     const res = await fetch("https://api.mainnet-beta.solana.com", {
@@ -221,9 +223,9 @@ async function fetchSolTransactions(address: string): Promise<Array<{ txid: stri
         jsonrpc: "2.0",
         id: 1,
         method: "getSignaturesForAddress",
-        params: [address, { limit: 10 }]
+        params: [address, { limit: 5 }] // Reduced from 10 to 5 to minimize RPC calls
       }),
-      signal: AbortSignal.timeout(10_000)
+      signal: AbortSignal.timeout(8_000)
     });
 
     if (!res.ok) return [];
@@ -233,27 +235,35 @@ async function fetchSolTransactions(address: string): Promise<Array<{ txid: stri
     const signatures = data.result.map((s: any) => s.signature);
     const results: Array<{ txid: string; value: number; block_height: number | null }> = [];
 
-    // Fetch details for each signature to find the value
-    // In production you might want to switch to a specialized API like SolanaFM
-    // as getTransaction is heavy, but for a few addresses this works.
-    for (const sig of signatures) {
-      const txRes = await fetch("https://api.mainnet-beta.solana.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "getTransaction",
-          params: [sig, { encoding: "json", maxSupportedTransactionVersion: 0 }]
-        })
-      });
-      if (!txRes.ok) continue;
-      const txData = await txRes.json() as any;
-      const tx = txData.result;
-      if (!tx) continue;
+    // Use batch RPC calls instead of sequential to reduce RPC count
+    // Create batch requests for up to 5 transactions
+    const batchPayload = signatures.slice(0, 5).map((sig: string, idx: number) => ({
+      jsonrpc: "2.0",
+      id: idx + 1,
+      method: "getTransaction",
+      params: [sig, { encoding: "json", maxSupportedTransactionVersion: 0 }]
+    }));
+
+    if (batchPayload.length === 0) return [];
+
+    const batchRes = await fetch("https://api.mainnet-beta.solana.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(batchPayload),
+      signal: AbortSignal.timeout(12_000)
+    });
+
+    if (!batchRes.ok) return [];
+    const batchData = await batchRes.json() as any;
+    if (!Array.isArray(batchData)) return [];
+
+    // Process batch results
+    for (const txResult of batchData) {
+      if (!txResult.result) continue;
+      const tx = txResult.result;
 
       // Calculate balance change for the monitored address
-      const accountIndex = tx.transaction.message.accountKeys.indexOf(address);
+      const accountIndex = tx.transaction.message.accountKeys.findIndex((k: any) => k === address);
       if (accountIndex === -1) continue;
 
       const preBalance = tx.meta.preBalances[accountIndex];
@@ -262,7 +272,7 @@ async function fetchSolTransactions(address: string): Promise<Array<{ txid: stri
 
       if (change > 0) {
         results.push({
-          txid: sig,
+          txid: signatures[txResult.id - 1],
           value: change,
           block_height: tx.slot,
         });
@@ -279,15 +289,42 @@ async function fetchSolTransactions(address: string): Promise<Array<{ txid: stri
 // Payment verification logic
 // ──────────────────────────────────────────────────────────────
 
+// Rate limiting per coin to prevent API throttling
+const coinRequestTimes = new Map<string, number>(); // coin -> last request time (ms)
+const MIN_REQUEST_INTERVAL_MS = Number(process.env.CRYPTO_MIN_REQUEST_INTERVAL_MS || "1000"); // 1 second between same-coin requests
+
 function isWithinTolerance(received: number, expected: number): boolean {
   if (expected === 0) return false;
   return Math.abs(received - expected) / expected <= TOLERANCE;
+}
+
+/**
+ * Check if enough time has passed since the last request for this coin
+ */
+function canMakeRequest(coin: string): boolean {
+  const lastTime = coinRequestTimes.get(coin) || 0;
+  const now = Date.now();
+  return now - lastTime >= MIN_REQUEST_INTERVAL_MS;
+}
+
+/**
+ * Record that a request was made for this coin
+ */
+function recordRequest(coin: string): void {
+  coinRequestTimes.set(coin, Date.now());
 }
 
 async function checkPendingRequest(
   req: typeof cryptoPaymentRequestsTable.$inferSelect
 ): Promise<void> {
   const expected = parseFloat(req.expectedAmount as unknown as string);
+  
+  // Rate limit: skip if this coin was checked recently
+  if (!canMakeRequest(req.coin)) {
+    logger.debug({ requestId: req.id, coin: req.coin }, "Rate limited - skipping check");
+    return;
+  }
+
   let txs: Array<{ txid: string; value: number; block_height: number | null }> = [];
 
   try {
@@ -311,6 +348,9 @@ async function checkPendingRequest(
         txs = await fetchSolTransactions(req.walletAddress);
         break;
     }
+    
+    // Record that we made a request for this coin
+    recordRequest(req.coin);
   } catch (err) {
     logger.warn({ err, requestId: req.id }, "Error fetching blockchain data");
     return;
@@ -360,6 +400,41 @@ async function checkPendingRequest(
       { userId: req.userId, productIds },
       "Product access granted after crypto payment"
     );
+
+    // Emit real-time notification for immediate client update
+    paymentNotifications.emitPaymentConfirmed({
+      requestId: req.id,
+      userId: req.userId,
+      productIds,
+      coin: req.coin,
+      txHash: match.txid,
+      confirmedBlock: match.block_height ?? null,
+      timestamp: new Date(),
+    });
+
+    // Send purchase confirmation email to user
+    const user = await db.select().from(usersTable).where(eq(usersTable.id, req.userId));
+    if (user.length > 0) {
+      const userEmail = user[0].email;
+      const productNames = productIds.length > 0 ? productIds.map(id => id.toUpperCase()).join(" + ") : "Products";
+      
+      // Determine crypto method label
+      let methodLabel = req.coin;
+      if (req.coin === "USDT_ERC20" || req.coin === "USDC_ERC20") {
+        methodLabel = req.coin.replace("_ERC20", " (ERC-20)");
+      }
+
+      await sendPurchaseConfirmationEmail(
+        userEmail,
+        user[0].username || "User",
+        productIds,
+        "crypto",
+        match.txid,
+        expiresAt
+      );
+      
+      logger.info({ userId: req.userId, email: userEmail }, "Purchase confirmation email sent");
+    }
   } catch (err) {
     logger.error({ err, requestId: req.id }, "Failed to grant product access after crypto confirmation");
   }

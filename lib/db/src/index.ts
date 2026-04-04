@@ -32,19 +32,19 @@ if (process.env.DATABASE_URL) {
 
     console.log("Connected to PostgreSQL via DATABASE_URL.");
   } catch (err) {
+    console.error("CRITICAL DATABASE CONNECTION ERROR:", err);
     console.warn(
-      "Could not connect to DATABASE_URL Postgres, falling back to in-memory PGLite for this process:",
-      err
+      "Could not connect to DATABASE_URL Postgres. Falling back to in-memory PGLite."
     );
 
     // fallback path into local pglite block
     if (isProduction && !forcePglite) {
-      console.warn(
-        "WARNING: Falling back to in-memory PGLite in production. " +
-        "This is intended for 1-off tasks build/test only and will NOT persist data across restarts."
+      console.error(
+        "FATAL: Falling back to in-memory PGLite in production! " +
+        "DATA WILL NOT BE PERSISTED. Please check DATABASE_URL and network connectivity."
       );
     } else if (!isProduction || forcePglite) {
-      console.log("Using mock PGLite database due to Postgres connection failure...");
+      console.log("Using mock PGLite database for local development...");
     }
 
     console.log("Using in-memory PGLite database...");
@@ -147,7 +147,7 @@ async function ensureSeeded() {
         }).returning();
 
         subforumsToInsert.push(
-          { name: "Feature Showcase", description: "Show off your gameplay clips and highlights", categoryId: productCat.id, sortOrder: 1, requiresUpgrade: false } as any,
+          { name: "Feature Showcase", description: "Official product showcase - showcasing the latest features, updates, and product demonstrations", categoryId: productCat.id, sortOrder: 1, requiresUpgrade: false } as any,
           { name: "Community Configs", description: "Share your configs", categoryId: productCat.id, sortOrder: 2, requiresUpgrade: false } as any
         );
       }
@@ -248,24 +248,23 @@ async function ensureLocalUserSeed() {
 
 async function ensureSiteConfig() {
   try {
-    // Default: disable email verification for all users
-    // Users can still verify their email, but it won't block login
-    const configValue = "false";
-    
-    try {
-      // Always delete and recreate to ensure correct value
-      await db.delete(schema.siteConfigTable)
-        .where(eq(schema.siteConfigTable.key, "requireEmailVerification"));
-    } catch (err) {
-      // Might fail if row doesn't exist, which is fine
+    // Check if the setting already exists to avoid overwriting user preference
+    const existing = await db.select()
+      .from(schema.siteConfigTable)
+      .where(eq(schema.siteConfigTable.key, "requireEmailVerification"))
+      .limit(1);
+
+    if (existing.length === 0) {
+      // Default to true if missing, as requested
+      const configValue = "true";
+      await db.insert(schema.siteConfigTable).values({
+        key: "requireEmailVerification",
+        value: configValue,
+      });
+      console.log(`Site config initialized: requireEmailVerification = ${configValue} (default)`);
+    } else {
+      console.log("Site config 'requireEmailVerification' already exists, skipping initialization.");
     }
-    
-    // Create fresh config entry
-    await db.insert(schema.siteConfigTable).values({
-      key: "requireEmailVerification",
-      value: configValue,
-    });
-    console.log(`Site config initialized: requireEmailVerification = ${configValue}`);
   } catch (err) {
     console.warn("Failed to initialize site config:", err);
   }

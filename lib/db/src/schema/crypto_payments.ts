@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp, numeric, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, numeric, pgEnum, index } from "drizzle-orm/pg-core";
 import { usersTable } from "./users";
 
 export const cryptoCoinEnum = pgEnum("crypto_coin", ["BTC", "ETH", "LTC", "USDT_ERC20", "USDC_ERC20", "SOL"]);
@@ -57,6 +57,13 @@ export const cryptoPaymentRequestsTable = pgTable("crypto_payment_requests", {
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => [
+  // Critical for crypto monitor polling - filters pending payments to check
+  index("idx_crypto_status_expires").on(table.status, table.expiresAt),
+  // For user payment history lookups
+  index("idx_crypto_user_id").on(table.userId),
+  // For cleaning up expired requests
+  index("idx_crypto_expires_at").on(table.expiresAt),
+]);
 
 export type CryptoPaymentRequest = typeof cryptoPaymentRequestsTable.$inferSelect;

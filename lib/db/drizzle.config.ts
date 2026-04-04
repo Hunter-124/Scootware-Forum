@@ -17,6 +17,12 @@ const databaseUrl = process.env.DATABASE_URL || process.env.PG_CONNECTION_STRING
 if (!databaseUrl && process.env.NODE_ENV === "production") {
   console.warn("⚠️  DATABASE_URL not set in production mode. Database migrations will be skipped.");
   console.warn("   Make sure DATABASE_URL is set via environment variables on the VPS.");
+  console.warn("   To run migrations later, set DATABASE_URL and run:");
+  console.warn("   pnpm --filter @workspace/db run push-force");
+  
+  // Use a dummy URL that won't try to connect in production when not needed
+  // This prevents "ENOTFOUND base" errors during build-only scenarios
+  process.env.DRIZZLE_SKIP_VALIDATION = "true";
 }
 
 export default defineConfig({
@@ -25,8 +31,11 @@ export default defineConfig({
   dbCredentials: databaseUrl ? {
     url: databaseUrl,
   } : {
-    // Fallback configuration for local development - won't be used if URL is missing
-    url: "postgresql://localhost/scootware",
+    // Fallback only for local development
+    // In production without DATABASE_URL, this won't be used
+    url: process.env.NODE_ENV === "production" 
+      ? "postgresql://localhost/scootware-dummy" // Won't connect in prod
+      : "postgresql://localhost/scootware",
   },
-  out: "./migrations",
+  out: "./drizzle",
 });

@@ -17,6 +17,197 @@ from health_monitor import HealthMonitor
 
 
 class DeploymentGUI:
+    def _deploy_complete_upload_cycle(self) -> None:
+        """Complete upload cycle: Stop services -> Upload -> Build -> Restart."""
+        if not self.connected:
+            messagebox.showerror("Not Connected", "Please connect to VPS first")
+            return
+        
+        if not messagebox.askyesno(
+            "Complete Upload Cycle",
+            "This will execute the complete deployment cycle:\n\n" +
+            "1. Stop all services (free up processing power)\n" +
+            "2. Upload project files\n" +
+            "3. Build project\n" +
+            "4. Restart services\n\n" +
+            "Continue?"
+        ):
+            return
+        
+        self.deployment_in_progress = True
+        self.stop_deployment = False
+        self._update_stop_button_state()
+        self._update_status("Starting complete upload cycle...", 0)
+        
+        def execute():
+            try:
+                ssh = SSHManager(
+                    host=self.host_var.get(),
+                    user=self.user_var.get(),
+                    pem_key_path=self.key_var.get(),
+                    port=self.config.get("vps.port", 22)
+                )
+                
+                self.current_ssh_session = ssh
+                
+                if self.stop_deployment:
+                    return
+                
+                success, msg = ssh.connect()
+                if not success:
+                    raise Exception(f"SSH connection failed: {msg}")
+                
+                self._append_deploy_output("\n" + "="*60 + "\n")
+                self._append_deploy_output("[ONE-CLICK DEPLOYMENT CYCLE] Starting...\n")
+                self._append_deploy_output("="*60 + "\n\n")
+                
+                # STEP 1: Stop Services
+                self._append_deploy_output("[STEP 1/4] Stopping all services...\n")
+                self._append_deploy_output("-" * 60 + "\n")
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user\n")
+                    ssh.disconnect()
+                    return
+                
+                self._append_deploy_output("[1/4] Removing PM2 apps...\n")
+                ssh.execute_command("pm2 delete all 2>/dev/null || true")
+                self._append_deploy_output("[1/4] Killing PM2 daemon...\n")
+                ssh.execute_command("pm2 kill 2>/dev/null || true")
+                self._append_deploy_output("[1/4] Killing lingering Node.js processes...\n")
+                ssh.execute_command("pkill -f 'node|boot.mjs' 2>/dev/null || true")
+                self._append_deploy_output("[1/4] Stopping Nginx...\n")
+                ssh.execute_command("sudo systemctl stop nginx 2>/dev/null || true")
+                self._append_deploy_output("[✓] All services stopped successfully\n\n")
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user\n")
+                    ssh.disconnect()
+                    return
+                
+                # STEP 2: Upload Files
+                self._append_deploy_output("[STEP 2/4] Uploading project files...\n")
+                self._append_deploy_output("-" * 60 + "\n")
+                
+                source_path = self._get_project_root()
+                remote_path = self.remote_path_var.get()
+                
+                self._validate_and_log_paths(source_path, remote_path)
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user during upload\n")
+                    ssh.disconnect()
+                    return
+                
+                exclude_patterns = self.config.get("local.tar_exclude", [])
+                self._append_deploy_output(f"[INFO] Exclude patterns: {len(exclude_patterns)} rules\n")
+                
+                success, msg = DirectUploader.upload_project(
+                    ssh,
+                    str(source_path),
+                    remote_path,
+                    exclude_patterns,
+                    progress_callback=self._append_deploy_output
+                )
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user during upload\n")
+                    ssh.disconnect()
+                    return
+                
+                if not success:
+                    raise Exception(f"Upload failed: {msg}")
+                
+                self._append_deploy_output("[✓] Files uploaded successfully\n\n")
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user before build\n")
+                    ssh.disconnect()
+                    return
+                
+                # STEP 3: Build Project
+                self._append_deploy_output("[STEP 3/4] Building project...\n")
+                self._append_deploy_output("-" * 60 + "\n")
+                
+                remote_script = f"{remote_path}/live-deployment/remote-manage.sh"
+                returncode, stdout, stderr = ssh.run_deployment_script(
+                    remote_script,
+                    "build",
+                    progress_callback=self._append_deploy_output
+                )
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user during build\n")
+                    ssh.disconnect()
+                    return
+                
+                if returncode != 0:
+                    raise Exception(f"Build failed with code {returncode}: {stderr}")
+                
+                self._append_deploy_output("[✓] Build completed successfully\n\n")
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user before restart\n")
+                    ssh.disconnect()
+                    return
+                
+                # STEP 4: Restart Services
+                self._append_deploy_output("[STEP 4/4] Restarting services...\n")
+                self._append_deploy_output("-" * 60 + "\n")
+                
+                self._append_deploy_output("[4/4] Running: remote-manage.sh restart\n")
+                returncode, stdout, stderr = ssh.run_deployment_script(
+                    remote_script,
+                    "restart",
+                    progress_callback=self._append_deploy_output
+                )
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user during restart\n")
+                    ssh.disconnect()
+                    return
+                
+                if returncode != 0:
+                    raise Exception(f"Restart failed with code {returncode}: {stderr}")
+                
+                self._append_deploy_output("[✓] Services restarted successfully via remote-manage.sh\n\n")
+                
+                # Final Summary
+                self._append_deploy_output("\n" + "="*60 + "\n")
+                self._append_deploy_output("[✓] COMPLETE DEPLOYMENT CYCLE FINISHED\n")
+                self._append_deploy_output("="*60 + "\n\n")
+                self._append_deploy_output("Steps executed:\n")
+                self._append_deploy_output("  ✓ Stopped all services\n")
+                self._append_deploy_output("  ✓ Uploaded project files\n")
+                self._append_deploy_output("  ✓ Built project\n")
+                self._append_deploy_output("  ✓ Restarted services\n\n")
+                
+                ssh.disconnect()
+                
+                self.error_logger.log_success("Complete upload cycle finished successfully")
+                self.root.after(0, lambda: messagebox.showinfo("Success", "One-click deployment cycle completed successfully!\n\nAll services are now running."))
+            
+            except Exception as e:
+                error_msg = f"Deployment cycle failed: {e}"
+                self._append_deploy_output(f"\n[✗] ERROR: {error_msg}\n")
+                self.error_logger.log_error(error_msg, e)
+                self.root.after(0, lambda: messagebox.showerror("Deployment Failed", error_msg))
+            
+            finally:
+                if ssh in locals():
+                    try:
+                        ssh.disconnect()
+                    except:
+                        pass
+                self.current_ssh_session = None
+                self.deployment_in_progress = False
+                self.stop_deployment = False
+                self._update_stop_button_state()
+                self._update_status("Ready")
+        
+        thread = threading.Thread(target=execute, daemon=True)
+        thread.start()
+
     def _clear_hashcache_and_full_upload(self) -> None:
         """Clear the hashcache and upload all files (start hashcache fresh)."""
         if not self.connected:
@@ -101,12 +292,42 @@ class DeploymentGUI:
         thread.start()
 
     def _get_project_root(self):
-        """Return the local project root directory as a Path object."""
+        """Return the local project root directory as a Path object.
+        
+        This must resolve to the INNER Scootware-Forum directory containing lib/, artifacts/, etc.
+        NOT the parent directory level.
+        """
         # Use the value from the project root entry field, fallback to config if needed
         root_path = self.project_root_var.get() if hasattr(self, 'project_root_var') else self.config.get("local.project_root")
         if not root_path:
             raise Exception("Project root is not set. Please specify the local project root in the UI.")
-        return Path(root_path).resolve()
+        
+        root_path = Path(root_path)
+        
+        # If the path is relative, resolve it relative to the script's directory, not cwd
+        # This ensures the tool works correctly regardless of how it's launched (terminal, shortcut, etc.)
+        if not root_path.is_absolute():
+            # Get the directory where this script (gui.py) is located
+            script_dir = Path(__file__).resolve().parent
+            root_path = (script_dir / root_path).resolve()
+        else:
+            root_path = root_path.resolve()
+        
+        # Validate: project root MUST contain lib/ and/or artifacts/ directories
+        lib_dir = root_path / "lib"
+        artifacts_dir = root_path / "artifacts"
+        if not (lib_dir.exists() or artifacts_dir.exists()):
+            raise Exception(
+                f"Invalid project root: {root_path}\n\n"
+                f"Expected to find 'lib/' or 'artifacts/' directory.\n"
+                f"This should be the INNER Scootware-Forum directory, not the parent level.\n\n"
+                f"Currently points to: {root_path}\n"
+                f"- Contains lib/: {lib_dir.exists()}\n"
+                f"- Contains artifacts/: {artifacts_dir.exists()}\n\n"
+                f"Please use the 'Browse' button to select the correct directory."
+            )
+        
+        return root_path
 
     def _validate_and_log_paths(self, source_path: Path, remote_path: str) -> None:
         """Validate paths and log them for debugging deployment issues."""
@@ -402,8 +623,26 @@ class DeploymentGUI:
         deploy_frame = ttk.LabelFrame(frame, text="Deployment Options")
         deploy_frame.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
 
-        # Full deployment and upload controls
-        ttk.Label(deploy_frame, text="📦 Full Deployment", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        # Full deployment header with title and one-click button on the right
+        full_deploy_header = tk.Frame(deploy_frame)
+        full_deploy_header.pack(anchor=tk.W, padx=10, pady=(10, 5), fill=tk.X)
+        ttk.Label(full_deploy_header, text="📦 Full Deployment", font=("Arial", 12, "bold")).pack(side=tk.LEFT)
+        
+        # One-click complete upload cycle button (top right)
+        complete_cycle_btn = tk.Button(
+            full_deploy_header,
+            text="🚀 ONE-CLICK: Stop → Upload → Build → Restart",
+            command=self._deploy_complete_upload_cycle,
+            bg="#FF6B6B",
+            fg="white",
+            font=("Arial", 10, "bold"),
+            padx=15,
+            pady=8,
+            relief=tk.RAISED,
+            cursor="hand2"
+        )
+        complete_cycle_btn.pack(side=tk.RIGHT, padx=5)
+        
         ttk.Label(deploy_frame, text="Uploads entire project, builds, restarts services, and applies the complete Nginx/static asset fix.").pack(anchor=tk.W, padx=20, pady=5)
         full_upload_frame = ttk.Frame(deploy_frame)
         full_upload_frame.pack(anchor=tk.W, padx=20, pady=5)

@@ -19,3 +19,23 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   SPOOFER: "images/products/spoofer.jpg",
   DEFAULT: "images/hero-bg.png"
 };
+
+// Helper function to get image by category
+export function getCategoryImage(category: any): string {
+  // Check by productId first
+  if (category.productId && PRODUCT_IMAGES[category.productId]) {
+    return PRODUCT_IMAGES[category.productId];
+  }
+  
+  // Check by category name
+  const name = category.name?.toLowerCase() || "";
+  if (name.includes("general")) {
+    return "images/products/general.jpg";
+  }
+  if (name.includes("support")) {
+    return "images/products/support.jpg";
+  }
+  
+  // Default fallback
+  return PRODUCT_IMAGES.DEFAULT;
+}

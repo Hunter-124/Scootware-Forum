@@ -101,6 +101,9 @@ async function buildAll() {
       "puppeteer",
       "puppeteer-core",
       "electron",
+      "helmet",
+      "xss",
+      "express-rate-limit",
     ],
     sourcemap: "linked",
     plugins: [

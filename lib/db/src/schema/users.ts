@@ -1,4 +1,4 @@
-import { pgTable, text, serial, boolean, timestamp, integer, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, boolean, timestamp, integer, pgEnum, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -42,7 +42,17 @@ export const usersTable = pgTable("users", {
   postCount: integer("post_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (table) => [
+  // For permission checks and user lookup
+  index("idx_users_role").on(table.role),
+  index("idx_users_is_banned").on(table.isBanned),
+  // For OAuth lookups during authentication
+  index("idx_users_google_id").on(table.googleId),
+  index("idx_users_discord_id").on(table.discordId),
+  index("idx_users_steam_id").on(table.steamId),
+  // For email verification lookups
+  index("idx_users_email_verification_token").on(table.emailVerificationToken),
+]);
 
 export const productAccessTable = pgTable("product_access", {
   id: serial("id").primaryKey(),
@@ -51,7 +61,12 @@ export const productAccessTable = pgTable("product_access", {
   expiresAt: timestamp("expires_at").notNull(),
   grantedAt: timestamp("granted_at").notNull().defaultNow(),
   paymentRef: text("payment_ref"),
-});
+}, (table) => [
+  // Critical for checking user's active product subscriptions
+  index("idx_product_access_user_expires").on(table.userId, table.expiresAt),
+  // For product-specific access checks
+  index("idx_product_access_product_expires").on(table.productId, table.expiresAt),
+]);
 
 export const inviteCodesTable = pgTable("invite_codes", {
   id: serial("id").primaryKey(),
@@ -64,7 +79,10 @@ export const inviteCodesTable = pgTable("invite_codes", {
   usedBy: integer("used_by").references(() => usersTable.id, { onDelete: "set null" }),
   usedAt: timestamp("used_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  // For code lookup
+  index("idx_invite_codes_is_used_expires").on(table.isUsed, table.expiresAt),
+]);
 
 export const inviteRequestsTable = pgTable("invite_requests", {
   id: serial("id").primaryKey(),
@@ -75,7 +93,39 @@ export const inviteRequestsTable = pgTable("invite_requests", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   processedAt: timestamp("processed_at"),
   processedBy: integer("processed_by").references(() => usersTable.id, { onDelete: "set null" }),
-});
+}, (table) => [
+  // For finding pending requests
+  index("idx_invite_requests_status").on(table.status),
+]);
+
+export const subscriptionExtensionsTable = pgTable("subscription_extensions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
+  productId: text("product_id").notNull(),
+  extensionDays: integer("extension_days").notNull(),
+  reason: text("reason"),
+  extendedAt: timestamp("extended_at").notNull().defaultNow(),
+  extendedBy: integer("extended_by").notNull().references(() => usersTable.id, { onDelete: "set null" }),
+}, (table) => [
+  index("idx_subscription_extensions_user_product").on(table.userId, table.productId),
+]);
+
+export const loaderVersionsTable = pgTable("loader_versions", {
+  id: serial("id").primaryKey(),
+  version: text("version").notNull().unique(),
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileSize: integer("file_size").notNull(), // in bytes
+  changelog: text("changelog"),
+  releaseDate: timestamp("release_date").notNull().defaultNow(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdBy: integer("created_by").notNull().references(() => usersTable.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  // For fetching active loader versions
+  index("idx_loader_versions_is_active").on(table.isActive),
+]);
 
 export const insertUserSchema = createInsertSchema(usersTable).omit({
   id: true,
@@ -86,3 +136,4 @@ export const insertUserSchema = createInsertSchema(usersTable).omit({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof usersTable.$inferSelect;
 export type ProductAccess = typeof productAccessTable.$inferSelect;
+export type LoaderVersion = typeof loaderVersionsTable.$inferSelect;

@@ -1,18 +1,28 @@
 import React, { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { useGetThread, useCreatePost, useGetCategories } from "@workspace/api-client-react";
+import { useGetThread, useCreatePost, useGetCategories, useUpdatePost, useGetPostAttachments, useUploadPostAttachments, useDeletePostAttachment, useDeletePost, useDeleteThread } from "@workspace/api-client-react";
 import { formatDate, cn, getRoleColor } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { User as UserIcon, ShieldAlert, AlertTriangle, Send } from "lucide-react";
+import { User as UserIcon, ShieldAlert, AlertTriangle, Send, Edit2, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Shoutbox } from "@/components/layout/Shoutbox";
+import { EditPostModal } from "@/components/modals/EditPostModal";
+import { AttachmentsList } from "@/components/AttachmentsList";
+import { AttachmentUpload } from "@/components/AttachmentUpload";
+import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 
 export default function ThreadView() {
   const [, params] = useRoute("/thread/:id");
+  const [, navigate] = useRoute("/");
   const threadId = parseInt(params?.id || "0", 10);
   const { isAuthenticated, user: currentUser, isSubscribed } = useAuth();
   const { data: categories } = useGetCategories();
   const [replyContent, setReplyContent] = useState("");
+  const [editingPostId, setEditingPostId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [showAttachmentUpload, setShowAttachmentUpload] = useState<{ [key: number]: boolean }>({});
+  const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File[] }>({});
+  
   const { data, isLoading, refetch } = useGetThread(threadId, { page: 1 }, {
     query: { enabled: !!threadId } as any
   });
@@ -23,6 +33,50 @@ export default function ThreadView() {
         setReplyContent("");
         refetch();
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    }
+  });
+
+  const updatePostMutation = useUpdatePost({
+    mutation: {
+      onSuccess: () => {
+        setEditingPostId(null);
+        setEditContent("");
+        refetch();
+      }
+    }
+  });
+
+  const uploadAttachmentsMutation = useUploadPostAttachments({
+    mutation: {
+      onSuccess: () => {
+        setShowAttachmentUpload({});
+        setSelectedFiles({});
+        refetch();
+      }
+    }
+  });
+
+  const deleteAttachmentMutation = useDeletePostAttachment({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      }
+    }
+  });
+
+  const deletePostMutation = useDeletePost({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      }
+    }
+  });
+
+  const deleteThreadMutation = useDeleteThread({
+    mutation: {
+      onSuccess: () => {
+        navigate(`/subforum/${data?.thread?.subforumId}`, { replace: true });
       }
     }
   });
@@ -38,7 +92,9 @@ export default function ThreadView() {
   const parent = categories?.find((c: any) => c.subforums.some((s: any) => s.id === subforumId));
   const productId = (parent as any)?.productId;
   const isConfigSection = /config/i.test(subforumObj?.name || "");
+  const isShowcaseSection = subforumObj?.name === "Feature Showcase";
   const subscribedToProduct = isSubscribed(productId);
+  const isAdmin = currentUser?.role === "admin";
 
   const handleReply = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +107,23 @@ export default function ThreadView() {
       <div className="flex-1 min-w-0 space-y-6">
         {/* Thread Header */}
         <div className="pb-4 border-b border-white/10">
-          <h1 className="text-3xl font-display font-bold text-white mb-2 break-words">{thread.title}</h1>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <h1 className="text-3xl font-display font-bold text-white break-words flex-1">{thread.title}</h1>
+            {isAuthenticated && (currentUser?.id === thread.authorId || currentUser?.role === "admin") && (
+              <button
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this entire thread? This will delete all posts in the thread permanently.")) {
+                    deleteThreadMutation.mutate({ threadId });
+                  }
+                }}
+                className="p-1.5 hover:bg-destructive/10 rounded transition-colors text-muted-foreground hover:text-destructive disabled:opacity-50 shrink-0"
+                title="Delete thread"
+                disabled={deleteThreadMutation.isPending}
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span>{formatDate(thread.createdAt)}</span>
             <span className="w-1 h-1 rounded-full bg-white/20" />
@@ -80,9 +152,8 @@ export default function ThreadView() {
                   <Link href={`/profile/${post.authorId}`} className="text-lg font-bold text-white hover:text-primary transition-colors truncate block">
                     {post.authorUsername}
                   </Link>
-                  <div className={cn("text-xs font-bold uppercase tracking-widest mt-1 px-2 py-0.5 rounded border inline-block", getRoleColor(post.authorRole, post.authorUpgradeType))}>
-                    {post.authorUpgradeType || post.authorRole}
-                  </div>
+                  <div className="mt-2">
+                    <RoleStatusBadge role={post.authorRole} upgradeType={post.authorUpgradeType} /></div>
                   
                   <div className="hidden md:block mt-6 space-y-2 text-xs text-muted-foreground border-t border-white/10 pt-4">
                     <div className="flex justify-between">
@@ -99,13 +170,93 @@ export default function ThreadView() {
 
               {/* Post Content */}
               <div className="flex-1 flex flex-col min-w-0">
-                <div className="px-6 py-3 border-b border-white/5 bg-white/[0.02] flex justify-between text-xs text-muted-foreground">
-                  <span className="hover:text-white transition-colors cursor-pointer">{formatDate(post.createdAt)}</span>
-                  <span className="font-mono opacity-50">#{idx + 1}</span>
+                <div className="px-6 py-3 border-b border-white/5 bg-white/[0.02] flex justify-between items-center text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="hover:text-white transition-colors cursor-pointer">{formatDate(post.createdAt)}</span>
+                    {post.updatedAt && post.createdAt !== post.updatedAt && (
+                      <span className="text-muted-foreground">(edited {formatDate(post.updatedAt)})</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isAuthenticated && (currentUser?.id === post.authorId || currentUser?.role === "admin") && (
+                      <button
+                        onClick={() => {
+                          setEditingPostId(post.id);
+                          setEditContent(post.content);
+                        }}
+                        className="p-1.5 hover:bg-white/5 rounded transition-colors text-muted-foreground hover:text-white"
+                        title="Edit post"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    )}
+                    {isAuthenticated && (currentUser?.id === post.authorId || currentUser?.role === "admin") && (
+                      <button
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this post?")) {
+                            deletePostMutation.mutate({ postId: post.id });
+                          }
+                        }}
+                        className="p-1.5 hover:bg-destructive/10 rounded transition-colors text-muted-foreground hover:text-destructive disabled:opacity-50"
+                        title="Delete post"
+                        disabled={deletePostMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                    <span className="font-mono opacity-50">#{idx + 1}</span>
+                  </div>
                 </div>
                 <div className="p-6 text-gray-200 leading-relaxed whitespace-pre-wrap flex-1 prose prose-invert max-w-none">
                   {post.content}
                 </div>
+                {isAuthenticated && (currentUser?.id === post.authorId || currentUser?.role === "admin") && (
+                  <div className="px-6 py-3 border-t border-white/5 bg-black/30">
+                    {!showAttachmentUpload[post.id] ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setShowAttachmentUpload({ ...showAttachmentUpload, [post.id]: true })}
+                        className="text-xs"
+                      >
+                        Add Attachments
+                      </Button>
+                    ) : (
+                      <div className="space-y-3">
+                        <AttachmentUpload
+                          onFilesSelected={(files) => setSelectedFiles({ ...selectedFiles, [post.id]: files })}
+                          isUploading={uploadAttachmentsMutation.isPending}
+                          maxFiles={5}
+                        />
+                        <div className="flex gap-2 justify-end">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setShowAttachmentUpload({ ...showAttachmentUpload, [post.id]: false })}
+                            disabled={uploadAttachmentsMutation.isPending}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="glow"
+                            onClick={() => {
+                              if (selectedFiles[post.id]?.length > 0) {
+                                uploadAttachmentsMutation.mutate({
+                                  postId: post.id,
+                                  files: selectedFiles[post.id],
+                                });
+                              }
+                            }}
+                            disabled={!selectedFiles[post.id]?.length || uploadAttachmentsMutation.isPending}
+                          >
+                            Upload Files
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {post.authorRole === 'admin' && (
                   <div className="px-6 py-3 bg-amber-500/5 border-t border-amber-500/10 flex items-center gap-2 text-xs text-amber-500/80">
                     <ShieldAlert className="w-4 h-4" /> Official Scootware Communication
@@ -116,12 +267,38 @@ export default function ThreadView() {
           ))}
         </div>
 
+        {/* Edit Post Modal */}
+        {editingPostId && (
+          <EditPostModal
+            isOpen={!!editingPostId}
+            content={editContent}
+            onContentChange={setEditContent}
+            onSave={() => {
+              updatePostMutation.mutate({
+                postId: editingPostId,
+                data: { content: editContent },
+              });
+            }}
+            onCancel={() => {
+              setEditingPostId(null);
+              setEditContent("");
+            }}
+            isSaving={updatePostMutation.isPending}
+            postType="forum"
+          />
+        )}
+
         {/* Reply Box */}
         {thread.isLocked ? (
           <div className="glass-panel p-8 text-center rounded-xl border-destructive/20 bg-destructive/5 flex flex-col items-center">
             <AlertTriangle className="w-12 h-12 text-destructive mb-3" />
             <h3 className="text-xl font-bold text-white mb-1">Thread Locked</h3>
             <p className="text-muted-foreground text-sm">No further signals can be transmitted here.</p>
+          </div>
+        ) : isShowcaseSection && !isAdmin ? (
+          <div className="glass-panel p-8 text-center rounded-xl border-white/10">
+            <h3 className="text-lg font-bold text-white mb-2">Product Showcase</h3>
+            <p className="text-muted-foreground">This section is for admin showcase content only. You can view and engage with featured content.</p>
           </div>
         ) : isConfigSection && !subscribedToProduct ? (
           <div className="glass-panel p-8 text-center rounded-xl border-white/10">
@@ -143,7 +320,7 @@ export default function ThreadView() {
               <div className="px-5 py-3 border-t border-white/10 bg-black/40 flex justify-between items-center">
                 <span className="text-xs text-muted-foreground hidden sm:block">Transmissions are monitored. Keep it clean.</span>
                 <Button type="submit" variant="glow" disabled={replyMutation.isPending || !replyContent.trim()} className="gap-2">
-                  {replyMutation.isPending ? "Transmitting..." : "Transmit"} <Send className="w-4 h-4" />
+                  {replyMutation.isPending ? "POSTING..." : "POST"} <Send className="w-4 h-4" />
                 </Button>
               </div>
             </form>

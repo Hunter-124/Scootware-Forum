@@ -4,7 +4,7 @@ import { useGetCategories } from "@workspace/api-client-react";
 import { MessageSquare, Users, Zap, ShieldAlert, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PRODUCT_ICONS, PRODUCT_IMAGES } from "@/lib/product-assets";
+import { PRODUCT_ICONS, PRODUCT_IMAGES, getCategoryImage } from "@/lib/product-assets";
 import { useAuth } from "@/hooks/use-auth";
 
 import { Shoutbox } from "@/components/layout/Shoutbox";
@@ -45,7 +45,7 @@ export default function Home() {
     <div key={category.id} className="glass-panel rounded-xl flex flex-col overflow-hidden shadow-lg border border-white/10 transition-all hover:border-primary/30 group/card bg-black/20">
       <div className="relative h-32 overflow-hidden border-b border-white/5">
         <img 
-          src={`${import.meta.env.BASE_URL}${PRODUCT_IMAGES[(category as any).productId] || PRODUCT_IMAGES.DEFAULT}`} 
+          src={`${import.meta.env.BASE_URL}${getCategoryImage(category)}`} 
           className="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover/card:scale-110" 
           alt={category.name} 
         />
@@ -91,12 +91,14 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground mt-0.5 truncate">{sub.description}</p>
                 </div>
                 
-                <div className="ml-4 hidden sm:flex items-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex flex-col items-center justify-center min-w-[40px] bg-black/20 rounded px-2 py-1">
-                    <span className="text-white font-mono font-bold">{sub.threadCount}</span>
+                <div className="ml-4 hidden sm:flex flex-col items-end justify-center min-w-[90px] text-[10px] uppercase font-bold tracking-widest leading-tight">
+                  <div className="text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-white font-mono">{sub.threadCount}</span>
+                    <span className="opacity-50 text-[8px]">threads</span>
                   </div>
-                  <div className="flex flex-col items-center justify-center min-w-[40px] bg-black/20 rounded px-2 py-1">
-                    <span className="text-white font-mono font-bold">{sub.postCount}</span>
+                  <div className="text-primary flex items-center gap-1.5">
+                    <span className="opacity-70 text-[8px]">posts:</span>
+                    <span className="text-white font-mono">{sub.postCount}</span>
                   </div>
                 </div>
               </Link>
@@ -138,11 +140,11 @@ export default function Home() {
                   alt="Cybernetic grid background" 
                   className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/70 to-background" />
                 
-                <div className="relative z-10 p-8 md:p-14 w-full flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div className="relative z-10 p-8 md:p-14 w-full flex flex-col items-center justify-center gap-10 text-center">
                   {/* Logo block */}
-                  <div className="flex flex-col items-center shrink-0 md:items-start">
+                  <div className="flex flex-col items-center shrink-0 md:items-center justify-center">
                     <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl overflow-hidden border-2 border-primary/50 shadow-[0_0_40px_rgba(168,85,247,0.4)] bg-black/60 flex items-center justify-center">
                       <img 
                         src={`${import.meta.env.BASE_URL}images/logo.png`} 
@@ -156,7 +158,7 @@ export default function Home() {
                   </div>
 
                   {/* Text block */}
-                  <div className="max-w-xl text-center md:text-left">
+                  <div className="max-w-2xl flex flex-col items-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold tracking-widest mb-5 uppercase">
                       <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> System Online
                     </div>
@@ -164,9 +166,9 @@ export default function Home() {
                       DOMINATE THE <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">GAME.</span>
                     </h1>
                     <p className="text-lg text-gray-300 mb-8 max-w-lg font-light">
-                      Squeeze every last frame out of your hardware. Scootware's precision-tuned driver suite is engineered for competitive gaming — maximum performance, zero compromise.
+                      Squeeze every last frame out of your hardware. Scootware's precision-tuned software suite is engineered for maximum performance, zero compromise.
                     </p>
-                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <div className="flex flex-wrap gap-4 justify-center">
                       <Link href="/store">
                         <Button variant="glow" size="lg" className="font-bold tracking-wide">GET ACCESS <Zap className="ml-2 w-5 h-5" /></Button>
                       </Link>

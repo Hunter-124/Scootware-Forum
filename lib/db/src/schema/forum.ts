@@ -1,4 +1,4 @@
-import { pgTable, text, serial, boolean, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, boolean, timestamp, integer, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
@@ -25,7 +25,10 @@ export const subforumsTable = pgTable("subforums", {
   threadCount: integer("thread_count").notNull().default(0),
   postCount: integer("post_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  index("idx_subforums_category_id").on(table.categoryId),
+  index("idx_subforums_sort_order").on(table.sortOrder),
+]);
 
 export const threadsTable = pgTable("threads", {
   id: serial("id").primaryKey(),
@@ -38,7 +41,13 @@ export const threadsTable = pgTable("threads", {
   viewCount: integer("view_count").notNull().default(0),
   lastPostAt: timestamp("last_post_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => [
+  // Critical for subforum listing queries
+  index("idx_threads_subforum_id_last_post").on(table.subforumId, table.lastPostAt),
+  index("idx_threads_author_id").on(table.authorId),
+  // Used for pinned/hot thread sorting
+  index("idx_threads_is_pinned_last_post").on(table.isPinned, table.lastPostAt),
+]);
 
 export const postsTable = pgTable("posts", {
   id: serial("id").primaryKey(),
@@ -48,7 +57,11 @@ export const postsTable = pgTable("posts", {
   isFirstPost: boolean("is_first_post").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at"),
-});
+}, (table) => [
+  // Critical for fetching posts in a thread
+  index("idx_posts_thread_id_created").on(table.threadId, table.createdAt),
+  index("idx_posts_author_id").on(table.authorId),
+]);
 
 export const insertThreadSchema = createInsertSchema(threadsTable).omit({
   id: true,

@@ -1,8 +1,8 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { db } from "@workspace/db";
-import { usersTable, profilePostsTable, inviteCodesTable, inviteRequestsTable, siteConfigTable } from "@workspace/db";
-import { eq, desc, and, gt } from "drizzle-orm";
-import { avatarUpload, processAndSaveAvatar } from "../lib/upload";
+import { usersTable, profilePostsTable, inviteCodesTable, inviteRequestsTable, siteConfigTable, productAccessTable, profilePostAttachmentsTable, postsTable } from "@workspace/db";
+import { eq, desc, and, gt, sql } from "drizzle-orm";
+import { avatarUpload, processAndSaveAvatar, postAttachmentUpload, savePostAttachment } from "../lib/upload";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -28,11 +28,29 @@ router.get("/:userId", async (req: Request, res: Response) => {
   }
 
   try {
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+    const [user] = await db
+      .select({
+        id: usersTable.id,
+        username: usersTable.username,
+        email: usersTable.email,
+        role: usersTable.role,
+        upgradeType: usersTable.upgradeType,
+        upgradeExpiresAt: usersTable.upgradeExpiresAt,
+        avatarUrl: usersTable.avatarUrl,
+        isBanned: usersTable.isBanned,
+        isEmailVerified: usersTable.isEmailVerified,
+        createdAt: usersTable.createdAt,
+        postCount: sql<number>`(SELECT COUNT(*)::int FROM ${postsTable} p WHERE p.author_id = ${usersTable.id})`,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
     }
+
+    const activeProducts = await getUserActiveProducts(userId);
 
     const recentPosts = await db
       .select({
@@ -50,7 +68,7 @@ router.get("/:userId", async (req: Request, res: Response) => {
       .limit(20);
 
     res.json({
-      user: mapUser(user),
+      user: mapUser(user, activeProducts),
       recentPosts: recentPosts.map((p: any) => ({
         ...p,
         authorUsername: p.authorUsername || "Unknown",
@@ -263,9 +281,251 @@ router.post("/me/request-invite", requireAuth, async (req: Request, res: Respons
   }
 });
 
+const updateProfilePostSchema = z.object({
+  content: z.string().min(1).max(2000),
+});
+
+router.put("/:userId/posts/:postId", requireAuth, async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId as string);
+  const postId = parseInt(req.params.postId as string);
+  const currentUser = req.user as any;
+  const parse = updateProfilePostSchema.safeParse(req.body);
+
+  if (isNaN(userId) || isNaN(postId)) {
+    res.status(400).json({ error: "Invalid user ID or post ID" });
+    return;
+  }
+
+  if (!parse.success) {
+    res.status(400).json({ error: parse.error.issues[0]?.message || "Validation error" });
+    return;
+  }
+
+  try {
+    const [post] = await db
+      .select()
+      .from(profilePostsTable)
+      .where(eq(profilePostsTable.id, postId))
+      .limit(1);
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    // Only the author or admin can edit a profile post
+    if (post.authorId !== currentUser.id && currentUser.role !== "admin") {
+      res.status(403).json({ error: "You can only edit your own posts" });
+      return;
+    }
+
+    const now = new Date();
+    const [updatedPost] = await db
+      .update(profilePostsTable)
+      .set({
+        content: parse.data.content,
+        updatedAt: now,
+      })
+      .where(eq(profilePostsTable.id, postId))
+      .returning();
+
+    res.status(200).json({
+      id: updatedPost.id,
+      content: updatedPost.content,
+      authorId: updatedPost.authorId,
+      profileUserId: updatedPost.profileUserId,
+      createdAt: updatedPost.createdAt,
+      updatedAt: updatedPost.updatedAt,
+    });
+  } catch (err) {
+    req.log.error({ err }, "Update profile post error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Get attachments for a profile post
+router.get("/:userId/posts/:postId/attachments", async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.postId as string);
+
+  if (isNaN(postId)) {
+    res.status(400).json({ error: "Invalid post ID" });
+    return;
+  }
+
+  try {
+    const [post] = await db
+      .select()
+      .from(profilePostsTable)
+      .where(eq(profilePostsTable.id, postId))
+      .limit(1);
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    const attachments = await db
+      .select({
+        id: profilePostAttachmentsTable.id,
+        filename: profilePostAttachmentsTable.filename,
+        originalFilename: profilePostAttachmentsTable.originalFilename,
+        filesize: profilePostAttachmentsTable.filesize,
+        mimeType: profilePostAttachmentsTable.mimeType,
+        filePath: profilePostAttachmentsTable.filePath,
+        uploadedBy: profilePostAttachmentsTable.uploadedBy,
+        uploadedByUsername: usersTable.username,
+        uploadedAt: profilePostAttachmentsTable.uploadedAt,
+      })
+      .from(profilePostAttachmentsTable)
+      .leftJoin(usersTable, eq(profilePostAttachmentsTable.uploadedBy, usersTable.id))
+      .where(eq(profilePostAttachmentsTable.profilePostId, postId))
+      .orderBy(desc(profilePostAttachmentsTable.uploadedAt));
+
+    res.json(attachments.map((a: any) => ({
+      ...a,
+      uploadedByUsername: a.uploadedByUsername || "Unknown",
+    })));
+  } catch (err) {
+    req.log.error({ err }, "Get profile post attachments error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Upload attachment to a profile post
+router.post("/:userId/posts/:postId/attachments", requireAuth, postAttachmentUpload.array("files", 5), async (req: Request, res: Response) => {
+  const currentUser = req.user as any;
+  const postId = parseInt(req.params.postId as string);
+
+  if (isNaN(postId)) {
+    res.status(400).json({ error: "Invalid post ID" });
+    return;
+  }
+
+  if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+    res.status(400).json({ error: "No files uploaded" });
+    return;
+  }
+
+  try {
+    const [post] = await db
+      .select()
+      .from(profilePostsTable)
+      .where(eq(profilePostsTable.id, postId))
+      .limit(1);
+
+    if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    // Only the post author or admin can add attachments
+    if (post.authorId !== currentUser.id && currentUser.role !== "admin") {
+      res.status(403).json({ error: "You can only add attachments to your own posts" });
+      return;
+    }
+
+    const uploadedAttachments = [];
+    for (const file of req.files) {
+      const { filename, filePath } = await savePostAttachment(file.buffer, file.originalname);
+      const [attachment] = await db
+        .insert(profilePostAttachmentsTable)
+        .values({
+          profilePostId: postId,
+          filename,
+          originalFilename: file.originalname,
+          filesize: file.size,
+          mimeType: file.mimetype,
+          filePath,
+          uploadedBy: currentUser.id,
+        })
+        .returning();
+
+      uploadedAttachments.push({
+        id: attachment.id,
+        filename: attachment.filename,
+        originalFilename: attachment.originalFilename,
+        filesize: attachment.filesize,
+        mimeType: attachment.mimeType,
+        filePath: attachment.filePath,
+        uploadedBy: currentUser.id,
+        uploadedByUsername: currentUser.username,
+        uploadedAt: attachment.uploadedAt,
+      });
+    }
+
+    res.status(201).json(uploadedAttachments);
+  } catch (err) {
+    req.log.error({ err }, "Upload profile post attachment error");
+    res.status(500).json({ error: "Failed to upload attachment" });
+  }
+});
+
+// Delete an attachment from a profile post
+router.delete("/:userId/posts/attachments/:attachmentId", requireAuth, async (req: Request, res: Response) => {
+  const currentUser = req.user as any;
+  const attachmentId = parseInt(req.params.attachmentId as string);
+
+  if (isNaN(attachmentId)) {
+    res.status(400).json({ error: "Invalid attachment ID" });
+    return;
+  }
+
+  try {
+    const [attachment] = await db
+      .select()
+      .from(profilePostAttachmentsTable)
+      .where(eq(profilePostAttachmentsTable.id, attachmentId))
+      .limit(1);
+
+    if (!attachment) {
+      res.status(404).json({ error: "Attachment not found" });
+      return;
+    }
+
+    const [post] = await db
+      .select()
+      .from(profilePostsTable)
+      .where(eq(profilePostsTable.id, attachment.profilePostId))
+      .limit(1);
+
+    // Only the uploader, post author, or admin can delete
+    if (attachment.uploadedBy !== currentUser.id && post.authorId !== currentUser.id && currentUser.role !== "admin") {
+      res.status(403).json({ error: "You don't have permission to delete this attachment" });
+      return;
+    }
+
+    await db.delete(profilePostAttachmentsTable).where(eq(profilePostAttachmentsTable.id, attachmentId));
+
+    res.json({ message: "Attachment deleted" });
+  } catch (err) {
+    req.log.error({ err }, "Delete profile post attachment error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;
 
-function mapUser(user: any) {
+async function getUserActiveProducts(userId: number) {
+  const now = new Date();
+  const activeProducts = await db
+    .select()
+    .from(productAccessTable)
+    .where(and(eq(productAccessTable.userId, userId), gt(productAccessTable.expiresAt, now)));
+  
+  return activeProducts.map((p: any) => {
+    let tier = "premium";
+    if (p.paymentRef?.startsWith("admin-assign:")) {
+      tier = p.paymentRef.split(":")[1] || "premium";
+    }
+    return {
+      productId: p.productId,
+      expiresAt: p.expiresAt,
+      tier,
+    };
+  });
+}
+
+function mapUser(user: any, activeProducts: any[] = []) {
   return {
     id: user.id,
     username: user.username,
@@ -273,6 +533,7 @@ function mapUser(user: any) {
     role: user.role,
     upgradeType: user.upgradeType ?? null,
     upgradeExpiresAt: user.upgradeExpiresAt ?? null,
+    activeProducts,
     avatarUrl: user.avatarUrl ?? null,
     isBanned: user.isBanned,
     isEmailVerified: user.isEmailVerified,

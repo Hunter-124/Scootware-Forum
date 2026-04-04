@@ -21,10 +21,10 @@ export function formatShortDate(dateString: string | undefined | null) {
   if (!dateString) return "";
   const date = new Date(dateString);
   const now = new Date();
-  const diffHours = Math.abs(now.getTime() - date.getTime()) / 3600000;
+  const diffMinutes = Math.abs(now.getTime() - date.getTime()) / 60000;
   
-  if (diffHours < 24) {
-    return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(-Math.round(diffHours), 'hour');
+  if (diffMinutes < 1440) {
+    return new Intl.RelativeTimeFormat('en', { numeric: 'auto' }).format(-Math.round(diffMinutes), 'minute');
   }
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
 }

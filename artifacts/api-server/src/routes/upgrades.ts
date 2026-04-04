@@ -9,6 +9,8 @@ import {
   generateMicroOffsetUsd,
   type SupportedCoin,
 } from "../lib/crypto-monitor";
+import { paymentNotifications } from "../lib/payment-notifications";
+import { getEmailTemplate, type EmailTemplate } from "../lib/email";
 import Stripe from "stripe";
 import type { Logger } from "pino";
 
@@ -559,6 +561,158 @@ router.post("/stripe-webhook", async (req: Request, res: Response) => {
   }
 
   return res.json({ received: true });
+});
+
+// ──────────────────────────────────────────────────────────────
+// Crypto payment: real-time notifications (Server-Sent Events)
+// GET /api/upgrades/crypto/subscribe
+// Subscribes to payment confirmation events for the current user.
+// ──────────────────────────────────────────────────────────────
+
+router.get("/crypto/subscribe", requireAuth, (req: Request, res: Response): any => {
+  const user = req.user as any;
+  const userId = user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ error: "User ID not found" });
+  }
+
+  // Set up SSE headers
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  // Send initial connection confirmation
+  res.write(`:connected\n\n`);
+
+  // Handle payment confirmation events for this user
+  const handlePaymentConfirmed = (event: any) => {
+    if (event.userId === userId) {
+      res.write(
+        `data: ${JSON.stringify({
+          type: "payment-confirmed",
+          requestId: event.requestId,
+          productIds: event.productIds,
+          coin: event.coin,
+          txHash: event.txHash,
+          confirmedAt: event.timestamp,
+        })}\n\n`
+      );
+    }
+  };
+
+  // Subscribe to events
+  paymentNotifications.on("payment-confirmed", handlePaymentConfirmed);
+
+  // Handle client disconnect
+  req.on("close", () => {
+    paymentNotifications.off("payment-confirmed", handlePaymentConfirmed);
+    res.end();
+  });
+
+  // Keep connection alive with heartbeat
+  const heartbeat = setInterval(() => {
+    res.write(`:heartbeat\n\n`);
+  }, 30000); // Send heartbeat every 30 seconds
+
+  req.on("close", () => {
+    clearInterval(heartbeat);
+  });
+});
+
+// ──────────────────────────────────────────────────────────────
+// Email Template Management (Admin Only)
+// GET /api/upgrades/admin/email-templates/:templateKey
+// Returns the email template for editing
+// ──────────────────────────────────────────────────────────────
+
+router.get("/admin/email-templates/:templateKey", requireAuth, async (req: Request, res: Response): Promise<any> => {
+  const user = req.user as any;
+  if (user.role !== "admin") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
+
+  try {
+    const templateKey = req.params.templateKey;
+    const template = await getEmailTemplate(templateKey);
+    return res.json({ templateKey, template });
+  } catch (err) {
+    req.log?.error({ err }, "Failed to fetch email template");
+    return res.status(500).json({ error: "Failed to fetch email template" });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────
+// Email Template Management (Admin Only)
+// POST /api/upgrades/admin/email-templates/:templateKey
+// Saves the email template
+// ──────────────────────────────────────────────────────────────
+
+const emailTemplateSchema = z.object({
+  subject: z.string().min(1),
+  html: z.string().min(1),
+  text: z.string().optional(),
+});
+
+router.post("/admin/email-templates/:templateKey", requireAuth, async (req: Request, res: Response): Promise<any> => {
+  const user = req.user as any;
+  if (user.role !== "admin") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
+
+  try {
+    const templateKey = req.params.templateKey;
+    const parse = emailTemplateSchema.safeParse(req.body);
+    if (!parse.success) {
+      return res.status(400).json({ error: "Invalid template data" });
+    }
+
+    const templateData = parse.data;
+    await db
+      .insert(siteConfigTable)
+      .values({ key: templateKey, value: JSON.stringify(templateData) })
+      .onConflictDoUpdate({
+        target: siteConfigTable.key,
+        set: { value: JSON.stringify(templateData) },
+      });
+
+    req.log?.info({ templateKey }, "Email template updated");
+    return res.json({ message: "Email template updated successfully", templateKey });
+  } catch (err) {
+    req.log?.error({ err }, "Failed to save email template");
+    return res.status(500).json({ error: "Failed to save email template" });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────
+// Get All Email Templates Info (Admin Only)
+// GET /api/upgrades/admin/email-templates
+// Returns list of all available templates
+// ──────────────────────────────────────────────────────────────
+
+router.get("/admin/email-templates", requireAuth, async (req: Request, res: Response): Promise<any> => {
+  const user = req.user as any;
+  if (user.role !== "admin") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
+
+  const templates = [
+    {
+      key: "purchase_confirmation",
+      name: "Purchase Confirmation",
+      description: "Email sent when a customer completes a purchase",
+      variables: [
+        "~username~ - Customer's username",
+        "~product~ - Product name(s)",
+        "~method~ - Payment method (CRYPTO, STRIPE, etc.)",
+        "~transaction_id~ - Transaction/Order ID",
+        "~expiry_date~ - Access expiration date",
+      ],
+    },
+  ];
+
+  return res.json({ templates });
 });
 
 export default router;

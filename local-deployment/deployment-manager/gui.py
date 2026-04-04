@@ -73,12 +73,40 @@ class DeploymentGUI:
         thread.start()
 
     def _get_project_root(self):
-        """Return the local project root directory as a Path object."""
+        """Return the local project root directory as a Path object.
+        
+        This must resolve to the INNER Scootware-Forum directory containing lib/, artifacts/, etc.
+        NOT the parent directory level.
+        """
         # Use the value from the project root entry field, fallback to config if needed
         root_path = self.project_root_var.get() if hasattr(self, 'project_root_var') else self.config.get("local.project_root")
         if not root_path:
             raise Exception("Project root is not set. Please specify the local project root in the UI.")
-        return Path(root_path).resolve()
+        
+        root_path = Path(root_path)
+        
+        # If the path is relative, resolve it relative to the script's directory, not cwd
+        if not root_path.is_absolute():
+            script_dir = Path(__file__).resolve().parent
+            root_path = (script_dir / root_path).resolve()
+        else:
+            root_path = root_path.resolve()
+        
+        # Validate: project root MUST contain lib/ and/or artifacts/ directories
+        lib_dir = root_path / "lib"
+        artifacts_dir = root_path / "artifacts"
+        if not (lib_dir.exists() or artifacts_dir.exists()):
+            raise Exception(
+                f"Invalid project root: {root_path}\n\n"
+                f"Expected to find 'lib/' or 'artifacts/' directory.\n"
+                f"This should be the INNER Scootware-Forum directory, not the parent level.\n\n"
+                f"Currently points to: {root_path}\n"
+                f"- Contains lib/: {lib_dir.exists()}\n"
+                f"- Contains artifacts/: {artifacts_dir.exists()}\n\n"
+                f"Please use the 'Browse' button to select the correct directory."
+            )
+        
+        return root_path
 
     def __init__(self, root):
         self.root = root
@@ -222,65 +250,6 @@ class DeploymentGUI:
         thread = threading.Thread(target=action, daemon=True)
         thread.start()
 
-    def _deploy_complete_fix(self) -> None:
-        """Run complete asset and nginx fix on server."""
-        if not self.connected:
-            messagebox.showerror("Not Connected", "Please connect to VPS first")
-            return
-
-        if not messagebox.askyesno("Confirm", "Deploy complete asset serving fix?\n\nThis will:\n1. Rebuild the API with port 3000\n2. Configure Nginx reverse proxy\n3. Set up static asset serving\n\nContinue?"):
-            return
-
-        self.deployment_in_progress = True
-        self._update_status("Deploying complete fix...", 0)
-
-        def execute():
-            try:
-                ssh = SSHManager(
-                    host=self.host_var.get(),
-                    user=self.user_var.get(),
-                    pem_key_path=self.key_var.get(),
-                    port=self.config.get("vps.port", 22)
-                )
-                
-                success, msg = ssh.connect()
-                if not success:
-                    raise Exception(f"SSH connection failed: {msg}")
-                
-                self._append_deploy_output("[INFO] Deploying complete asset serving fix...\n")
-                
-                remote_script = f"{self.remote_path_var.get()}/deploy-complete-fix.sh"
-                returncode, stdout, stderr = ssh.run_deployment_script(
-                    remote_script,
-                    "",
-                    progress_callback=self._append_deploy_output
-                )
-                
-                ssh.disconnect()
-                
-                if returncode == 0:
-                    self._append_deploy_output("\n✓ Complete fix deployed successfully!\n")
-                    self._append_deploy_output("\nAssets should now be loading correctly.\n")
-                    self._append_deploy_output("Access at: http://" + self.host_var.get() + "\n")
-                    self.error_logger.log_success("Complete asset fix deployed")
-                    self.root.after(0, lambda: messagebox.showinfo("Success", "Asset serving fix deployed successfully!\n\nAccess at: http://" + self.host_var.get()))
-                else:
-                    combined = f"Fix deployment failed with code {returncode}:\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}"
-                    raise Exception(combined)
-            
-            except Exception as e:
-                error_msg = f"Fix deployment failed: {e}"
-                self._append_deploy_output(f"\n✗ ERROR: {error_msg}\n")
-                self.error_logger.log_error(error_msg, e)
-                self.root.after(0, lambda: messagebox.showerror("Error", error_msg))
-            
-            finally:
-                self.deployment_in_progress = False
-                self._update_status("Ready")
-
-        thread = threading.Thread(target=execute, daemon=True)
-        thread.start()
-
     def _create_connection_tab(self) -> None:
         """Create connection configuration tab."""
         frame = ttk.Frame(self.notebook)
@@ -356,32 +325,40 @@ class DeploymentGUI:
         deploy_frame = ttk.LabelFrame(frame, text="Deployment Options")
         deploy_frame.pack(padx=10, pady=5, fill=tk.BOTH, expand=True)
 
-        # Full deployment and upload controls
-        ttk.Label(deploy_frame, text="📦 Full Deployment", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(10, 5))
-        ttk.Label(deploy_frame, text="Uploads entire project, builds, restarts services, and applies the complete Nginx/static asset fix.").pack(anchor=tk.W, padx=20, pady=5)
-        full_upload_frame = ttk.Frame(deploy_frame)
-        full_upload_frame.pack(anchor=tk.W, padx=20, pady=5)
-        ttk.Button(full_upload_frame, text="Full Upload (All Files)", command=self._deploy_full).pack(side=tk.LEFT, padx=5)
-        ttk.Button(full_upload_frame, text="Partial Upload (Changed Files)", command=self._deploy_upload_new_files).pack(side=tk.LEFT, padx=5)
-        ttk.Button(full_upload_frame, text="Clear HashCache & Full Upload", command=self._clear_hashcache_and_full_upload).pack(side=tk.LEFT, padx=5)
+        # BIG RED DEPLOY ALL BUTTON
+        deploy_all_frame = ttk.Frame(deploy_frame)
+        deploy_all_frame.pack(anchor=tk.CENTER, padx=10, pady=(15, 20), fill=tk.X)
+        deploy_all_btn = tk.Button(deploy_all_frame, text="🚀 DEPLOY ALL", command=self._deploy_full, 
+                                    bg="#DC143C", fg="white", font=("Arial", 16, "bold"), 
+                                    padx=30, pady=15, relief=tk.RAISED, bd=3, activebackground="#FF1744")
+        deploy_all_btn.pack(expand=True)
+        
+        deploy_all_info = ttk.Label(deploy_frame, text="Complete deployment: Upload → Build → Migrate DB → Restart → Health Check", 
+                                   font=("Arial", 10, "italic"), foreground="gray")
+        deploy_all_info.pack(anchor=tk.CENTER, pady=(0, 10))
 
-        # Step-by-step deployment
-        ttk.Label(deploy_frame, text="Or run steps individually:", font=("Arial", 10, "italic")).pack(anchor=tk.W, padx=20, pady=(15, 2))
-        step_frame = ttk.Frame(deploy_frame)
-        step_frame.pack(anchor=tk.W, padx=30, pady=2, fill=tk.X)
-        ttk.Button(step_frame, text="0. Install Dependencies", command=lambda: self._run_remote_command("update", "Installing dependencies...")).pack(side=tk.LEFT, padx=2)
-        ttk.Button(step_frame, text="1. Upload Project Files (Changed Only)", command=self._deploy_upload_new_files).pack(side=tk.LEFT, padx=2)
-        ttk.Button(step_frame, text="2. Build Project", command=lambda: self._run_remote_command("build", "Building project...")).pack(side=tk.LEFT, padx=2)
-        ttk.Button(step_frame, text="3. Restart & Verify", command=self._deploy_api_full).pack(side=tk.LEFT, padx=2)
-        ttk.Button(step_frame, text="4. Apply Asset/Nginx Fix", command=self._deploy_complete_fix).pack(side=tk.LEFT, padx=2)
+        # Upload controls
+        ttk.Label(deploy_frame, text="📦 Upload Files", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        ttk.Label(deploy_frame, text="Choose how to upload your code to the VPS.").pack(anchor=tk.W, padx=20, pady=5)
+        upload_frame = ttk.Frame(deploy_frame)
+        upload_frame.pack(anchor=tk.W, padx=20, pady=5)
+        ttk.Button(upload_frame, text="Upload Changed Files Only", command=self._deploy_upload_new_files).pack(side=tk.LEFT, padx=5)
+        ttk.Button(upload_frame, text="Full Upload (Reset Cache)", command=self._clear_hashcache_and_full_upload).pack(side=tk.LEFT, padx=5)
+
+        # Build & Deploy workflow
+        ttk.Label(deploy_frame, text="🏗️ Build & Deploy", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(15, 5))
+        ttk.Label(deploy_frame, text="Build your application and deploy with one click.").pack(anchor=tk.W, padx=20, pady=5)
+        build_frame = ttk.Frame(deploy_frame)
+        build_frame.pack(anchor=tk.W, padx=20, pady=5)
+        ttk.Button(build_frame, text="Build & Deploy", command=lambda: self._run_remote_command("build", "Building and deploying project...")).pack(side=tk.LEFT, padx=5)
+        
         # Service control
         ttk.Label(deploy_frame, text="⚡ Service Controls", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(15, 5))
         service_frame = ttk.Frame(deploy_frame)
         service_frame.pack(anchor=tk.W, padx=20, pady=5, fill=tk.X)
-        ttk.Button(service_frame, text="Restart Services", command=self._deploy_api_full).pack(side=tk.LEFT, padx=5)
-        ttk.Button(service_frame, text="Quick Restart (PM2 only)", command=self._deploy_restart).pack(side=tk.LEFT, padx=5)
-        ttk.Button(service_frame, text="Start Services", command=self._start_services).pack(side=tk.LEFT, padx=5)
-        ttk.Button(service_frame, text="Stop Services", command=self._stop_services).pack(side=tk.LEFT, padx=5)
+        ttk.Button(service_frame, text="Start", command=self._start_services).pack(side=tk.LEFT, padx=5)
+        ttk.Button(service_frame, text="Stop", command=self._stop_services).pack(side=tk.LEFT, padx=5)
+        ttk.Button(service_frame, text="Restart", command=lambda: self._run_remote_command("restart", "Restarting services...")).pack(side=tk.LEFT, padx=5)
         # Output
         ttk.Label(deploy_frame, text="Output:", font=("Arial", 10, "bold")).pack(anchor=tk.W, padx=10, pady=(15, 5))
         self.deploy_output = scrolledtext.ScrolledText(deploy_frame, height=15, width=80)
@@ -649,6 +626,14 @@ class DeploymentGUI:
                 
                 self._append_deploy_output(f"[OK] Connected to VPS\n")
                 
+                # Clear any port conflicts from other PM2/Node processes
+                self._append_deploy_output(f"[INFO] Clearing port conflicts (80/443/3000)...\n")
+                success, msg = ssh.clear_port_conflicts()
+                if success:
+                    self._append_deploy_output(f"[OK] {msg}\n")
+                else:
+                    self._append_deploy_output(f"[WARN] Port cleanup: {msg}\n")
+                
                 # Resolve project root
                 source_path = self._get_project_root()
                 
@@ -792,223 +777,6 @@ class DeploymentGUI:
         
         thread = threading.Thread(target=execute, daemon=True)
         thread.start()
-
-    def _deploy_restart(self) -> None:
-        """Restart services only."""
-        if not self.connected:
-            messagebox.showerror("Not Connected", "Please connect to VPS first")
-            return
-        self._run_remote_command("restart", "Restarting services...")
-
-    def _deploy_api_full(self) -> None:
-        """Full API deployment: Build locally -> Upload -> Restart."""
-        if not self.connected:
-            messagebox.showerror("Not Connected", "Please connect to VPS first")
-            return
-        
-        if not messagebox.askyesno("Confirm Full Deployment", "This will:\n1. Build API locally\n2. Upload files to VPS\n3. Restart PM2 service\n\nContinue?"):
-            return
-        
-        self.deployment_in_progress = True
-        self._update_status("Starting full API deployment...", 0)
-        
-        def execute():
-            try:
-                project_root = self._get_project_root()
-                
-                # STEP 1: Build locally
-                self._append_deploy_output("\n" + "="*60 + "\n")
-                self._append_deploy_output("[STEP 1/3] Building API locally...\n")
-                self._append_deploy_output("="*60 + "\n\n")
-                
-                import subprocess
-                import shutil
-                
-                api_source = project_root / "artifacts" / "api-server"
-                if not api_source.exists():
-                    raise Exception(f"API source not found: {api_source}")
-                
-                # Find pnpm
-                pnpm_path = shutil.which("pnpm") or "pnpm"
-                self._append_deploy_output(f"[INFO] Using pnpm: {pnpm_path}\n")
-                self._append_deploy_output(f"[INFO] Building in: {api_source}\n")
-                
-                result = subprocess.run(
-                    [pnpm_path, "run", "build"],
-                    cwd=str(api_source),
-                    capture_output=True,
-                    text=True,
-                    timeout=300
-                )
-                
-                self._append_deploy_output(result.stdout)
-                if result.stderr:
-                    self._append_deploy_output(f"[STDERR] {result.stderr}\n")
-                
-                if result.returncode != 0:
-                    raise Exception("Local build failed")
-                
-                self._append_deploy_output("[✓] Build successful\n\n")
-                
-                # STEP 2: Upload files
-                self._append_deploy_output("="*60 + "\n")
-                self._append_deploy_output("[STEP 2/3] Uploading to VPS...\n")
-                self._append_deploy_output("="*60 + "\n\n")
-                
-                if not self.ssh_manager:
-                    raise Exception("SSH manager not initialized")
-                
-                dist_path = api_source / "dist"
-                if not dist_path.exists():
-                    raise Exception(f"Build output not found: {dist_path}")
-                
-                remote_path = self.remote_path_var.get()
-                target_path = f"{remote_path}/artifacts/api-server/"
-                
-                self._append_deploy_output(f"[INFO] Uploading dist files...\n")
-                self._append_deploy_output(f"[INFO] Source: {dist_path}\n")
-                self._append_deploy_output(f"[INFO] Target: {target_path}\n\n")
-                
-                # Use SFTP to upload dist directory
-                sftp = self.ssh_manager.client.open_sftp()
-                
-                # Upload all files from dist
-                for item in dist_path.iterdir():
-                    remote_file = f"{target_path}{item.name}"
-                    if item.is_file():
-                        sftp.put(str(item), remote_file)
-                        size_mb = item.stat().st_size / (1024*1024)
-                        self._append_deploy_output(f"  [✓] Uploaded {item.name} ({size_mb:.2f} MB)\n")
-                
-                sftp.close()
-                self._append_deploy_output("\n[✓] Upload complete\n\n")
-                
-                # STEP 3: Restart PM2
-                self._append_deploy_output("="*60 + "\n")
-                self._append_deploy_output("[STEP 3/3] Restarting PM2 service...\n")
-                self._append_deploy_output("="*60 + "\n\n")
-                
-                self._append_deploy_output("[INFO] Running: pm2 restart scootware-api\n")
-                returncode, stdout, stderr = self.ssh_manager.execute_command(
-                    "pm2 restart scootware-api"
-                )
-                
-                self._append_deploy_output(stdout)
-                if stderr:
-                    self._append_deploy_output(f"[STDERR] {stderr}\n")
-                
-                if returncode != 0:
-                    raise Exception(f"PM2 restart failed with code {returncode}")
-                
-                # Wait a moment for service to start
-                import time
-                time.sleep(2)
-                
-                # Verify service is running
-                self._append_deploy_output("\n[INFO] Verifying service status...\n")
-                returncode, stdout, stderr = self.ssh_manager.execute_command(
-                    "pm2 status scootware-api"
-                )
-                
-                if "online" in stdout.lower():
-                    self._append_deploy_output("[✓] Service is ONLINE\n")
-                else:
-                    self._append_deploy_output(f"[Warning] Status unclear: {stdout}\n")
-                
-                # Final summary
-                self._append_deploy_output("\n" + "="*60 + "\n")
-                self._append_deploy_output("[✓] FULL DEPLOYMENT COMPLETE\n")
-                self._append_deploy_output("="*60 + "\n")
-                self._append_deploy_output("\nSteps completed:\n")
-                self._append_deploy_output("  ✓ Built API locally\n")
-                self._append_deploy_output("  ✓ Uploaded dist files to VPS\n")
-                self._append_deploy_output("  ✓ Restarted PM2 service\n\n")
-                
-                self.error_logger.log_success("Full API deployment completed")
-                self.root.after(0, lambda: messagebox.showinfo("Deployment Complete", "API deployment completed successfully!"))
-                
-            except Exception as e:
-                error_msg = f"Deployment failed: {e}"
-                self._append_deploy_output(f"\n[✗] ERROR: {error_msg}\n")
-                self.error_logger.log_error(error_msg, e)
-                self.root.after(0, lambda: messagebox.showerror("Deployment Failed", error_msg))
-            
-            finally:
-                self.deployment_in_progress = False
-                self._update_status("Ready")
-        
-        thread = threading.Thread(target=execute, daemon=True)
-        thread.start()
-
-    def _deploy_setup_vps(self) -> None:
-        """Setup VPS (swap, etc.)."""
-        if not self.connected:
-            messagebox.showerror("Not Connected", "Please connect to VPS first")
-            return
-        
-        if not messagebox.askyesno("Confirm", "Run VPS setup (this will create a 5GB swap file)?"):
-            return
-
-        def action():
-            try:
-                if not self.ssh_manager or not self.ssh_manager.client:
-                    raise Exception("SSH manager not initialized or connected")
-
-                # Get the absolute project root (parent of deployment-manager directory)
-                script_dir = self._get_project_root()
-                self._append_deploy_output(f"[INFO] Detected project root: {script_dir}\n")
-                
-                # Upload only the live-deployment folder for setup
-                source_dir = script_dir / "live-deployment"
-                remote_dir = f"{self.remote_path_var.get()}/live-deployment"
-                
-                self._append_deploy_output(f"[INFO] Checking deployment scripts in {source_dir}...\n")
-                
-                if not source_dir.exists():
-                    raise Exception(f"Source directory not found: {source_dir}")
-                
-                sftp = self.ssh_manager.client.open_sftp()
-                
-                # Ensure remote directory exists
-                try:
-                    sftp.stat(remote_dir)
-                except IOError:
-                    self.ssh_manager._mkdir_recursive(sftp, remote_dir)
-
-                files_to_upload = [f for f in source_dir.glob("*") if f.is_file()]
-                if not files_to_upload:
-                    raise Exception(f"No scripts found in {source_dir}")
-                
-                self._append_deploy_output(f"[INFO] Uploading {len(files_to_upload)} scripts to {remote_dir}...\n")
-                    
-                for item in files_to_upload:
-                    remote_file = f"{remote_dir}/{item.name}"
-                    sftp.put(str(item), remote_file)
-                    self._append_deploy_output(f"  [OK] Uploaded {item.name}\n")
-                sftp.close()
-
-                # Also upload package.json since it contains the build fix
-                pkg_script = script_dir / "package.json"
-                if pkg_script.exists():
-                    self._append_deploy_output(f"[INFO] Uploading package.json from {pkg_script}...\n")
-                    self.ssh_manager.upload_file(str(pkg_script), f"{self.remote_path_var.get()}/package.json")
-                else:
-                    self._append_deploy_output("[WARN] package.json not found in project root\n")
-
-                self._run_remote_command("setup", "Setting up VPS environment...")
-            except Exception as e:
-                error_msg = f"Setup failed: {e}"
-                self._append_deploy_output(f"\n[ERROR] {error_msg}\n")
-                self.root.after(0, lambda: messagebox.showerror("Setup Failed", error_msg))
-            finally:
-                self.deployment_in_progress = False
-                self._update_status("Ready")
-
-        self.deployment_in_progress = True
-        self._update_status("Uploading scripts and setting up VPS...", 0)
-        thread = threading.Thread(target=action, daemon=True)
-        thread.start()
-
 
 
     def _run_remote_command(self, command: str, description: str) -> None:

@@ -12,7 +12,7 @@ export function ReplyForm({ threadId }: { threadId: number }) {
 
   useEffect(() => {
     if (state?.success) {
-      toast.success("Signal transmitted successfully.");
+      toast.success("Signal posted successfully.");
       formRef.current?.reset();
     } else if (state?.error) {
       toast.error(state.error);
@@ -37,7 +37,7 @@ export function ReplyForm({ threadId }: { threadId: number }) {
              Encrypted Terminal Active
           </div>
           <Button type="submit" variant="glow" size="lg" disabled={isPending} className="gap-3 w-full sm:w-auto px-10">
-            {isPending ? "TRANSMITTING..." : "SEND SIGNAL"} <Send className="w-4 h-4" />
+            {isPending ? "POSTING..." : "POST SIGNAL"} <Send className="w-4 h-4" />
           </Button>
         </div>
       </form>

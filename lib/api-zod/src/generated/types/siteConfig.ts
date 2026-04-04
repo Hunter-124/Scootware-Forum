@@ -7,14 +7,14 @@
  */
 import type { SiteConfigInviteRequestMode } from "./siteConfigInviteRequestMode";
 import type { SiteConfigProducts } from "./siteConfigProducts";
+import type { SiteConfigRegistrationMode } from "./siteConfigRegistrationMode";
 
 export interface SiteConfig {
   siteName: string;
   siteDescription: string;
   maintenanceMode: boolean;
-  allowRegistration: boolean;
+  registrationMode: SiteConfigRegistrationMode;
   requireEmailVerification: boolean;
-  inviteOnlyMode?: boolean;
   inviteRequestMode?: SiteConfigInviteRequestMode;
   /** @minimum 0 */
   inviteRequestCooldownDays?: number;

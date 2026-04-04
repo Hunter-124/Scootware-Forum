@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LogOut, Menu, User as UserIcon, Shield, Sparkles, MessageSquare, Download, X } from "lucide-react";
 import { cn, getRoleColor } from "@/lib/utils";
+import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 import { motion, AnimatePresence } from "framer-motion";
 import { logoutAction } from "@/actions/auth";
 import { useRouter } from "next/navigation";
@@ -66,9 +67,7 @@ export function Navbar({ user, isAuthenticated, isAdmin }: NavbarProps) {
                 <div className="flex items-center gap-3 cursor-pointer group px-2 py-1 rounded-md hover:bg-white/5 transition-colors">
                   <div className="text-right hidden lg:block">
                     <div className="text-white font-bold leading-none mb-1">{user?.username}</div>
-                    <span className={cn("text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border border-white/10", getRoleColor(user?.role || "user", user?.upgradeType))}>
-                      {user?.upgradeType || user?.role}
-                    </span>
+                    <RoleStatusBadge role={user?.role || "user"} upgradeType={user?.upgradeType} compact />
                   </div>
                   <div className="w-9 h-9 rounded-full bg-secondary border-2 border-primary/30 overflow-hidden group-hover:border-primary transition-colors">
                     {user?.avatarUrl ? (

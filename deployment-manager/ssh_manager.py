@@ -71,6 +71,9 @@ class SSHManager:
                 allow_agent=False
             )
             
+            # Enable keepalive to prevent timeout during long operations
+            self.client.get_transport().set_keepalive(60)
+            
             # Test SFTP
             self.sftp_client = self.client.open_sftp()
             self.sftp_client.close()
@@ -98,6 +101,24 @@ class SSHManager:
                 self.client.close()
             except:
                 pass
+
+    def is_connected(self) -> bool:
+        """Check if SSH connection is still alive.
+        
+        Returns:
+            True if connected and transport is active, False otherwise
+        """
+        if not self.client:
+            return False
+        
+        try:
+            # Check if the transport/socket is still alive
+            transport = self.client.get_transport()
+            if transport is None:
+                return False
+            return transport.is_active()
+        except Exception:
+            return False
 
     def execute_command(self, command: str) -> Tuple[int, str, str]:
         """Execute a command on VPS.
@@ -366,6 +387,7 @@ class DirectUploader:
     CRITICAL_FILES = {
         'ecosystem.config.cjs',
         'boot.mjs',
+        '.env',  # Production environment file (copied from .env.production)
         '.env.production',
         'package.json',
         'pnpm-lock.yaml',
@@ -397,8 +419,6 @@ class DirectUploader:
         
         # Check if in critical directory - use proper path separator matching
         rel_path_normalized = rel_path.replace('\\', '/')
-        if rel_path_normalized.endswith('.ts') or rel_path_normalized.endswith('.tsx'):
-            return True
             
         for critical_dir in DirectUploader.CRITICAL_DIRS:
             critical_dir_normalized = critical_dir.replace('\\', '/')
@@ -603,11 +623,15 @@ class DirectUploader:
             if progress_callback:
                 progress_callback("[UPLOAD] Starting transfer...")
             
-            # Connect SFTP
-            if not ssh_manager.client:
-                return False, "SSH not connected"
+            # Verify SSH connection is still alive before SFTP operations
+            if not ssh_manager.is_connected():
+                return False, "SSH connection lost during file analysis. Please reconnect and try again."
             
-            sftp = ssh_manager.client.open_sftp()
+            # Connect SFTP
+            try:
+                sftp = ssh_manager.client.open_sftp()
+            except Exception as e:
+                return False, f"Failed to open SFTP connection: {e}"
             
             try:
                 # Create base remote directory
@@ -628,18 +652,18 @@ class DirectUploader:
                     local_stat = local_stats_map[local_file]
                     
                     # Check if this is a critical file or in a critical directory (always sync)
-                    is_critical = DirectUploader._is_critical_file(rel_path_posix)
+                    # is_critical = DirectUploader._is_critical_file(rel_path_posix)
                     
                     # Special logging for lib/db files to debug upload issues
                     if "lib/db" in rel_path_posix:
                         lib_db_count += 1
                         if lib_db_count <= 10 and progress_callback:  # Log first 10
                             cached_stat = hash_cache.get(rel_path_posix)
-                            progress_callback(f"       [lib/db] {rel_path_posix}: critical={is_critical}, will_upload={is_critical or cached_stat is None or cached_stat != local_stat}")
+                            progress_callback(f"       [lib/db] {rel_path_posix}: will_upload={cached_stat is None or cached_stat != local_stat}")
                     
-                    # Logic: Skip only if local_stat matches local_cache AND not critical
-                    # Critical files and dist builds are always uploaded to ensure deployment integrity
-                    if not is_critical and hash_cache.get(rel_path_posix) == local_stat:
+                    # Logic: Skip if local_stat matches local_cache (removed critical file forcing)
+                    # Exclude patterns already prevent node_modules, local tools, etc. from upload list
+                    if hash_cache.get(rel_path_posix) == local_stat:
                         skipped += 1
                         
                         if skipped % 500 == 0 and progress_callback:

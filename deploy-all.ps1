@@ -6,6 +6,34 @@ $PEM_KEY = "scootware.pem"
 $REMOTE_PATH = "/home/admin/Scootware-Forum"
 
 Write-Host "--- Bundling Source Code ---" -ForegroundColor Cyan
+
+Write-Host "  Preparing environment file for deployment..." -ForegroundColor Yellow
+$envProdFile = ".env.production"
+$envFile = ".env"
+
+if (Test-Path $envProdFile) {
+    try {
+        Copy-Item -Path $envProdFile -Destination $envFile -Force
+        Write-Host "  [OK] Copied .env.production → .env" -ForegroundColor Green
+        
+        # Verify DATABASE_URL is properly set in .env
+        $envContent = Get-Content $envFile -Raw
+        if ($envContent -notmatch 'DATABASE_URL=postgresql://postgres:') {
+            Write-Host "  [WARNING] DATABASE_URL not set correctly in .env, adding default..." -ForegroundColor Yellow
+            Add-Content -Path $envFile -Value "`nDATABASE_URL=postgresql://postgres:[POSTGRES_PASSWORD]@127.0.0.1:5432/scootware"
+            Write-Host "  [OK] DATABASE_URL added to .env" -ForegroundColor Green
+        } else {
+            Write-Host "  [OK] DATABASE_URL is set in .env" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "  [ERROR] Failed to prepare .env file: $_" -ForegroundColor Red
+        exit 1
+    }
+} else {
+    Write-Host "  [ERROR] .env.production not found!" -ForegroundColor Red
+    exit 1
+}
+
 $archive = "$env:TEMP\scoot-deploy.tar.gz"
 If (Test-Path $archive) { Remove-Item $archive -Force }
 
@@ -75,13 +103,36 @@ ssh -i $PEM_KEY -o StrictHostKeyChecking=no "${REMOTE_USER}@${VPS_IP}" bash -c "
 Write-Host "--- Extracting and Deploying ---" -ForegroundColor Cyan
 $remote_cmd = @"
 cd ${REMOTE_PATH}
+
+# SAFETY: Preserve DATABASE_URL from existing .env before overwriting
+echo "  [SAFETY] Backing up existing DATABASE_URL..."
+if [ -f .env ]; then
+    OLD_DATABASE_URL=\$(grep '^DATABASE_URL=' .env | head -1)
+    if [ -n "\$OLD_DATABASE_URL" ]; then
+        echo "  ✓ Saved existing DATABASE_URL"
+    fi
+fi
+
+# Extract new project files
 tar -xzf project.tar.gz
 rm project.tar.gz
+
+# SAFETY: Restore DATABASE_URL if it was lost
+if [ -n "\$OLD_DATABASE_URL" ]; then
+    echo "  [SAFETY] Restoring DATABASE_URL to .env..."
+    # Remove any empty DATABASE_URL lines
+    sed -i '/^DATABASE_URL=""$/d' .env
+    sed -i '/^DATABASE_URL=$/d' .env
+    # Add back the working DATABASE_URL
+    echo "\$OLD_DATABASE_URL" >> .env
+    echo "  ✓ DATABASE_URL restored"
+fi
+
 # Run the remote manager to build and restart
 bash live-deployment/remote-manage.sh all
 "@
 
-ssh -i $PEM_KEY -o StrictHostKeyChecking=no "${REMOTE_USER}@${VPS_IP}" $remote_cmd
+ssh -i $PEM_KEY -o StrictHostKeyChecking=no "${REMOTE_USER}@${VPS_IP}" bash -c "$remote_cmd"
 
 Write-Host "--- Deployment Complete! ---" -ForegroundColor Green
 # Clean up local archive

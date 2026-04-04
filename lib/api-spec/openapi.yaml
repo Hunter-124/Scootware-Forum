@@ -1419,11 +1419,10 @@ components:
           type: string
         maintenanceMode:
           type: boolean
-        allowRegistration:
-          type: boolean
+        registrationMode:
+          type: string
+          enum: [open, invite-only, closed]
         requireEmailVerification:
-          type: boolean
-        inviteOnlyMode:
           type: boolean
         inviteRequestMode:
           type: string
@@ -1447,7 +1446,7 @@ components:
               bulkDiscountPercent:
                 type: number
             required: [price]
-      required: [siteName, siteDescription, maintenanceMode, allowRegistration, requireEmailVerification]
+      required: [siteName, siteDescription, maintenanceMode, registrationMode, requireEmailVerification]
 
     SsoPendingResponse:
       type: object

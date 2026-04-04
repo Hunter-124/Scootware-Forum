@@ -1,11 +1,13 @@
-import { db, usersTable, threadsTable, postsTable } from "@workspace/db";
-import { eq, desc, sql } from "drizzle-orm";
+import { db, usersTable, threadsTable, postsTable, productAccessTable, type ProductAccess } from "@workspace/db";
+import { eq, desc, gt, and } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { User, Activity, Calendar, ShieldAlert, Upload, Send, MessageSquare } from "lucide-react";
+import { User, Activity, Calendar, ShieldAlert, Upload, Send, MessageSquare, Cpu } from "lucide-react";
 import { cn, formatDate, getRoleColor } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/session";
 import { Button } from "@/components/ui/button";
+import { RoleStatusBadge } from "@/components/RoleStatusBadge";
+import { ProductAccessCard } from "@/components/profile/ProductAccessCard";
 
 export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,6 +21,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
   const isOwnProfile = currentUser?.id === user.id;
   const isAdmin = currentUser?.role === "admin";
+
+  // Fetch active products (not expired)
+  const activeProducts = await db
+    .select()
+    .from(productAccessTable)
+    .where(
+      and(
+        eq(productAccessTable.userId, userId),
+        gt(productAccessTable.expiresAt, new Date())
+      )
+    )
+    .orderBy(desc(productAccessTable.grantedAt)) as ProductAccess[];
 
   // Fetch recent forum activity (posts)
   const recentPosts = await db
@@ -64,14 +78,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
             </div>
 
             <div className="flex-1 pb-2">
-              <h1 className="text-5xl font-display font-black text-white text-glow mb-3 tracking-tighter uppercase">{user.username}</h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-2">
-                <div className={cn(
-                  "text-[10px] font-black uppercase tracking-[0.3em] px-4 py-1.5 rounded-full border border-white/10 shadow-lg", 
-                  getRoleColor(user.role || 'user', user.upgradeType)
-                )}>
-                  {user.upgradeType || user.role}
-                </div>
+              <h1 className="text-5xl font-display font-black text-white text-glow mb-4 tracking-tighter uppercase">{user.username}</h1>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-2">
+                <RoleStatusBadge role={user.role || 'user'} upgradeType={user.upgradeType} />
                 {user.isBanned && (
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] px-4 py-1.5 rounded-full border text-destructive bg-destructive/10 border-destructive/30 shadow-lg animate-pulse">
                     Banned
@@ -110,36 +119,54 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         {/* Content Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           
-          {/* Recent transmissions */}
-          <div className="lg:col-span-2 space-y-8">
-            <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
-              <Activity className="w-6 h-6 text-primary" /> Transmission History
-            </h2>
-
-            <div className="space-y-4">
-              {recentPosts.length === 0 ? (
-                <div className="text-center py-20 text-muted-foreground italic border border-dashed border-white/10 rounded-3xl opacity-30">
-                  <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                  No confirmed signals on this frequency.
+          {/* Main Content Area */}
+          <div className="lg:col-span-2 space-y-12">
+            
+            {/* Active Products Section */}
+            {activeProducts.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
+                  <Cpu className="w-6 h-6 text-accent" /> Authorized Software
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {activeProducts.map((access) => (
+                    <ProductAccessCard key={access.id} productId={access.productId} expiresAt={access.expiresAt} />
+                  ))}
                 </div>
-              ) : (
-                recentPosts.map((post: any) => (
-                  <div key={post.id} className="glass-panel p-6 rounded-2xl border border-white/5 flex gap-6 hover:bg-white/[0.04] transition-all group">
-                    <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary/50 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-colors">
-                      <MessageSquare className="w-6 h-6 text-primary/50 group-hover:text-primary transition-colors" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-4 mb-2">
-                        <Link href={`/t/${post.threadId}`} className="font-bold text-white text-lg hover:text-primary transition-colors truncate">
-                          {post.threadTitle}
-                        </Link>
-                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest shrink-0">{formatDate(post.createdAt)}</span>
-                      </div>
-                      <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed italic">"{post.content}"</p>
-                    </div>
+              </div>
+            )}
+
+            {/* Recent transmissions */}
+            <div className="space-y-8">
+              <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
+                <Activity className="w-6 h-6 text-primary" /> Transmission History
+              </h2>
+
+              <div className="space-y-4">
+                {recentPosts.length === 0 ? (
+                  <div className="text-center py-20 text-muted-foreground italic border border-dashed border-white/10 rounded-3xl opacity-30">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                    No confirmed signals on this frequency.
                   </div>
-                ))
-              )}
+                ) : (
+                  recentPosts.map((post: any) => (
+                    <div key={post.id} className="glass-panel p-6 rounded-2xl border border-white/5 flex gap-6 hover:bg-white/[0.04] transition-all group">
+                      <div className="w-12 h-12 shrink-0 rounded-xl bg-secondary/50 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-colors">
+                        <MessageSquare className="w-6 h-6 text-primary/50 group-hover:text-primary transition-colors" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-4 mb-2">
+                          <Link href={`/t/${post.threadId}`} className="font-bold text-white text-lg hover:text-primary transition-colors truncate">
+                            {post.threadTitle}
+                          </Link>
+                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest shrink-0">{formatDate(post.createdAt)}</span>
+                        </div>
+                        <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed italic">"{post.content}"</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
@@ -149,34 +176,36 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
               <ShieldAlert className="w-6 h-6 text-accent" /> Identity Status
             </h2>
             
-            <div className="glass-panel p-8 rounded-3xl border border-white/10 space-y-6">
-               <div className="space-y-1">
-                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Current Rank</div>
-                  <div className={cn("text-xl font-bold uppercase", getRoleColor(user.role || 'user', user.upgradeType).split(' ')[0])}>
-                     {user.upgradeType || user.role}
+            <div className="glass-panel p-8 rounded-[2rem] border border-white/10 space-y-8 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
+               
+               <div className="space-y-3 relative z-10">
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-50">Current Standing</div>
+                  <div className="flex items-center gap-3">
+                    <RoleStatusBadge role={user.role || 'user'} upgradeType={user.upgradeType} />
                   </div>
                </div>
                
-               <div className="h-px bg-white/5" />
+               <div className="h-px bg-white/5 w-full" />
                
-               <div className="space-y-1">
-                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Sync Status</div>
-                  <div className="text-white font-bold flex items-center gap-2">
-                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                     ONLINE_ENCRYPTED
+               <div className="space-y-3 relative z-10">
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-50">System Link</div>
+                  <div className="text-white font-bold flex items-center gap-3">
+                     <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                     <span className="text-sm tracking-tighter">SECURE_CONNECTION_ACTIVE</span>
                   </div>
                </div>
 
-               <div className="h-px bg-white/5" />
+               <div className="h-px bg-white/5 w-full" />
 
-               <div className="space-y-4 pt-2">
-                  <Button className="w-full bg-secondary hover:bg-white/10 border border-white/10 justify-start h-12 px-6 gap-4">
-                     <User className="w-5 h-5 text-primary" />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Send Direct Ping</span>
+               <div className="space-y-4 pt-2 relative z-10">
+                  <Button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 justify-start h-14 px-6 gap-4 rounded-2xl group transition-all duration-300">
+                     <User className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                     <span className="text-[10px] font-black uppercase tracking-widest">Establish Comms</span>
                   </Button>
-                  <Button className="w-full bg-secondary hover:bg-white/10 border border-white/10 justify-start h-12 px-6 gap-4">
-                     <Activity className="w-5 h-5 text-accent" />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Compare Signals</span>
+                  <Button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 justify-start h-14 px-6 gap-4 rounded-2xl group transition-all duration-300">
+                     <Activity className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
+                     <span className="text-[10px] font-black uppercase tracking-widest">Analyze Pattern</span>
                   </Button>
                </div>
             </div>

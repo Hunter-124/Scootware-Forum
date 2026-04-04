@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { createPostAction } from "@/actions/forum";
 import { ReplyForm } from "@/components/forum/ReplyForm";
+import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 import { redirect } from "next/navigation";
 
 export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
@@ -116,15 +117,10 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
                   </div>
                   
                   <div className="flex-1 min-w-0 md:text-center md:mt-6">
-                    <Link href={`/profile/${post.authorId}`} className="text-xl font-bold text-white hover:text-primary transition-colors truncate block mb-1">
+                    <Link href={`/profile/${post.authorId}`} className="text-xl font-bold text-white hover:text-primary transition-colors truncate block mb-2">
                       {post.authorUsername}
                     </Link>
-                    <div className={cn(
-                      "text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded border border-white/10 inline-block", 
-                      getRoleColor(post.authorRole || 'user', post.authorUpgradeType)
-                    )}>
-                      {post.authorUpgradeType || post.authorRole}
-                    </div>
+                    <RoleStatusBadge role={post.authorRole || 'user'} upgradeType={post.authorUpgradeType} compact />
                     
                     <div className="hidden md:block mt-8 space-y-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-t border-white/10 pt-6">
                       <div className="flex justify-between items-center">

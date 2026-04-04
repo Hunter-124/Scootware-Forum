@@ -54,9 +54,17 @@ class Config:
                 "remote_path": "/home/admin/Scootware-Forum",
             },
             "local": {
-                "project_root": "../../",  # Go up 2 levels from local-deployment/deployment-manager/ to get to project root
+                "project_root": "../../",  # Go up 2 levels from local-deployment/deployment-manager/ to get to Scootware-Forum source directory
                 "tar_exclude": [
                     # ============ CRITICAL EXCLUSIONS ============
+                    # Parent-level directory files (not needed for production)
+                    # These are development/deployment files at the parent level
+                    "CODEBASE_EXPLORATION.md",
+                    "SUBSCRIPTION_EXTENSION_FEATURE.md",
+                    "SUBSCRIPTION_EXTENSION_QUICK_REFERENCE.md",
+                    "application_credentials",
+                    "*.lnk",
+                    
                     # Version control (not needed on server)
                     ".git",
                     ".github",

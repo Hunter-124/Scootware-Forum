@@ -2,6 +2,7 @@ import express, { type Express } from "express";
 import fs from "fs";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import helmet from "helmet";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,6 +12,7 @@ import { pool, db, loginEventsTable } from "@workspace/db";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { passport } from "./routes/auth";
+import { xssProtection } from "./lib/xss-protection";
 import path from "path";
 
 const PgSession = connectPgSimple(session);
@@ -19,11 +21,11 @@ const PgSession = connectPgSimple(session);
 class MemorySessionStore extends session.Store {
   private sessions: Record<string, any> = {};
   
-  get(sid: string, callback: (err: Error | null, session?: Express.SessionData | null) => void) {
+  get(sid: string, callback: (err: Error | null, session?: any | null) => void) {
     callback(null, this.sessions[sid] || null);
   }
   
-  set(sid: string, session: Express.SessionData, callback?: (err?: Error | null) => void) {
+  set(sid: string, session: any, callback?: (err?: Error | null) => void) {
     this.sessions[sid] = session;
     callback?.();
   }
@@ -61,13 +63,56 @@ app.use(
   }),
 );
 
-app.use(cors({
-  origin: true,
-  credentials: true,
+// Security: Add helmet.js for security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
 }));
 
-app.use(express.json({ limit: "10kb", verify: (req: any, _res: any, buf: Buffer) => { (req as any).rawBody = buf; } }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+// CORS configuration
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.some(allowed => {
+      if ((allowed as string).includes("*")) {
+        const pattern = (allowed as string).replace("*", ".*");
+        return new RegExp(pattern).test(origin);
+      }
+      return origin === allowed;
+    });
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      logger.warn({ origin }, "CORS request blocked");
+      callback(new Error("CORS not allowed"), false);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  maxAge: 86400,
+}));
+
+// Increase body size limits to allow large file uploads (1GB)
+// Note: multer is used for file uploads with more granular limits per route
+
+app.use(express.json({ 
+  limit: "1gb",
+  verify: (req: any, res, buf, encoding) => {
+    // Capture raw body for diagnostics
+    req.rawBody = buf.toString(encoding || 'utf-8');
+  }
+}));
+app.use(express.urlencoded({ extended: true, limit: "1gb" }));
+
+// Security: Add XSS protection middleware to sanitize user input
+app.use(xssProtection);
 
 // Determine which session store to use
 let sessionStore: session.Store;
@@ -85,10 +130,26 @@ if (pool && typeof pool.query === "function" && typeof pool.end === "function" &
   sessionStore = new MemorySessionStore();
 }
 
+// Security: Require SESSION_SECRET to be set
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  logger.error(
+    "SESSION_SECRET environment variable is not set! " +
+    "Sessions will be insecure. Set SESSION_SECRET to a random 32-byte hex string. " +
+    "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
+  );
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "SESSION_SECRET is required in production. " +
+      "Generate a secure secret and set it as an environment variable."
+    );
+  }
+}
+
 app.use(
   session({
     store: sessionStore,
-    secret: process.env.SESSION_SECRET || "dev-secret-change-in-production",
+    secret: sessionSecret || "dev-secret-do-not-use-in-production",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -148,13 +209,73 @@ app.use("/api", async (req: any, res: any, next: any) => {
 
 app.use("/api", router);
 
+// Error handling middleware for multer and other errors
+app.use((err: any, req: any, res: any, next: any) => {
+  // Handle JSON parse errors specifically
+  if (err instanceof SyntaxError && 'body' in err && req.url?.includes('/api/admin/config')) {
+    req.log?.error({ err, url: req.url, method: req.method, contentType: req.get('content-type'), rawBody: (req as any).rawBody }, "JSON parse error on config endpoint");
+    return res.status(400).json({ 
+      error: "Invalid JSON in request body",
+      details: "The request body must be valid JSON with quoted property names and string values",
+      received: (req as any).rawBody ? (req as any).rawBody.substring(0, 200) : "unknown"
+    });
+  }
+  
+  // Handle other JSON parse errors
+  if (err instanceof SyntaxError && 'body' in err) {
+    req.log?.error({ err }, "JSON parse error");
+    return res.status(400).json({ error: "Invalid JSON in request body" });
+  }
+
+  req.log?.error({ err, code: err.code, message: err.message }, "Request error");
+  
+  // Don't try to send response if headers already sent
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  // Handle multer errors
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ error: "File too large" });
+  }
+  if (err.code === "LIMIT_FILE_COUNT") {
+    return res.status(413).json({ error: "Too many files" });
+  }
+  if (err.code === "LIMIT_FIELD_COUNT") {
+    return res.status(413).json({ error: "Too many fields" });
+  }
+  if (err.code === "LIMIT_PARTS") {
+    return res.status(413).json({ error: "Too many parts" });
+  }
+  
+  // Handle file validation errors
+  if (err.message && err.message.includes("is not an .exe file")) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (err.message && err.message.includes(".exe")) {
+    return res.status(400).json({ error: err.message });
+  }
+  if (err.message && err.message.includes("allowed")) {
+    return res.status(400).json({ error: err.message });
+  }
+  
+  // Default error response - always return JSON
+  const statusCode = err.status || err.statusCode || 500;
+  const errorMessage = process.env.NODE_ENV !== "production" ? err.message : "Internal server error";
+  
+  res.status(statusCode).json({ 
+    error: errorMessage,
+    code: err.code || undefined
+  });
+});
+
 // Debug endpoint to diagnose static file serving
 app.get("/debug/status", (req, res) => {
   const distDir = process.env.FORUM_DIST_PATH;
   const distExists = distDir ? fs.existsSync(distDir) : false;
   const indexExists = distDir ? fs.existsSync(path.join(distDir, "index.html")) : false;
   
-  let distFiles = [];
+  let distFiles: string[] = [];
   try {
     if (distDir && distExists) {
       distFiles = fs.readdirSync(distDir).slice(0, 10);

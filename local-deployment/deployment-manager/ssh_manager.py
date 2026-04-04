@@ -125,6 +125,41 @@ class SSHManager:
         except Exception as e:
             return 1, "", str(e)
 
+    def clear_port_conflicts(self) -> Tuple[bool, str]:
+        """Clear conflicting Node/PM2 processes from ports 80, 443, 3000.
+        
+        This prevents deployment failures due to other PM2 daemons or Node apps
+        binding to web ports. Called before starting deployment.
+        
+        Returns:
+            (success, message) tuple
+        """
+        if not self.client:
+            return False, "Not connected to VPS"
+        
+        try:
+            # Kill any Node processes that might be conflicting
+            commands = [
+                "sudo killall -9 node 2>/dev/null || true",
+                "sudo pkill -9 -f 'nodeapp' 2>/dev/null || true",
+                "sudo pkill -9 -f '/var/www' 2>/dev/null || true",
+                "sudo fuser -k 80/tcp 2>/dev/null || true",
+                "sudo fuser -k 443/tcp 2>/dev/null || true",
+                "sudo fuser -k 3000/tcp 2>/dev/null || true",
+            ]
+            
+            for cmd in commands:
+                self.execute_command(cmd)
+            
+            # Give the system time to release ports
+            import time
+            time.sleep(2)
+            
+            return True, "Port conflicts cleared"
+        
+        except Exception as e:
+            return False, f"Failed to clear port conflicts: {str(e)}"
+
     def upload_file(self, local_path: str, remote_path: str) -> Tuple[bool, str]:
         """Upload a single file via SFTP.
         

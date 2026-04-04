@@ -44,6 +44,7 @@ export * from "./shoutboxMessage";
 export * from "./siteConfig";
 export * from "./siteConfigInviteRequestMode";
 export * from "./siteConfigProducts";
+export * from "./siteConfigRegistrationMode";
 export * from "./ssoCreateRequest";
 export * from "./ssoLinkRequest";
 export * from "./ssoPendingResponse";

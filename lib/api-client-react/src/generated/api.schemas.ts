@@ -304,6 +304,15 @@ export interface BanUserRequest {
   reason: string;
 }
 
+export type SiteConfigRegistrationMode =
+  (typeof SiteConfigRegistrationMode)[keyof typeof SiteConfigRegistrationMode];
+
+export const SiteConfigRegistrationMode = {
+  open: "open",
+  "invite-only": "invite-only",
+  closed: "closed",
+} as const;
+
 export type SiteConfigInviteRequestMode =
   (typeof SiteConfigInviteRequestMode)[keyof typeof SiteConfigInviteRequestMode];
 
@@ -327,9 +336,8 @@ export interface SiteConfig {
   siteName: string;
   siteDescription: string;
   maintenanceMode: boolean;
-  allowRegistration: boolean;
+  registrationMode: SiteConfigRegistrationMode;
   requireEmailVerification: boolean;
-  inviteOnlyMode?: boolean;
   inviteRequestMode?: SiteConfigInviteRequestMode;
   /** @minimum 0 */
   inviteRequestCooldownDays?: number;

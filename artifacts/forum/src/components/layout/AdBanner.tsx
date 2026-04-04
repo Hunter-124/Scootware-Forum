@@ -15,7 +15,7 @@ export function AdBanner({ className = "" }: { className?: string }) {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background/80 to-transparent" />
         
-        <div className="relative z-10 p-6 flex flex-col items-center text-center space-y-4">
+        <div className="relative z-10 p-6 flex flex-col items-center justify-center text-center space-y-4 h-full">
           <h3 className="text-xl font-display font-bold tracking-wide text-glow">
             DOMINATE THE <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">GAME.</span>
           </h3>

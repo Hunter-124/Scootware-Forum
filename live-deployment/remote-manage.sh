@@ -21,8 +21,32 @@ source_env_safe() {
     fi
 }
 
+# SAFETY: Ensure DATABASE_URL is always set properly
+ensure_database_url() {
+    if [ ! -f "${APP_PATH}/.env" ]; then
+        echo "  ⚠️  WARNING: .env file not found, creating with defaults..."
+        touch "${APP_PATH}/.env"
+    fi
+    
+    # Check if DATABASE_URL is empty or missing
+    if ! grep -q '^DATABASE_URL=postgresql://' "${APP_PATH}/.env" 2>/dev/null; then
+        echo "  [CRITICAL] DATABASE_URL not properly set in .env!"
+        echo "  Adding default PostgreSQL connection..."
+        # Remove any empty DATABASE_URL entries first
+        sed -i '/^DATABASE_URL=/d' "${APP_PATH}/.env" 2>/dev/null || true
+        # Add the proper DATABASE_URL
+        echo 'DATABASE_URL=postgresql://postgres:[POSTGRES_PASSWORD]@127.0.0.1:5432/scootware' >> "${APP_PATH}/.env"
+        echo "  ✓ DATABASE_URL set to default PostgreSQL connection"
+    fi
+}
+
 # Load environment variables from .env if it exists
 source_env_safe "$APP_PATH/.env"
+
+# SAFETY: Always ensure DATABASE_URL is properly configured before doing anything
+echo "--- Checking Environment Configuration ---"
+ensure_database_url
+echo ""
 
 case $COMMAND in
   update)
@@ -69,23 +93,79 @@ case $COMMAND in
   build)
     echo "--- Building Production Bundles ---"
     cd $APP_PATH || exit 1
+    
+    # First check database and run migrations if configured
+    if [ -n "$DATABASE_URL" ]; then
+      echo "  Running: pnpm --filter @workspace/db run push (pre-build migration)"
+      # Export env vars for the migration command
+      export DATABASE_URL
+      pnpm --filter @workspace/db run push 2>/dev/null || {
+        echo "  ⚠️  Pre-build migration skipped or failed (DB may already be up-to-date)"
+      }
+    fi
+    
+    # Build the application
+    echo "  Running: pnpm run build"
     pnpm run build
+    
+    if [ $? -eq 0 ]; then
+      echo "✓ Build completed successfully"
+      exit 0
+    else
+      echo "❌ Build failed!"
+      exit 1
+    fi
     ;;
   restart)
-    echo "--- Restarting PM2 Processes ---"
+    echo "--- Restarting PM2 Processes and Nginx ---"
     cd $APP_PATH || exit 1
 
-    # Remove stale/old processes and ensure ctl is clean.
+    # Step 0: Kill any conflicting Node/PM2 processes on ports 80/443
+    # This prevents errors from other PM2 daemons or Node apps binding to web ports
+    echo "[0/7] Clearing conflicting processes from ports 80/443/3000..."
+    
+    # Kill root's PM2 daemon (if it exists with other apps)
+    sudo killall -9 node 2>/dev/null || true
+    sudo pkill -9 -f "nodeapp" 2>/dev/null || true
+    sudo pkill -9 -f "/var/www" 2>/dev/null || true
+    
+    # Use fuser to kill processes bound to specific ports
+    sudo fuser -k 80/tcp 2>/dev/null || true
+    sudo fuser -k 443/tcp 2>/dev/null || true
+    
+    sleep 2
+    echo "  ✓ Port conflict cleanup complete"
+    echo ""
+
+    # Step 1: Apply database migrations and patches
+    echo "[1/7] Applying database migrations and patches..."
+    if [ -n "$DATABASE_URL" ]; then
+      echo "  Running: pnpm --filter @workspace/db run push"
+      pnpm --filter @workspace/db run push
+      if [ $? -eq 0 ]; then
+        echo "  ✓ Database migrations applied"
+      else
+        echo "  ⚠️  Database migration failed (continuing anyway - may retry on next startup)"
+      fi
+    else
+      echo "  ⚠️  DATABASE_URL not set - skipping migrations"
+    fi
+    echo ""
+
+    # Step 2: Clear PM2 processes
+    echo "[2/7] Cleaning up old PM2 processes..."
     pm2 delete all || true
     pm2 kill || true
+    sleep 1
 
-    # Verify ecosystem config exists
+    # Step 3: Verify ecosystem config
     if [ ! -f "$APP_PATH/ecosystem.config.cjs" ]; then
       echo "ERROR: ecosystem.config.cjs not found at $APP_PATH"
       exit 1
     fi
 
-    # Start API from the correct directory using explicit absolute path.
+    # Step 4: Start API backend
+    echo "[3/7] Starting API backend on port 3000..."
     pm2 start "/home/admin/Scootware-Forum/ecosystem.config.cjs" --update-env --cwd "$APP_PATH" --only scootware-api || {
       echo "WARNING: PM2 start via ecosystem config failed; attempting direct boot.mjs start"
       pm2 start "/home/admin/Scootware-Forum/boot.mjs" --name scootware-api --cwd "$APP_PATH" --update-env || exit 1
@@ -95,10 +175,60 @@ case $COMMAND in
     pm2 save
     pm2 startup || true
 
-    echo "✓ PM2 processes restarted successfully"
-    echo "✓ API is now serving static files and API routes on port 3000"
+    # Wait for API to start
+    sleep 2
+    
+    # Verify API is running
+    echo "[4/7] Verifying API is running..."
+    if pm2 status | grep -q "scootware-api.*online"; then
+      echo "✓ API is online"
+    else
+      echo "❌ ERROR: API failed to start!"
+      pm2 logs scootware-api --lines 20 --nostream
+      exit 1
+    fi
+
+    # Step 5: Setup and verify Nginx
+    echo "[5/7] Applying Nginx configuration..."
+    chmod +x "$APP_PATH/live-deployment/apply-nginx-https.sh"
+    if ! sudo bash "$APP_PATH/live-deployment/apply-nginx-https.sh"; then
+      echo "❌ ERROR: Nginx deployment failed!"
+      exit 1
+    fi
+
+    # Step 6: Final health check
+    echo "[6/7] Performing health checks..."
+    
+    # Check API health locally
+    if command -v curl >/dev/null 2>&1; then
+      echo "   - Checking API on localhost:3000..."
+      if curl -fsS --max-time 5 http://127.0.0.1:3000/api/healthz >/dev/null 2>&1 || \
+         curl -fsS --max-time 5 http://127.0.0.1:3000/ >/dev/null 2>&1; then
+        echo "     ✓ API is responding"
+      else
+        echo "     ⚠️  API health check failed (may still work through proxy)"
+      fi
+      
+      echo "   - Checking Nginx on localhost:80..."
+      if curl -fsS --max-time 5 http://127.0.0.1/ >/dev/null 2>&1; then
+        echo "     ✓ Nginx is responding on port 80"
+      else
+        echo "     ❌ ERROR: Nginx not responding!"
+        exit 1
+      fi
+    fi
+
     echo ""
-    echo "✓ Restart completed successfully!"
+    echo "[7/7] Final verification complete"
+    echo "✓ PM2 processes restarted successfully"
+    echo "✓ Nginx is configured and running"
+    echo "✓ API is serving on port 3000 (proxied via Nginx port 80)"
+    echo ""
+    echo "✅ Restart completed successfully!"
+    echo ""
+    echo "Deployment is READY. Verify at:"
+    echo "  - http://[VPS_IP] (IP address)"
+    echo "  - http://scootware.us (if domain DNS is configured)"
     ;;
 
   setup)

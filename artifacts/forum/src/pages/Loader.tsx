@@ -35,9 +35,86 @@ const steps = [
   { n: "04", label: "Select Module", desc: "Pick a product and click Sync — done." },
 ];
 
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
 export default function Loader() {
   const { isAuthenticated, user } = useAuth();
-  const hasProduct = isAuthenticated && user?.upgradeType;
+  const [loaderVersion, setLoaderVersion] = React.useState<any>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isDownloading, setIsDownloading] = React.useState(false);
+
+  // Check if user has ANY active product subscription
+  const hasActiveSubscription = React.useMemo(() => {
+    if (!isAuthenticated || !user) return false;
+    // Check if user has activeProducts from the API
+    return (user as any).activeProducts && (user as any).activeProducts.length > 0;
+  }, [isAuthenticated, user]);
+
+  React.useEffect(() => {
+    const fetchLoaderVersion = async () => {
+      try {
+        const res = await fetch('/api/loaders/latest', { credentials: 'include' });
+        if (!res.ok) {
+          console.error('Failed to fetch loader version');
+          return;
+        }
+        const data = await res.json();
+        setLoaderVersion(data);
+      } catch (err) {
+        console.error('Failed to fetch loader:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLoaderVersion();
+  }, []);
+
+  const handleDownload = async () => {
+    if (!loaderVersion?.id) {
+      alert('Loader version not available');
+      return;
+    }
+
+    setIsDownloading(true);
+    try {
+      const res = await fetch(`/api/loaders/${loaderVersion.id}/download`, {
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        alert(errorData.error || 'Download failed');
+        return;
+      }
+
+      // Create a blob and trigger download
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ScootwareHub_v${loaderVersion.version}.exe`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Download failed. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const displayVersion = loaderVersion?.version || LOADER_VERSION;
+  const displaySize = loaderVersion?.fileSize ? formatFileSize(loaderVersion.fileSize) : LOADER_SIZE;
+  const displayDate = loaderVersion?.releaseDate ? new Date(loaderVersion.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : LOADER_DATE;
 
   return (
     <div className="container mx-auto px-4 py-12 flex flex-col lg:flex-row gap-12 w-full relative">
@@ -84,7 +161,7 @@ export default function Loader() {
                 <h2 className="text-3xl font-display font-black text-white tracking-tight uppercase">ScootwareHub.exe</h2>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] bg-primary/20 text-primary border border-primary/30 px-2.5 py-1 rounded-full font-black tracking-widest uppercase">
-                    v{LOADER_VERSION}
+                    v{displayVersion}
                   </span>
                   <span className="text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full font-black uppercase tracking-widest">
                     Verified
@@ -92,7 +169,7 @@ export default function Loader() {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mb-4 font-bold uppercase tracking-widest opacity-60">
-                Windows 10 / 11 (64-bit) &nbsp;·&nbsp; {LOADER_SIZE} &nbsp;·&nbsp; {LOADER_DATE}
+                Windows 10 / 11 (64-bit) &nbsp;·&nbsp; {displaySize} &nbsp;·&nbsp; {displayDate}
               </p>
               <div className="flex flex-wrap justify-center md:justify-start gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 <span className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5"><CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> Auto-Sync</span>
@@ -103,13 +180,14 @@ export default function Loader() {
 
             {/* Download button or gate */}
             <div className="shrink-0 flex flex-col items-center md:items-end gap-3">
-              {hasProduct ? (
+              {hasActiveSubscription ? (
                 <Button
                     size="lg"
-                    className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:scale-[1.02] active:scale-95 transition-all"
-                    onClick={() => alert("Deployment scheduled. Binary will be available shortly.")}
+                    disabled={isLoading || isDownloading}
+                    className="h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest text-xs shadow-[0_10px_30px_rgba(168,85,247,0.3)] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleDownload}
                 >
-                  <Download className="w-5 h-5 mr-2" /> Initialize Download
+                  <Download className="w-5 h-5 mr-2" /> {isDownloading ? 'Downloading...' : 'Initialize Download'}
                 </Button>
               ) : isAuthenticated ? (
                 <div className="flex flex-col items-center md:items-end gap-3">
