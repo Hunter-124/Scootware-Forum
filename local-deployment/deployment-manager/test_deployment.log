@@ -1,3 +1,0 @@
-2026-03-30 18:37:20 - deployment_manager - INFO - Test deployment started
-2026-03-30 18:37:20 - deployment_manager - ERROR - SSH connection failed: PEM key not found: scootware.pem
-2026-03-30 18:37:31 - deployment_manager - INFO - Test deployment started
