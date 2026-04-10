@@ -29,6 +29,7 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-glitch: glitch 1s linear infinite;
+  --animate-shine: shine 3s ease-in-out infinite;
 }
 
 :root {
@@ -120,4 +121,9 @@
   2%, 64% { transform: translate(2px, 0) skew(0deg); }
   4%, 60% { transform: translate(-2px, 0) skew(0deg); }
   62% { transform: translate(0, 0) skew(5deg); }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }

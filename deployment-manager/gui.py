@@ -12,6 +12,15 @@ from config import Config
 from error_logger import ErrorLogger
 from ssh_manager import SSHManager, DirectUploader
 from health_monitor import HealthMonitor
+import warnings
+
+# Silence cryptography deprecation warnings from paramiko
+try:
+    from cryptography.utils import CryptographyDeprecationWarning
+    warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+except ImportError:
+    # Fallback to string matching if cryptography is not directly available
+    warnings.filterwarnings("ignore", message=".*TripleDES.*")
 
 
 
@@ -28,8 +37,9 @@ class DeploymentGUI:
             "This will execute the complete deployment cycle:\n\n" +
             "1. Stop all services (free up processing power)\n" +
             "2. Upload project files\n" +
-            "3. Build project\n" +
-            "4. Restart services\n\n" +
+            "3. Install dependencies & run migrations\n" +
+            "4. Build project (server-side)\n" +
+            "5. Restart services\n\n" +
             "Continue?"
         ):
             return
@@ -125,11 +135,37 @@ class DeploymentGUI:
                     ssh.disconnect()
                     return
                 
-                # STEP 3: Build Project
-                self._append_deploy_output("[STEP 3/4] Building project...\n")
+                # STEP 3: Install Dependencies & Migrations
+                self._append_deploy_output("[STEP 3/5] Installing dependencies & migrations...\n")
                 self._append_deploy_output("-" * 60 + "\n")
                 
                 remote_script = f"{remote_path}/live-deployment/remote-manage.sh"
+                returncode, stdout, stderr = ssh.run_deployment_script(
+                    remote_script,
+                    "update",
+                    progress_callback=self._append_deploy_output
+                )
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user during update\n")
+                    ssh.disconnect()
+                    return
+                
+                if returncode != 0:
+                    error_details = stderr if stderr.strip() else stdout
+                    raise Exception(f"Dependency update failed with code {returncode}: {error_details}")
+                
+                self._append_deploy_output("[✓] Dependencies installed successfully\n\n")
+                
+                if self.stop_deployment:
+                    self._append_deploy_output("\n[⚠️ STOPPED] Deployment cancelled by user before build\n")
+                    ssh.disconnect()
+                    return
+                
+                # STEP 4: Build Project
+                self._append_deploy_output("[STEP 4/5] Building project...\n")
+                self._append_deploy_output("-" * 60 + "\n")
+                
                 returncode, stdout, stderr = ssh.run_deployment_script(
                     remote_script,
                     "build",
@@ -142,7 +178,8 @@ class DeploymentGUI:
                     return
                 
                 if returncode != 0:
-                    raise Exception(f"Build failed with code {returncode}: {stderr}")
+                    error_details = stderr if stderr.strip() else stdout
+                    raise Exception(f"Build failed with code {returncode}: {error_details}")
                 
                 self._append_deploy_output("[✓] Build completed successfully\n\n")
                 
@@ -151,11 +188,11 @@ class DeploymentGUI:
                     ssh.disconnect()
                     return
                 
-                # STEP 4: Restart Services
-                self._append_deploy_output("[STEP 4/4] Restarting services...\n")
+                # STEP 5: Restart Services
+                self._append_deploy_output("[STEP 5/5] Restarting services...\n")
                 self._append_deploy_output("-" * 60 + "\n")
                 
-                self._append_deploy_output("[4/4] Running: remote-manage.sh restart\n")
+                self._append_deploy_output("[5/5] Running: remote-manage.sh restart\n")
                 returncode, stdout, stderr = ssh.run_deployment_script(
                     remote_script,
                     "restart",
@@ -168,7 +205,8 @@ class DeploymentGUI:
                     return
                 
                 if returncode != 0:
-                    raise Exception(f"Restart failed with code {returncode}: {stderr}")
+                    error_details = stderr if stderr.strip() else stdout
+                    raise Exception(f"Restart failed with code {returncode}: {error_details}")
                 
                 self._append_deploy_output("[✓] Services restarted successfully via remote-manage.sh\n\n")
                 
@@ -179,6 +217,7 @@ class DeploymentGUI:
                 self._append_deploy_output("Steps executed:\n")
                 self._append_deploy_output("  ✓ Stopped all services\n")
                 self._append_deploy_output("  ✓ Uploaded project files\n")
+                self._append_deploy_output("  ✓ Installed dependencies\n")
                 self._append_deploy_output("  ✓ Built project\n")
                 self._append_deploy_output("  ✓ Restarted services\n\n")
                 
@@ -631,7 +670,7 @@ class DeploymentGUI:
         # One-click complete upload cycle button (top right)
         complete_cycle_btn = tk.Button(
             full_deploy_header,
-            text="🚀 ONE-CLICK: Stop → Upload → Build → Restart",
+            text="🚀 ONE-CLICK: Stop → Upload → Update → Build → Restart",
             command=self._deploy_complete_upload_cycle,
             bg="#FF6B6B",
             fg="white",
@@ -657,14 +696,19 @@ class DeploymentGUI:
         ttk.Button(step_frame, text="0. Install Dependencies", command=lambda: self._run_remote_command("update", "Installing dependencies...")).pack(side=tk.LEFT, padx=2)
         ttk.Button(step_frame, text="1. Upload Project Files (Changed Only)", command=self._deploy_upload_new_files).pack(side=tk.LEFT, padx=2)
         ttk.Button(step_frame, text="2. Build Project", command=lambda: self._run_remote_command("build", "Building project...")).pack(side=tk.LEFT, padx=2)
-        ttk.Button(step_frame, text="3. Restart & Verify", command=self._deploy_api_full).pack(side=tk.LEFT, padx=2)
+        ttk.Button(step_frame, text="3. Restart & Verify", command=self._deploy_restart).pack(side=tk.LEFT, padx=2)
         ttk.Button(step_frame, text="4. Apply Asset/Nginx Fix", command=self._deploy_complete_fix).pack(side=tk.LEFT, padx=2)
         # Service control
         ttk.Label(deploy_frame, text="⚡ Service Controls", font=("Arial", 12, "bold")).pack(anchor=tk.W, padx=10, pady=(15, 5))
         service_frame = ttk.Frame(deploy_frame)
         service_frame.pack(anchor=tk.W, padx=20, pady=5, fill=tk.X)
-        ttk.Button(service_frame, text="Restart Services", command=self._deploy_api_full).pack(side=tk.LEFT, padx=5)
-        ttk.Button(service_frame, text="Quick Restart (PM2 only)", command=self._deploy_restart).pack(side=tk.LEFT, padx=5)
+        
+        # Primary Restart Button (Runs remote-manage.sh restart)
+        ttk.Button(service_frame, text="🔁 Server Restart (Full)", command=self._deploy_restart).pack(side=tk.LEFT, padx=5)
+        
+        # Correctly Labeled Build & Deploy (Runs local build + upload + restart)
+        ttk.Button(service_frame, text="📦 Build & Deploy API", command=self._deploy_api_full).pack(side=tk.LEFT, padx=5)
+        
         ttk.Button(service_frame, text="Start Services", command=self._start_services).pack(side=tk.LEFT, padx=5)
         ttk.Button(service_frame, text="Stop Services", command=self._stop_services).pack(side=tk.LEFT, padx=5)
         # Output
@@ -1888,15 +1932,12 @@ class DeploymentGUI:
     def _clear_logs(self) -> None:
         """Clear logs display."""
         if messagebox.askyesno("Confirm", "Clear all logs?"):
-            # Delete the log file
-            log_path = Path(self.error_logger.log_file)
-            if log_path.exists():
-                log_path.unlink()
-            
-            self.error_logger.logger.handlers.clear()
-            self.error_logger = ErrorLogger(self.config.get("logging.log_file"))
-            self.logs_output.delete("1.0", tk.END)
-            messagebox.showinfo("Success", "Logs cleared")
+            try:
+                self.error_logger.clear()
+                self.logs_output.delete("1.0", tk.END)
+                messagebox.showinfo("Success", "Logs cleared")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to clear logs: {e}")
 
     def _copy_logs(self) -> None:
         """Copy logs to clipboard."""

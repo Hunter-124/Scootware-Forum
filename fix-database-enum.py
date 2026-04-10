@@ -40,10 +40,13 @@ try:
     
     fix_script = f"""{remote_path}/fix-enum.sh"""
     
-    script_content = '''#!/bin/bash
-set -e
+    script_content = '''set -e
 cd ''' + remote_path + '''
-source .env
+# Source .env if it exists, ignoring errors from potentially corrupted lines
+if [ -f .env ]; then
+  # Only source lines that look like valid exports to avoid "Administrator: command not found"
+  export $(grep -v '^#' .env | xargs -r) 2>/dev/null || true
+fi
 echo "Fixing upgrade_type enum..."
 psql "$DATABASE_URL" << EOF
 UPDATE "users" SET "upgrade_type" = NULL, "upgrade_expires_at" = NULL WHERE "upgrade_type" IS NOT NULL;
@@ -57,6 +60,8 @@ CREATE TYPE "public"."upgrade_type" AS ENUM(
   'DAYZ_LIFETIME',
   'TARKOV_PREMIUM',
   'TARKOV_LIFETIME',
+  'CS2_PREMIUM',
+  'CS2_LIFETIME',
   'SPOOFER_PREMIUM',
   'SPOOFER_LIFETIME'
 );

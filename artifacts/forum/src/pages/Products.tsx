@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { CheckoutModal } from "@/components/CheckoutModal";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatUpgradeDisplay } from "@/lib/utils";
 import { PRODUCT_IMAGES } from "@/lib/product-assets";
 
 
@@ -232,7 +232,7 @@ export default function Products() {
                         ? "text-muted-foreground" 
                         : "text-white group-hover:text-primary"
                     )}>
-                      {product.name}
+                      {formatUpgradeDisplay(product.name)}
                     </h3>
                     
                     <p className={cn(

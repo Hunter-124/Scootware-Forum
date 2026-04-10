@@ -7,6 +7,7 @@ import shoutboxRouter from "./shoutbox";
 import upgradesRouter from "./upgrades";
 import adminRouter from "./admin";
 import loadersRouter from "./loaders";
+import productAssetsRouter from "./productAssets";
 
 const router: IRouter = Router();
 
@@ -17,6 +18,7 @@ router.use("/forum", forumRouter);
 router.use("/shoutbox", shoutboxRouter);
 router.use("/upgrades", upgradesRouter);
 router.use("/products", upgradesRouter); // Added for React Products.tsx expecting /api/products
+router.use("/products", productAssetsRouter);
 router.use("/admin", adminRouter);
 router.use("/loaders", loadersRouter);
 

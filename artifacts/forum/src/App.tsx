@@ -12,10 +12,12 @@ import Products from "@/pages/Products";
 import Store from "@/pages/Store";
 import Upgrades from "@/pages/Upgrades";
 import Loader from "@/pages/Loader";
+import LuaDocs from "@/pages/LuaDocs";
 import AdminDashboard from "@/pages/Admin";
 import AccountSettings from "@/pages/AccountSettings";
 import { Login, Register, ForgotPassword, ResetPassword } from "@/pages/AuthPages";
 import SsoLink from "@/pages/SsoLink";
+import SsoCreateUsername from "@/pages/SsoCreateUsername";
 import NotFound from "@/pages/not-found";
 
 // Central query client configuration
@@ -41,10 +43,12 @@ function Router() {
         <Route path="/store" component={Store} />
         <Route path="/upgrades" component={Upgrades} />
         <Route path="/loader" component={Loader} />
+        <Route path="/docs/lua" component={LuaDocs} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
+        <Route path="/sso-create-username" component={SsoCreateUsername} />
         <Route path="/sso-link" component={SsoLink} />
         <Route path="/account" component={AccountSettings} />
         <Route path="/admin" component={AdminDashboard} />

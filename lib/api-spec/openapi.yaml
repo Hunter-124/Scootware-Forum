@@ -997,6 +997,7 @@ components:
             RUST_PREMIUM, RUST_LIFETIME,
             DAYZ_PREMIUM, DAYZ_LIFETIME,
             TARKOV_PREMIUM, TARKOV_LIFETIME,
+            CS2_PREMIUM, CS2_LIFETIME,
             SPOOFER_PREMIUM, SPOOFER_LIFETIME
           ]
         upgradeExpiresAt:
@@ -1396,6 +1397,7 @@ components:
             RUST_PREMIUM, RUST_LIFETIME,
             DAYZ_PREMIUM, DAYZ_LIFETIME,
             TARKOV_PREMIUM, TARKOV_LIFETIME,
+            CS2_PREMIUM, CS2_LIFETIME,
             SPOOFER_PREMIUM, SPOOFER_LIFETIME
           ]
         upgradeExpiresAt:

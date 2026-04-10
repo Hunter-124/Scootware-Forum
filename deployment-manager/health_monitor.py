@@ -116,15 +116,19 @@ class HealthMonitor:
                 "message": "Failed to check server status"
             }
 
-    def check_database_connection(self, ssh_manager: SSHManager) -> Tuple[bool, str]:
+    def check_database_connection(self, ssh_manager: SSHManager, api_reported_connected: bool = False) -> Tuple[bool, str]:
         """Check if PostgreSQL is accessible.
         
         Args:
             ssh_manager: Connected SSH manager
+            api_reported_connected: Whether the API reported a successful DB connection
             
         Returns:
             (is_connected, message) tuple
         """
+        if api_reported_connected:
+            return True, "Database connected (via API report)"
+
         try:
             # Check PostgreSQL service
             returncode, stdout, stderr = ssh_manager.execute_command(
@@ -132,9 +136,9 @@ class HealthMonitor:
             )
             
             if "active" in stdout:
-                return True, "PostgreSQL is running"
+                return True, "PostgreSQL is running (System Service)"
             else:
-                return False, "PostgreSQL is not running"
+                return False, "PostgreSQL service is not active on host"
         
         except Exception as e:
             return False, f"Database check failed: {e}"
@@ -157,6 +161,20 @@ class HealthMonitor:
         
         # API health
         is_healthy, details = self.check_api_health()
+        api_body = details.get("body", {})
+        api_db_connected = False
+        
+        # If body is a string (failed to parse JSON), we try to parse it as JSON
+        if isinstance(api_body, str):
+            try:
+                import json
+                api_body = json.loads(api_body)
+            except:
+                pass
+        
+        if isinstance(api_body, dict):
+            api_db_connected = api_body.get("database") == "connected"
+
         diagnostics["api"] = {
             "healthy": is_healthy,
             **details
@@ -170,10 +188,10 @@ class HealthMonitor:
                 **server_status
             }
             
-            # Database status
-            is_connected, db_message = self.check_database_connection(ssh_manager)
+            # Database status - Trust API report if system service check is ambiguous
+            is_connected, db_message = self.check_database_connection(ssh_manager, api_reported_connected=api_db_connected)
             diagnostics["database"] = {
-                "connected": is_connected,
+                "connected": is_connected or api_db_connected,
                 "message": db_message
             }
         

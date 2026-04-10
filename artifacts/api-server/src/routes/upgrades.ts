@@ -37,8 +37,8 @@ function requireAuth(req: Request, res: Response, next: any) {
 function buildDefaultProducts() {
   return PRODUCT_IDS.map(id => ({
     id,
-    name: id === "SPOOFER" ? "HWID Spoofer" : `${id} Access`,
-    description: id === "SPOOFER" ? "Advanced HWID protection for all games." : `Exclusive access to ${id} software and updates.`,
+    name: id === "SPOOFER" ? "HWID Spoofer" : id === "CS2" ? "Counter-Strike 2 Access" : `${id} Access`,
+    description: id === "SPOOFER" ? "Advanced HWID protection for all games." : id === "CS2" ? "Exclusive access to Counter-Strike 2 software and updates." : `Exclusive access to ${id} software and updates.`,
     price: id === "SPOOFER" ? 9.99 : 19.99,
     durationDays: 30,
     inviteOnly: false,
@@ -272,7 +272,18 @@ router.post('/redeem-invite', requireAuth, async (req: Request, res: Response) =
       return res.status(400).json({ error: 'Invite code not valid for this product' });
     }
 
-    await db.update(inviteCodesTable).set({ isUsed: true, usedBy: user.id, usedAt: new Date() }).where(eq(inviteCodesTable.id, invite.id));
+    // Use UPDATE with WHERE condition to prevent race conditions - atomically mark as used
+    const updated = await db
+      .update(inviteCodesTable)
+      .set({ isUsed: true, usedBy: user.id, usedAt: new Date() })
+      .where(eq(inviteCodesTable.id, invite.id))
+      .returning();
+
+    // If update returned no rows, another request already redeemed this code
+    if (updated.length === 0) {
+      return res.status(400).json({ error: 'Invite code was just used' });
+    }
+
     const expiry = new Date(); expiry.setDate(expiry.getDate() + 30);
     await db.insert(productAccessTable).values({ userId: user.id, productId, expiresAt: expiry, paymentRef: `invite-${invite.id}` });
 

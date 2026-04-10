@@ -35,3 +35,35 @@ export function getRoleColor(role: string, upgradeType?: string | null) {
   if (upgradeType?.includes('PREMIUM')) return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
   return 'text-zinc-400 bg-zinc-400/10 border-zinc-400/20';
 }
+
+/**
+ * Format upgrade type for display
+ * Removes all instances of _PREMIUM (case-insensitive)
+ * RUST_PREMIUM -> Rust
+ * SPOOFER_LIFETIME -> Spoofer (Lifetime)
+ */
+export function formatUpgradeDisplay(upgradeType: string | null | undefined): string {
+  if (!upgradeType) return "";
+  
+  const isLifetime = /LIFETIME/i.test(upgradeType);
+  const isCS2 = /CS2|Counter-Strike/i.test(upgradeType);
+
+  if (isCS2) {
+    const base = "Counter-Strike 2";
+    if (isLifetime) return `${base} (Lifetime)`;
+    return base;
+  }
+
+  const base = upgradeType
+    .replace(/_PREMIUM/gi, "")
+    .replace(/_LIFETIME/gi, "")
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+    .trim();
+  
+  if (isLifetime && base) {
+    return `${base} (Lifetime)`;
+  }
+  return base || "Subscriber";
+}

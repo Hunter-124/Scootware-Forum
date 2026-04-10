@@ -359,6 +359,7 @@ class DeploymentGUI:
         ttk.Button(service_frame, text="Start", command=self._start_services).pack(side=tk.LEFT, padx=5)
         ttk.Button(service_frame, text="Stop", command=self._stop_services).pack(side=tk.LEFT, padx=5)
         ttk.Button(service_frame, text="Restart", command=lambda: self._run_remote_command("restart", "Restarting services...")).pack(side=tk.LEFT, padx=5)
+        ttk.Button(service_frame, text="Reboot VPS", command=lambda: self._run_remote_command("reboot", "Rebooting server VPS...")).pack(side=tk.LEFT, padx=5)
         # Output
         ttk.Label(deploy_frame, text="Output:", font=("Arial", 10, "bold")).pack(anchor=tk.W, padx=10, pady=(15, 5))
         self.deploy_output = scrolledtext.ScrolledText(deploy_frame, height=15, width=80)
@@ -653,18 +654,40 @@ class DeploymentGUI:
                 
                 self._append_deploy_output(f"[OK] Files uploaded successfully\n")
                 
-                # Run remote management script
-                self._append_deploy_output("\n[INFO] Building and restarting services...\n")
+                # Run remote management script (this will now trigger a reboot)
+                self._append_deploy_output("\n[INFO] Building and initiating server reboot...\n")
+                self._append_deploy_output("[INFO] NOTE: Connection will be lost as the server restarts.\n")
                 
                 remote_script = f"{self.remote_path_var.get()}/live-deployment/remote-manage.sh"
-                returncode, stdout, stderr = ssh.run_deployment_script(
-                    remote_script,
-                    "all",
-                    progress_callback=self._append_deploy_output
-                )
                 
-                # Check for build errors in output
-                build_failed = returncode != 0 or "error" in stderr.lower() or "failed" in stderr.lower()
+                # We expect a potential exception or non-zero code due to the connection dropping
+                try:
+                    returncode, stdout, stderr = ssh.run_deployment_script(
+                        remote_script,
+                        "all",
+                        progress_callback=self._append_deploy_output
+                    )
+                except Exception as e:
+                    # If we got a connection error after sending the command, it's likely success
+                    if "closed" in str(e).lower() or "connection" in str(e).lower():
+                        returncode = 0
+                        stderr = ""
+                        self._append_deploy_output("\n[INFO] Connection closed (Reboot started)\n")
+                    else:
+                        raise e
+
+                # Check for build errors (before reboot)
+                # If we have returncode 1 but output mentions rebooting or connection issues,
+                # we treat it as success because the server went down before sending return 0.
+                if returncode != 0:
+                    if "reboot" in stdout.lower() or "reboot" in stderr.lower() or "connection" in stderr.lower():
+                        self._append_deploy_output("[INFO] Reboot confirmed via output analysis.\n")
+                        returncode = 0
+                        build_failed = False
+                    else:
+                        build_failed = "error" in stderr.lower() or "failed" in stderr.lower()
+                else:
+                    build_failed = False
                 
                 if build_failed:
                     self._append_deploy_output(f"\n[✗] Build may have failed (returncode: {returncode})\n")
@@ -805,11 +828,25 @@ class DeploymentGUI:
                 self._append_deploy_output(f"▶ {description}\n")
                 
                 remote_script = f"{self.remote_path_var.get()}/live-deployment/remote-manage.sh"
-                returncode, stdout, stderr = ssh.run_deployment_script(
-                    remote_script,
-                    command,
-                    progress_callback=self._append_deploy_output
-                )
+                
+                try:
+                    returncode, stdout, stderr = ssh.run_deployment_script(
+                        remote_script,
+                        command,
+                        progress_callback=self._append_deploy_output
+                    )
+                except Exception as e:
+                    # Connection loss is expected when rebooting
+                    if command == "reboot" and ("closed" in str(e).lower() or "connection" in str(e).lower()):
+                        returncode = 0
+                        stdout = "Reboot initiated"
+                        stderr = ""
+                    else:
+                        raise e
+                
+                # Further check if reboot was successful despite non-zero code from session drop
+                if command == "reboot" and returncode != 0 and ("reboot" in stdout.lower() or "connection" in stdout.lower()):
+                    returncode = 0
                 
                 ssh.disconnect()
                 

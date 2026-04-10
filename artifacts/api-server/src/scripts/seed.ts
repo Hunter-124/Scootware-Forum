@@ -35,7 +35,7 @@ async function main() {
     ];
 
     // 3. Insert Product Categories & Subforums
-    const productIds = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "SPOOFER"];
+    const productIds = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "CS2", "SPOOFER"];
     let currentOrder = 3;
 
     for (const productId of productIds) {
@@ -65,6 +65,7 @@ async function main() {
     const adminHash = await bcrypt.hash(adminPassword, 12);
     const userHash = await bcrypt.hash(userPassword, 12);
 
+    /*
     await db.insert(usersTable).values([
       {
         username: "local-admin",
@@ -83,7 +84,7 @@ async function main() {
         upgradeType: "SPOOFER_PREMIUM",
       },
     ]);
-
+    */
     console.log("Database seeded with categories, subforums, and test credentials!");
     process.exit(0);
   } catch (err) {

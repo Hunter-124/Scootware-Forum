@@ -7,7 +7,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import rateLimit from "express-rate-limit";
 import { db } from "@workspace/db";
-import { usersTable, siteConfigTable, loginEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable, postsTable } from "@workspace/db";
+import { usersTable, siteConfigTable, loginEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable, postsTable, accountChangesTable } from "@workspace/db";
 import { eq, gt, and, sql } from "drizzle-orm";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../lib/email";
 import { logger } from "../lib/logger";
@@ -121,6 +121,9 @@ passport.deserializeUser(async (id: number, done) => {
         isBanned: usersTable.isBanned,
         isEmailVerified: usersTable.isEmailVerified,
         createdAt: usersTable.createdAt,
+        googleId: usersTable.googleId,
+        discordId: usersTable.discordId,
+        steamId: usersTable.steamId,
         postCount: sql<number>`(SELECT COUNT(*)::int FROM ${postsTable} p WHERE p.author_id = ${usersTable.id})`,
       })
       .from(usersTable)
@@ -297,12 +300,21 @@ async function getSiteConfig() {
     requireEmailVerification: true,
     inviteRequestMode: "admin",
     inviteRequestCooldownDays: 7,
+    rateLimitChangePasswordPerWindow: 5,
+    rateLimitChangePasswordWindowMs: 3600000, // 1 hour
+    rateLimitChangeUsernamePerWindow: 3,
+    rateLimitChangeUsernameWindowMs: 86400000, // 24 hours
   };
 
   for (const row of rows) {
     if (row.key === "maintenanceMode" || row.key === "requireEmailVerification") {
       config[row.key] = row.value === "true";
-    } else if (row.key === "inviteRequestCooldownDays") {
+    } else if (row.key === "inviteRequestCooldownDays" || 
+               row.key === "rateLimitChangePasswordPerWindow" || 
+               row.key === "rateLimitChangeUsernamePerWindow") {
+      config[row.key] = Number(row.value) || 0;
+    } else if (row.key === "rateLimitChangePasswordWindowMs" ||
+               row.key === "rateLimitChangeUsernameWindowMs") {
       config[row.key] = Number(row.value) || 0;
     } else if (row.key === "products") {
       try {
@@ -460,7 +472,7 @@ router.post('/request-invite', inviteRequestLimiter, async (req: Request, res: R
     }).returning();
 
     if (config.inviteRequestMode === 'auto') {
-      const code = crypto.randomBytes(12).toString('base64url').replace(/[-_]/g, '').slice(0, 16).toUpperCase();
+      const code = crypto.randomBytes(32).toString('hex').toUpperCase().slice(0, 32);
       const [invite] = await db.insert(inviteCodesTable).values({ code, createdBy: null }).returning();
       await db.update(inviteRequestsTable).set({ status: 'approved', processedAt: new Date() }).where(eq(inviteRequestsTable.id, newReq[0].id));
       return res.json({ message: 'Invite automatically granted', inviteCode: code, invite });
@@ -512,7 +524,27 @@ router.post("/login", loginLimiter, async (req: Request, res: Response, next) =>
         }
       })();
 
-      req.session.save(() => {
+      req.session.save(async () => {
+        // Fetch active products before responding
+        const now = new Date();
+        const activeProducts = await db
+          .select()
+          .from(productAccessTable)
+          .where(and(eq(productAccessTable.userId, user.id), gt(productAccessTable.expiresAt, now)));
+        
+        // Attach products
+        (user as any).activeProducts = activeProducts.map((p: any) => {
+          let tier = "premium";
+          if (p.paymentRef?.startsWith("admin-assign:")) {
+            tier = p.paymentRef.split(":")[1] || "premium";
+          }
+          return {
+            productId: p.productId,
+            expiresAt: p.expiresAt,
+            tier,
+          };
+        });
+
         res.json({ user: mapUser(user) });
       });
     });
@@ -620,7 +652,7 @@ router.get("/sso/google/callback", (req: Request, res: Response, next) => {
     if (err) return res.redirect("/?sso_error=google");
     if (!user && info?.message === "sso_pending") {
       // Session already has ssoPending data set by the strategy
-      return req.session.save(() => res.redirect("/sso-link"));
+      return req.session.save(() => res.redirect("/sso-create-username"));
     }
     if (!user) return res.redirect("/?sso_error=google");
     req.logIn(user, (loginErr) => {
@@ -654,7 +686,7 @@ router.get("/sso/discord/callback", (req: Request, res: Response, next) => {
   passport.authenticate("discord", (err: any, user: any, info: any) => {
     if (err) return res.redirect("/?sso_error=discord");
     if (!user && info?.message === "sso_pending") {
-      return req.session.save(() => res.redirect("/sso-link"));
+      return req.session.save(() => res.redirect("/sso-create-username"));
     }
     if (!user) return res.redirect("/?sso_error=discord");
     req.logIn(user, (loginErr) => {
@@ -763,7 +795,7 @@ router.get("/sso/steam/callback", async (req: Request, res: Response) => {
       avatarUrl: player.avatarmedium || null,
       suggestedUsername: `${baseUsername}${Math.floor(Math.random() * 1000)}`,
     };
-    req.session.save(() => res.redirect("/sso-link"));
+    req.session.save(() => res.redirect("/sso-create-username"));
   } catch (err) {
     logger.error({ err }, "Steam callback error");
     res.redirect("/?sso_error=steam");
@@ -1148,6 +1180,112 @@ router.post("/reset-password", resetPasswordLimiter, async (req: Request, res: R
     res.json({ message: "Password reset successfully. You can now login with your new password." });
   } catch (err) {
     req.log.error({ err }, "Reset password error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Change password for authenticated user (requires current password if they have one set)
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1).optional(),
+  newPassword: z.string().min(8).max(128),
+  confirmPassword: z.string().min(8).max(128),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "New passwords do not match",
+  path: ["confirmPassword"],
+});
+
+router.post("/change-password", async (req: Request, res: Response) => {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
+    res.status(401).json({ error: "Not authenticated" });
+    return;
+  }
+
+  const parse = changePasswordSchema.safeParse(req.body);
+  if (!parse.success) {
+    res.status(400).json({ error: parse.error.issues[0]?.message || "Validation error" });
+    return;
+  }
+
+  const { currentPassword, newPassword } = parse.data;
+  const user = req.user as any;
+
+  try {
+    const config = await getSiteConfig();
+    const maxAttempts = config.rateLimitChangePasswordPerWindow || 5;
+    const windowMs = config.rateLimitChangePasswordWindowMs || 3600000;
+
+    // Check rate limiting
+    const fromTime = new Date(Date.now() - windowMs);
+    const recentChanges = await db
+      .select()
+      .from(accountChangesTable)
+      .where(
+        and(
+          eq(accountChangesTable.userId, user.id),
+          eq(accountChangesTable.changeType, "password"),
+          gt(accountChangesTable.changedAt, fromTime)
+        )
+      );
+
+    if (recentChanges.length >= maxAttempts) {
+      const remaining = Math.ceil((recentChanges[0].changedAt.getTime() + windowMs - Date.now()) / 1000 / 60);
+      res.status(429).json({ 
+        error: `Too many password change attempts. Please try again in ${remaining} minute${remaining === 1 ? "" : "s"}.`,
+        retryAfter: remaining * 60
+      });
+      return;
+    }
+
+    // Fetch current user from DB
+    const [currentUser] = await db.select().from(usersTable)
+      .where(eq(usersTable.id, user.id)).limit(1);
+
+    if (!currentUser) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // If user has a password, verify current password
+    if (currentUser.passwordHash) {
+      if (!currentPassword) {
+        res.status(400).json({ error: "Current password is required" });
+        return;
+      }
+      const passwordValid = await bcrypt.compare(currentPassword, currentUser.passwordHash);
+      if (!passwordValid) {
+        res.status(401).json({ error: "Current password is incorrect" });
+        return;
+      }
+      // Prevent using the same password
+      const samePassword = await bcrypt.compare(newPassword, currentUser.passwordHash);
+      if (samePassword) {
+        res.status(400).json({ error: "New password must be different from current password" });
+        return;
+      }
+    } else {
+      // SSO-only user is setting password for the first time - no verification needed
+      if (!newPassword) {
+        res.status(400).json({ error: "New password is required" });
+        return;
+      }
+    }
+
+    // Hash and update new password
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await db.update(usersTable).set({ passwordHash })
+      .where(eq(usersTable.id, user.id));
+
+    // Track the change
+    await db.insert(accountChangesTable).values({
+      userId: user.id,
+      changeType: "password",
+      newValue: null,
+      oldValue: null,
+    });
+
+    res.json({ message: "Password changed successfully." });
+  } catch (err) {
+    req.log.error({ err }, "Change password error");
     res.status(500).json({ error: "Internal server error" });
   }
 });

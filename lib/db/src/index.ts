@@ -112,56 +112,90 @@ if (process.env.DATABASE_URL) {
 // Ensure the database is seeded regardless of whether it's PGLite or Postgres
 async function ensureSeeded() {
   try {
-    const existingCategories = await db.select().from(categoriesTable).limit(1);
-    if (existingCategories.length === 0) {
-      console.log("Seeding initial forum data...");
-      const [cat1] = await db.insert(categoriesTable).values({
-        name: "General Discussions",
-        description: "Talk about anything Scootware related",
-        sortOrder: 1,
-      }).returning();
+    // Check for essential categories
+    const categories = await db.select().from(categoriesTable);
+    const catMap = new Map(categories.map((c: any) => [c.productId || c.name, c.id]));
 
-      const [cat2] = await db.insert(categoriesTable).values({
-        name: "Product Support",
-        description: "Help with products and optimization",
-        sortOrder: 2,
-      }).returning();
-
-      const subforumsToInsert = [
-        { name: "News & Announcements", description: "Stay updated with latest releases", categoryId: cat1.id, sortOrder: 1 },
-        { name: "General Chat", description: "Casual talk with the community", categoryId: cat1.id, sortOrder: 2 },
-        { name: "Support Tickets", description: "Get official help", categoryId: cat2.id, sortOrder: 1 },
-        { name: "Troubleshooting Guide", description: "Share your best settings", categoryId: cat2.id, sortOrder: 2 },
-        { name: "Suggestions", description: "Share your ideas for new features and improvements", categoryId: cat2.id, sortOrder: 3 },
-      ];
-
-      const productIds = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "SPOOFER"];
-      let currentOrder = 3;
-
-      for (const productId of productIds) {
-        const [productCat] = await db.insert(categoriesTable).values({
-          name: `${productId} Discussions`,
-          description: `Exclusive forum for ${productId} owners`,
-          productId: productId,
-          sortOrder: currentOrder++,
-        }).returning();
-
-        subforumsToInsert.push(
-          { name: "Feature Showcase", description: "Official product showcase - showcasing the latest features, updates, and product demonstrations", categoryId: productCat.id, sortOrder: 1, requiresUpgrade: false } as any,
-          { name: "Community Configs", description: "Share your configs", categoryId: productCat.id, sortOrder: 2, requiresUpgrade: false } as any
-        );
-      }
-
-      await db.insert(subforumsTable).values(subforumsToInsert);
-      console.log("Initial forum data seeded successfully.");
+    async function getOrInsertCategory(name: string, description: string, productId: string | null, sortOrder: number) {
+      const key = productId || name;
+      if (catMap.has(key)) return catMap.get(key);
+      
+      console.log(`Seeding missing category: ${name}`);
+      const [cat] = await db.insert(categoriesTable).values({ name, description, productId, sortOrder }).returning();
+      catMap.set(key, cat.id);
+      return cat.id;
     }
+
+    const cat1Id = await getOrInsertCategory("General Discussions", "Talk about anything Scootware related", null, 1);
+    const cat2Id = await getOrInsertCategory("Product Support", "Help with products and optimization", null, 2);
+
+    const productIds = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "CS2", "SPOOFER"];
+    let currentOrder = 3;
+
+    for (const productId of productIds) {
+      const catId = await getOrInsertCategory(`${productId} Discussions`, `Exclusive forum for ${productId} owners`, productId, currentOrder++);
+      
+      // Ensure default subforums for this product
+      const subforums = await db.select().from(subforumsTable).where(eq(subforumsTable.categoryId, catId));
+      const sfNames = new Set(subforums.map((s: any) => s.name));
+
+      if (!sfNames.has("Feature Showcase")) {
+        await db.insert(subforumsTable).values({
+          name: "Feature Showcase",
+          description: "Official product showcase - showcasing the latest features, updates, and product demonstrations",
+          categoryId: catId,
+          sortOrder: 1,
+          requiresUpgrade: false
+        });
+      }
+      if (!sfNames.has("Community Configs")) {
+        await db.insert(subforumsTable).values({
+          name: "Community Configs",
+          description: "Share your configs",
+          categoryId: catId,
+          sortOrder: 2,
+          requiresUpgrade: false
+        });
+      }
+    }
+
+    // Also ensure general subforums
+    const generalSubforums = await db.select().from(subforumsTable).where(eq(subforumsTable.categoryId, cat1Id));
+    const genSfNames = new Set(generalSubforums.map((s: any) => s.name));
+    
+    const generalSfToEnsure = [
+      { name: "News & Announcements", description: "Stay updated with latest releases", sortOrder: 1 },
+      { name: "General Chat", description: "Casual talk with the community", sortOrder: 2 },
+    ];
+
+    for (const sf of generalSfToEnsure) {
+      if (!genSfNames.has(sf.name)) {
+        await db.insert(subforumsTable).values({ ...sf, categoryId: cat1Id });
+      }
+    }
+
+    const supportSubforums = await db.select().from(subforumsTable).where(eq(subforumsTable.categoryId, cat2Id));
+    const suppSfNames = new Set(supportSubforums.map((s: any) => s.name));
+
+    const supportSfToEnsure = [
+      { name: "Support Tickets", description: "Get official help", sortOrder: 1 },
+      { name: "Troubleshooting Guide", description: "Share your best settings", sortOrder: 2 },
+      { name: "Suggestions", description: "Share your ideas for new features and improvements", sortOrder: 3 },
+    ];
+
+    for (const sf of supportSfToEnsure) {
+      if (!suppSfNames.has(sf.name)) {
+        await db.insert(subforumsTable).values({ ...sf, categoryId: cat2Id });
+      }
+    }
+
   } catch (err) {
-    console.warn("Failed to seed initial data:", err);
+    console.warn("Failed to ensure database is seeded:", err);
   }
 }
 
 await ensureSeeded();
-
+/*
 async function ensureLocalAdminSeed() {
   try {
     // Enable local admin account creation for easier initial setup and testing
@@ -245,7 +279,7 @@ async function ensureLocalUserSeed() {
     console.warn("Skipping local user seed due to DB error on startup:", err);
   }
 }
-
+*/
 async function ensureSiteConfig() {
   try {
     // Check if the setting already exists to avoid overwriting user preference
@@ -270,8 +304,10 @@ async function ensureSiteConfig() {
   }
 }
 
+/*
 await ensureLocalAdminSeed();
 await ensureLocalUserSeed();
+*/
 await ensureSiteConfig();
 
 export * from "./schema";

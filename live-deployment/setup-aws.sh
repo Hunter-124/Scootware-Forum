@@ -1,10 +1,8 @@
 #!/bin/bash
-
 # Scootware Forum - AWS Ubuntu Setup Script
 # Run as root: sudo bash setup-aws.sh
 
 set -e
-
 echo "--- Starting Scootware Forum Server Setup ---"
 
 # 1. Update & Base Dependencies
@@ -32,7 +30,7 @@ cat > /etc/nginx/sites-available/scootware <<EOF
 server {
     listen 80;
     server_name scootware.us www.scootware.us;
-
+    
     location /api {
         proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
@@ -42,12 +40,12 @@ server {
         proxy_set_header X-Forwarded-Proto https;
         proxy_cache_bypass \$http_upgrade;
     }
-
+    
     location / {
         root /home/admin/Scootware-Forum/artifacts/forum/dist/public;
         try_files \$uri \$uri/ /index.html;
     }
-
+    
     location /uploads {
         alias /home/admin/Scootware-Forum/artifacts/api-server/uploads;
     }

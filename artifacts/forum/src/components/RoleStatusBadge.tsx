@@ -1,33 +1,13 @@
 import React from "react";
-import { cn } from "@/lib/utils";
+import { cn, getRoleColor, formatUpgradeDisplay } from "@/lib/utils";
 
 interface RoleStatusBadgeProps {
   role: string;
   upgradeType?: string | null;
   compact?: boolean;
   showIcon?: boolean;
-}
-
-/**
- * Format upgrade type for display
- * RUST_PREMIUM -> Rust
- * SPOOFER_LIFETIME -> Spoofer (Lifetime)
- */
-function formatUpgradeDisplay(upgradeType: string | null | undefined): string {
-  if (!upgradeType) return "";
-  
-  const isLifetime = upgradeType.includes("LIFETIME");
-  const base = upgradeType
-    .replace(/_PREMIUM$/, "")
-    .replace(/_LIFETIME$/, "")
-    .split("_")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-  
-  if (isLifetime && base) {
-    return `${base} (Lifetime)`;
-  }
-  return base || "Subscriber";
+  className?: string;
+  key?: string | number;
 }
 
 function getStatusColor(
@@ -40,6 +20,14 @@ function getStatusColor(
       text: "text-amber-500",
       bg: "bg-amber-500/10",
       border: "border-amber-500/30"
+    };
+  }
+
+  if (role === "mod") {
+    return {
+      text: "text-indigo-400",
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/30"
     };
   }
 
@@ -72,13 +60,16 @@ export function RoleStatusBadge({
   role,
   upgradeType,
   compact = false,
-  showIcon = true
+  showIcon = true,
+  className
 }: RoleStatusBadgeProps) {
   const colors = getStatusColor(role, upgradeType);
   const display = upgradeType 
     ? formatUpgradeDisplay(upgradeType)
     : role === "admin"
     ? "Admin"
+    : role === "mod"
+    ? "Moderator"
     : "Member";
 
   if (compact) {
@@ -88,7 +79,8 @@ export function RoleStatusBadge({
           "inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-[11px] font-semibold uppercase tracking-tight whitespace-nowrap",
           colors.text,
           colors.bg,
-          colors.border
+          colors.border,
+          className
         )}
       >
         <span>{display}</span>
@@ -102,7 +94,8 @@ export function RoleStatusBadge({
         "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold uppercase tracking-wide",
         colors.text,
         colors.bg,
-        colors.border
+        colors.border,
+        className
       )}
     >
       <span>{display}</span>

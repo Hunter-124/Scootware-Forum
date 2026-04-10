@@ -1,1975 +1,261 @@
-2026-03-30 18:37:53 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:37:53 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-03-30 18:37:53 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:37:53 - deployment_manager - INFO - Deployment Configuration:
-2026-03-30 18:37:53 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-03-30 18:37:53 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-03-30 18:37:53 - deployment_manager - INFO -   Project Root: .
-2026-03-30 18:37:53 - deployment_manager - INFO - Connecting to VPS...
-2026-03-30 18:37:53 - deployment_manager - INFO - Creating project archive...
-2026-03-30 18:40:35 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:40:35 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-03-30 18:40:35 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:40:35 - deployment_manager - INFO - Deployment Configuration:
-2026-03-30 18:40:35 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-03-30 18:40:35 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-03-30 18:40:35 - deployment_manager - INFO -   Project Root: .
-2026-03-30 18:40:35 - deployment_manager - INFO - Connecting to VPS...
-2026-03-30 18:41:20 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:41:20 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-03-30 18:41:20 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:41:20 - deployment_manager - INFO - Deployment Configuration:
-2026-03-30 18:41:20 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-03-30 18:41:20 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-03-30 18:41:20 - deployment_manager - INFO -   Project Root: .
-2026-03-30 18:41:20 - deployment_manager - INFO - Connecting to VPS...
-2026-03-30 18:41:21 - deployment_manager - INFO - SSH connection established
-2026-03-30 18:41:21 - deployment_manager - INFO - Creating project archive...
-2026-03-30 18:42:26 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:42:26 - deployment_manager - INFO - FAST REBUILD DEPLOYMENT STARTED (No Upload)
-2026-03-30 18:42:26 - deployment_manager - INFO - ======================================================================
-2026-03-30 18:42:26 - deployment_manager - INFO - SSH connection established
-2026-03-30 18:42:27 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-2026-03-30 18:42:30 - deployment_manager - INFO - Scope: all 10 workspace projects
-2026-03-30 18:42:34 - deployment_manager - INFO - Progress: resolved 0, reused 1, downloaded 0, added 0
-2026-03-30 18:42:36 - deployment_manager - INFO - Progress: resolved 24, reused 24, downloaded 0, added 0
-2026-03-30 18:42:37 - deployment_manager - INFO - Progress: resolved 79, reused 79, downloaded 0, added 0
-2026-03-30 18:42:39 - deployment_manager - INFO - Progress: resolved 91, reused 91, downloaded 0, added 0
-2026-03-30 18:42:40 - deployment_manager - INFO - Progress: resolved 110, reused 110, downloaded 0, added 0
-2026-03-30 18:42:41 - deployment_manager - INFO - Progress: resolved 126, reused 126, downloaded 0, added 0
-2026-03-30 18:42:42 - deployment_manager - INFO - Progress: resolved 234, reused 186, downloaded 0, added 0
-2026-03-30 18:42:44 - deployment_manager - INFO - Progress: resolved 267, reused 213, downloaded 0, added 0
-2026-03-30 18:42:47 - deployment_manager - INFO - Progress: resolved 292, reused 232, downloaded 0, added 0
-2026-03-30 18:42:49 - deployment_manager - INFO - Progress: resolved 324, reused 250, downloaded 0, added 0
-2026-03-30 18:42:50 - deployment_manager - INFO - Progress: resolved 328, reused 255, downloaded 0, added 0
-2026-03-30 18:42:52 - deployment_manager - INFO - Progress: resolved 331, reused 258, downloaded 0, added 0
-2026-03-30 18:42:53 - deployment_manager - INFO - Progress: resolved 404, reused 305, downloaded 0, added 0
-2026-03-30 18:42:55 - deployment_manager - INFO - Progress: resolved 432, reused 322, downloaded 0, added 0
-2026-03-30 18:42:56 - deployment_manager - INFO - Progress: resolved 465, reused 355, downloaded 0, added 0
-2026-03-30 18:42:57 - deployment_manager - INFO - Progress: resolved 514, reused 405, downloaded 0, added 0
-2026-03-30 18:42:58 - deployment_manager - INFO - Progress: resolved 540, reused 436, downloaded 0, added 0
-2026-03-30 18:42:59 - deployment_manager - INFO - Progress: resolved 620, reused 498, downloaded 0, added 0
-2026-03-30 18:43:00 - deployment_manager - INFO - Progress: resolved 696, reused 555, downloaded 0, added 0
-2026-03-30 18:43:01 - deployment_manager - INFO - Progress: resolved 701, reused 560, downloaded 0, added 0
-2026-03-30 18:43:03 - deployment_manager - INFO - Progress: resolved 777, reused 637, downloaded 0, added 0
-2026-03-30 18:43:04 - deployment_manager - INFO - Progress: resolved 842, reused 700, downloaded 0, added 0
-2026-03-30 18:43:05 - deployment_manager - INFO - Progress: resolved 884, reused 742, downloaded 0, added 0
-2026-03-30 18:43:06 - deployment_manager - INFO - Progress: resolved 950, reused 812, downloaded 0, added 0
-2026-03-30 18:43:09 - deployment_manager - INFO - Progress: resolved 951, reused 813, downloaded 0, added 0
-2026-03-30 18:43:14 - deployment_manager - INFO - Already up to date
-2026-03-30 18:43:16 - deployment_manager - INFO - Progress: resolved 951, reused 813, downloaded 0, added 0, done
-2026-03-30 18:43:24 - deployment_manager - INFO - 
-2026-03-30 18:43:24 - deployment_manager - INFO - Done in 57.1s using pnpm v10.33.0
-2026-03-30 18:43:28 - deployment_manager - INFO - 
-2026-03-30 18:43:28 - deployment_manager - INFO - > @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-2026-03-30 18:43:28 - deployment_manager - INFO - > drizzle-kit push --force --config ./drizzle.config.ts
-2026-03-30 18:43:28 - deployment_manager - INFO - 
-2026-03-30 18:43:29 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-2026-03-30 18:43:32 - deployment_manager - INFO - Using 'pg' driver for database querying
-2026-03-30 18:43:36 - deployment_manager - INFO - --- Building Production Bundles ---
-2026-03-30 18:43:40 - deployment_manager - INFO - 
-2026-03-30 18:43:40 - deployment_manager - INFO - > workspace@0.0.0 build /home/admin/Scootware-Forum
-2026-03-30 18:43:40 - deployment_manager - INFO - > pnpm run typecheck && pnpm -r --if-present run build
-2026-03-30 18:43:40 - deployment_manager - INFO - 
-2026-03-30 18:43:45 - deployment_manager - INFO - 
-2026-03-30 18:43:45 - deployment_manager - INFO - > workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-2026-03-30 18:43:45 - deployment_manager - INFO - > pnpm run typecheck:libs && pnpm -r --filter "./artifacts/**" --filter "./scripts" --if-present run typecheck
-2026-03-30 18:43:45 - deployment_manager - INFO - 
-2026-03-30 18:43:49 - deployment_manager - INFO - 
-2026-03-30 18:43:49 - deployment_manager - INFO - > workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-2026-03-30 18:43:49 - deployment_manager - INFO - > tsc --build
-2026-03-30 18:43:49 - deployment_manager - INFO - 
-2026-03-30 18:44:34 - deployment_manager - INFO - Scope: 5 of 10 workspace projects
-2026-03-30 18:44:34 - deployment_manager - INFO - artifacts/api-server typecheck$ tsc -p tsconfig.json --noEmit
-2026-03-30 18:44:34 - deployment_manager - INFO - artifacts/forum typecheck$ tsc -p tsconfig.json --noEmit
-2026-04-01 23:30:40 - deployment_manager - INFO - Connected to VPS for restart
-2026-04-01 23:30:41 - deployment_manager - INFO - Cleaned up old PM2 processes
-2026-04-01 23:30:44 - deployment_manager - INFO - Services restarted successfully
-2026-04-01 23:30:45 - deployment_manager - INFO - ======================================================================
-2026-04-01 23:30:45 - deployment_manager - INFO - QUICK RESTART COMPLETED
-2026-04-01 23:30:45 - deployment_manager - INFO - ======================================================================
-2026-04-01 23:32:41 - deployment_manager - INFO - Connected to VPS for HTTPS setup
-2026-04-01 23:32:41 - deployment_manager - INFO - Nginx config deployed to /etc/nginx/sites-available/scootware
-2026-04-01 23:32:41 - deployment_manager - INFO - Site link created
-2026-04-01 23:32:41 - deployment_manager - INFO - Default site removed
-2026-04-01 23:32:41 - deployment_manager - INFO - Nginx config validation passed
-2026-04-01 23:32:42 - deployment_manager - INFO - HTTPS setup script completed successfully
-2026-04-01 23:32:42 - deployment_manager - INFO - Nginx reloaded successfully
-2026-04-01 23:32:42 - deployment_manager - INFO - ======================================================================
-2026-04-01 23:32:42 - deployment_manager - INFO - HTTPS SETUP COMPLETED
-2026-04-01 23:32:42 - deployment_manager - INFO - ======================================================================
-2026-04-01 23:46:45 - deployment_manager - INFO - Connected to VPS for database enum fix
-2026-04-01 23:46:46 - deployment_manager - INFO - Database enum fixed successfully
-2026-04-01 23:46:49 - deployment_manager - INFO - Database push successful
-2026-04-01 23:48:30 - deployment_manager - INFO - Connected to VPS for full restart
-2026-04-01 23:48:33 - deployment_manager - INFO - Services stopped
-2026-04-01 23:49:13 - deployment_manager - INFO - Build completed successfully
-2026-04-01 23:49:14 - deployment_manager - INFO - Services started successfully
-2026-04-01 23:59:13 - deployment_manager - INFO - Password reset for [TEST_USERNAME]
-2026-04-02 00:22:00 - deployment_manager - INFO - Password reset for [TEST_USERNAME]
-2026-04-02 02:36:13 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:36:13 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:36:13 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:36:13 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:36:13 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:36:13 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:36:13 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:36:13 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:36:13 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:36:13 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:36:13 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:36:13 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:36:13 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:36:13 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:36:13 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:36:13 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:36:13 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:36:13 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:36:13 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:36:13 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:36:17 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:36:17 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:36:18 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:36:20 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:36:23 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:36:25 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:36:28 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:36:30 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:36:32 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:36:35 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:36:35 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:36:35 - deployment_manager - INFO - [OK] Successfully uploaded 420 files (skipped 1222 unchanged files)
-2026-04-02 02:36:35 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:36:35 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:36:36 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
+2026-04-05 06:58:58 - deployment_manager - INFO - Connected to VPS for database enum fix
+2026-04-05 06:58:59 - deployment_manager - INFO - Enum fix: 
+2026-04-05 06:59:13 - deployment_manager - INFO - Database push successful
+2026-04-05 14:43:35 - deployment_manager - INFO - Connected to VPS for database enum fix
+2026-04-05 14:43:36 - deployment_manager - INFO - Database enum fixed successfully
+2026-04-05 14:43:53 - deployment_manager - INFO - Database push successful
+2026-04-05 14:43:55 - deployment_manager - INFO - ======================================================================
+2026-04-05 14:43:55 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-04-05 14:43:55 - deployment_manager - INFO - ======================================================================
+2026-04-05 14:43:55 - deployment_manager - INFO - Deployment Configuration:
+2026-04-05 14:43:55 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-04-05 14:43:55 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-04-05 14:43:55 - deployment_manager - INFO -   Project Root: ../
+2026-04-05 14:43:55 - deployment_manager - INFO - Connecting to VPS...
+2026-04-05 14:43:56 - deployment_manager - INFO - SSH connection established
+2026-04-05 14:43:56 - deployment_manager - INFO - Creating project archive...
+2026-04-05 14:43:56 - deployment_manager - ERROR - Deployment failed: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Exception: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+Traceback:
+Traceback (most recent call last):
+  File "c:\Users\nigga\Downloads\Scootware Master\Scootware-Forum\Scootware-Forum\deployment-manager\deploy_now.py", line 67, in <module>
+    success, tarball_path = ArchiveUploader.create_tarball(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'ArchiveUploader' has no attribute 'create_tarball'
+
+2026-04-05 14:52:38 - deployment_manager - INFO - ======================================================================
+2026-04-05 14:52:38 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
+2026-04-05 14:52:38 - deployment_manager - INFO - ======================================================================
+2026-04-05 14:52:38 - deployment_manager - INFO - Deployment Configuration:
+2026-04-05 14:52:38 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
+2026-04-05 14:52:38 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
+2026-04-05 14:52:38 - deployment_manager - INFO -   Project Root: ../
+2026-04-05 14:52:38 - deployment_manager - INFO - Connecting to VPS...
+2026-04-05 14:52:39 - deployment_manager - INFO - SSH connection established
+2026-04-05 14:52:39 - deployment_manager - INFO - Uploading project files...
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [START] Beginning file upload...
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [DEBUG] Exclude patterns count: 33
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [DEBUG] Patterns: CODEBASE_EXPLORATION.md, SUBSCRIPTION_EXTENSION_FEATURE.md, SUBSCRIPTION_EXTENSION_QUICK_REFERENCE.md, application_credentials, *.lnk...
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [DEBUG] Excluded 15 directories
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - .agents
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - .git
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - .github
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - artifacts/api-server/node_modules
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - artifacts/api-server/pglite-data
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - artifacts/forum/node_modules
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - artifacts/mockup-sandbox/node_modules
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - artifacts/next-app/node_modules
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - deployment-manager
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib/api-client-react/node_modules
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        ... and 5 more
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [SCAN] Found 488 files (11.8 MB)
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [INFO] lib/db files to upload: 40
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\drizzle.config.ts
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\package.json
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\tsconfig.json
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\index.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\attachments.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\crypto_payments.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\forum.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\index.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\login_events.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG -        - lib\db\dist\schema\profile_posts.d.ts.map
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [INFO] Analyzing local file metadata and checking cache...
+2026-04-05 14:52:39 - deployment_manager - DEBUG - [UPLOAD] Starting transfer...
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/drizzle.config.ts: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/package.json: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/tsconfig.json: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/index.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/attachments.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/crypto_payments.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/forum.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/index.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/login_events.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] lib/db/dist/schema/profile_posts.d.ts.map: will_upload=False
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] UPLOADED: lib/db/src/index.ts
+2026-04-05 14:52:49 - deployment_manager - DEBUG -        [lib/db] UPLOADED: lib/db/src/schema/users.ts
+2026-04-05 14:52:49 - deployment_manager - DEBUG - [OK] Successfully uploaded 27 files (skipped 461 unchanged files)
+2026-04-05 14:52:49 - deployment_manager - INFO - Project files uploaded successfully
+2026-04-05 14:52:49 - deployment_manager - INFO - Running remote deployment script (all)...
+2026-04-05 14:52:49 - deployment_manager - DEBUG - --- Checking Environment Configuration ---
+
+2026-04-05 14:52:49 - deployment_manager - DEBUG - 
+
+2026-04-05 14:52:49 - deployment_manager - DEBUG - --- Checking Environment Configuration ---
+
+--- Updating Dependencies and Migrations ---
   Running: pnpm install
 
-2026-04-02 02:36:36 - deployment_manager - INFO - Scope: all 9 workspace projects
+2026-04-05 14:52:53 - deployment_manager - DEBUG - Scope: all 9 workspace projects
 
-2026-04-02 02:36:37 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
+2026-04-05 14:52:56 - deployment_manager - DEBUG - Lockfile is up to date, resolution step is skipped
 
-2026-04-02 02:36:37 - deployment_manager - INFO - Already up to date
+2026-04-05 14:52:58 - deployment_manager - DEBUG - Already up to date
 
-2026-04-02 02:36:40 - deployment_manager - INFO - 
+2026-04-05 14:53:14 - deployment_manager - DEBUG - 
 
-2026-04-02 02:36:41 - deployment_manager - INFO - Done in 5.3s using pnpm v10.33.0
+2026-04-05 14:53:16 - deployment_manager - DEBUG - Done in 26.8s using pnpm v10.33.0
 
-2026-04-02 02:36:41 - deployment_manager - INFO - 
+2026-04-05 14:53:17 - deployment_manager - DEBUG - 
   Checking for database configuration...
   Syncing PostgreSQL user password from DATABASE_URL...
 
-2026-04-02 02:36:42 - deployment_manager - INFO - 
+2026-04-05 14:53:21 - deployment_manager - DEBUG - 
 > @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
 > drizzle-kit push --force --config ./drizzle.config.ts
 
 
-2026-04-02 02:36:42 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
+2026-04-05 14:53:23 - deployment_manager - DEBUG - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
 
-2026-04-02 02:36:43 - deployment_manager - INFO - Using 'pg' driver for database querying
+2026-04-05 14:53:25 - deployment_manager - DEBUG - Using 'pg' driver for database querying
 
-2026-04-02 02:36:43 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
+2026-04-05 14:53:36 - deployment_manager - DEBUG - 
+> @workspace/db@0.0.0 push /home/admin/Scootware-Forum/lib/db
+> drizzle-kit push --config ./drizzle.config.ts
 
-2026-04-02 02:36:43 - deployment_manager - INFO - --- Building Production Bundles ---
 
-2026-04-02 02:36:44 - deployment_manager - INFO - 
+2026-04-05 14:53:38 - deployment_manager - DEBUG - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
+
+2026-04-05 14:53:40 - deployment_manager - DEBUG - Using 'pg' driver for database querying
+
+2026-04-05 14:53:46 - deployment_manager - DEBUG - [i] No changes detected
+
+2026-04-05 14:53:47 - deployment_manager - DEBUG -   Running: pnpm run build
+
+2026-04-05 14:53:50 - deployment_manager - DEBUG - 
 > workspace@0.0.0 build /home/admin/Scootware-Forum
 > pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
 
 
-2026-04-02 02:36:45 - deployment_manager - INFO - 
+2026-04-05 14:53:53 - deployment_manager - DEBUG - 
 > workspace@0.0.0 typecheck /home/admin/Scootware-Forum
 > pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
 
 
-2026-04-02 02:36:46 - deployment_manager - INFO - 
+2026-04-05 14:53:57 - deployment_manager - DEBUG - 
 > workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
 > tsc --build
 
 
-2026-04-02 02:36:47 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
+2026-04-05 14:54:49 - deployment_manager - DEBUG - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
 
-2026-04-02 02:36:47 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
+2026-04-05 14:54:49 - deployment_manager - DEBUG - Scope: 3 of 9 workspace projects
 
-2026-04-02 02:36:48 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
+2026-04-05 14:54:53 - deployment_manager - DEBUG - Scope: 7 of 9 workspace projects
 
-2026-04-02 02:36:48 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:36:48 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:36:50 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:36:50 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:36:50 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:36:51 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:36:51 - deployment_manager - INFO - artifacts/api-server build: Done
-
-2026-04-02 02:37:06 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:37:06 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:37:06 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:37:06 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:37:07 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:37:07 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:37:07 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:37:07 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:37:08 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:37:08 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:37:08 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-
-2026-04-02 02:37:08 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:37:09 - deployment_manager - INFO - [PM2] Saving current process list...
-[PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:37:09 - deployment_manager - INFO - [PM2] Init System found: systemd
-[PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:37:09 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:37:09 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:37:10 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:37:10 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:37:10 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:37:10 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:41:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:41:25 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:41:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:41:25 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:41:25 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:41:25 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:41:25 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:41:25 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:41:25 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:41:25 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:41:25 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:41:25 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:41:25 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:41:25 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:41:25 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:41:25 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:41:25 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:41:25 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:41:25 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:41:25 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:41:29 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:41:29 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:41:30 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:41:33 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:41:35 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:41:37 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:41:40 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:41:42 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:41:45 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:41:47 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:41:47 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:41:48 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:41:48 - deployment_manager - INFO - [OK] Successfully uploaded 417 files (skipped 1225 unchanged files)
-2026-04-02 02:41:48 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:41:48 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:41:48 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 02:41:49 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 02:41:50 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 02:41:50 - deployment_manager - INFO - Already up to date
-
-2026-04-02 02:41:54 - deployment_manager - INFO - 
-
-2026-04-02 02:41:55 - deployment_manager - INFO - Done in 6.2s using pnpm v10.33.0
-
-2026-04-02 02:41:55 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
-
-2026-04-02 02:41:56 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:41:56 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:41:57 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:41:57 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:41:58 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:41:59 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:41:59 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:42:01 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:42:01 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:42:01 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:42:01 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:42:02 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:42:04 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:42:04 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:42:05 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:42:05 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:42:05 - deployment_manager - INFO - artifacts/api-server build: Done
-
-2026-04-02 02:42:21 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:42:21 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:42:21 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:42:21 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:42:21 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:42:22 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:42:22 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:42:22 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:42:22 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:42:23 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:42:23 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-
-2026-04-02 02:42:23 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:42:23 - deployment_manager - INFO - [PM2] Saving current process list...
-
-2026-04-02 02:42:23 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:42:24 - deployment_manager - INFO - [PM2] Init System found: systemd
-[PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:42:24 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
-
-2026-04-02 02:42:24 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:42:24 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:42:25 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:42:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:42:25 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:42:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:43:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:43:34 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:43:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:43:34 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:43:34 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:43:34 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:43:34 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:43:34 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:43:34 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:43:34 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:43:34 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:43:34 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:43:34 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:43:34 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:43:34 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:43:34 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:43:34 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:43:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:43:34 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:43:34 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:43:37 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:43:37 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:43:39 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:43:41 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:43:43 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:43:46 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:43:48 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:43:50 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:43:52 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:43:55 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:43:55 - deployment_manager - INFO - [OK] Successfully uploaded 416 files (skipped 1226 unchanged files)
-2026-04-02 02:43:55 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:43:55 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:43:56 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 02:43:56 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 02:43:57 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 02:43:57 - deployment_manager - INFO - Already up to date
-
-2026-04-02 02:44:00 - deployment_manager - INFO - 
-
-2026-04-02 02:44:01 - deployment_manager - INFO - Done in 5.4s using pnpm v10.33.0
-
-2026-04-02 02:44:01 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
-
-2026-04-02 02:44:02 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:44:02 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:44:03 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:44:03 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:44:03 - deployment_manager - INFO - --- Building Production Bundles ---
-
-2026-04-02 02:44:04 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:44:05 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:44:05 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:44:07 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:44:07 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:44:07 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:44:07 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:44:07 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:44:09 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:44:10 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:44:11 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:44:11 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-artifacts/api-server build: Done
-
-2026-04-02 02:44:26 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:44:26 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:44:26 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:44:26 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:44:26 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:44:27 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-[PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:44:28 - deployment_manager - INFO - [PM2] Saving current process list...
-
-2026-04-02 02:44:28 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:44:29 - deployment_manager - INFO - [PM2] Init System found: systemd
-
-2026-04-02 02:44:29 - deployment_manager - INFO - [PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:44:29 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
-
-2026-04-02 02:44:29 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:44:29 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:44:29 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:44:29 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:44:29 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:44:29 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:45:19 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:45:19 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:45:19 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:45:19 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:45:19 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:45:19 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:45:19 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:45:19 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:45:20 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:45:20 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:45:20 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:45:20 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:45:20 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:45:20 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:45:20 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:45:20 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:45:20 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:45:20 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:45:20 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:45:20 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:45:23 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:45:23 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:45:24 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:45:27 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:45:29 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:45:31 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:45:34 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:45:36 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:45:38 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:45:40 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:45:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:45:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:45:41 - deployment_manager - INFO - [OK] Successfully uploaded 416 files (skipped 1226 unchanged files)
-2026-04-02 02:45:41 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:45:41 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:45:41 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 02:45:42 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 02:45:42 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 02:45:43 - deployment_manager - INFO - Already up to date
-
-2026-04-02 02:45:46 - deployment_manager - INFO - 
-
-2026-04-02 02:45:47 - deployment_manager - INFO - Done in 5.2s using pnpm v10.33.0
-
-2026-04-02 02:45:47 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
-
-2026-04-02 02:45:48 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:45:48 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:45:48 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:45:49 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:45:50 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:45:50 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:45:51 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:45:52 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:45:52 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:45:53 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:45:53 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:45:53 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:45:55 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:45:56 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:45:56 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:45:56 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:45:56 - deployment_manager - INFO - artifacts/api-server build: Done
-
-2026-04-02 02:46:12 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:46:12 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:46:12 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:46:12 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:46:12 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-
-2026-04-02 02:46:13 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:46:14 - deployment_manager - INFO - [PM2] Saving current process list...
-
-2026-04-02 02:46:14 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:46:15 - deployment_manager - INFO - [PM2] Init System found: systemd
-
-2026-04-02 02:46:15 - deployment_manager - INFO - [PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:46:15 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
-
-2026-04-02 02:46:15 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:46:15 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:46:15 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:46:15 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:46:15 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:46:15 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:46:52 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:46:52 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:46:52 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:46:52 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:46:52 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:46:52 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:46:52 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:46:52 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:46:52 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:46:52 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:46:52 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:46:52 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:46:52 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:46:52 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:46:52 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:46:52 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:46:52 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:46:52 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:46:52 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:46:52 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:46:55 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:46:55 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:46:57 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:46:59 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:47:01 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:47:04 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:47:06 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:47:08 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:47:11 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:47:13 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:47:14 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:47:14 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:47:14 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:47:14 - deployment_manager - INFO - [OK] Successfully uploaded 416 files (skipped 1226 unchanged files)
-2026-04-02 02:47:14 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:47:14 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:47:14 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 02:47:15 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 02:47:15 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 02:47:15 - deployment_manager - INFO - Already up to date
-
-2026-04-02 02:47:19 - deployment_manager - INFO - 
-
-2026-04-02 02:47:19 - deployment_manager - INFO - Done in 5.5s using pnpm v10.33.0
-
-2026-04-02 02:47:19 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
-
-2026-04-02 02:47:20 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:47:21 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:47:21 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:47:21 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:47:22 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:47:23 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:47:24 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:47:25 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:47:25 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:47:26 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:47:26 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:47:26 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:47:28 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:47:28 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:47:29 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:47:29 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:47:29 - deployment_manager - INFO - artifacts/api-server build: Done
-
-2026-04-02 02:47:44 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:47:44 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:47:45 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:47:45 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:47:45 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:47:45 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:47:45 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:47:45 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:47:46 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:47:46 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:47:46 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-
-2026-04-02 02:47:46 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:47:47 - deployment_manager - INFO - [PM2] Saving current process list...
-
-2026-04-02 02:47:47 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:47:47 - deployment_manager - INFO - [PM2] Init System found: systemd
-[PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:47:47 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
-
-2026-04-02 02:47:47 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:47:47 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:47:48 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:47:48 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:47:48 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:47:48 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:50:27 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:50:27 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:50:27 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:50:27 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:50:27 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:50:27 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:50:27 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:50:27 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:50:28 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:50:28 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:50:28 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:50:28 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:50:28 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:50:28 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:50:28 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:50:28 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:50:28 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:50:28 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:50:28 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:50:28 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:50:31 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:50:31 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:50:32 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:50:35 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:50:37 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:50:39 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:50:42 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:50:44 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:50:46 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:50:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:50:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:50:50 - deployment_manager - INFO - [OK] Successfully uploaded 416 files (skipped 1226 unchanged files)
-2026-04-02 02:50:50 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:50:50 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:50:50 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 02:50:51 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 02:50:51 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 02:50:51 - deployment_manager - INFO - Already up to date
-
-2026-04-02 02:50:55 - deployment_manager - INFO - 
-
-2026-04-02 02:50:55 - deployment_manager - INFO - Done in 5.4s using pnpm v10.33.0
-
-2026-04-02 02:50:55 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
-
-2026-04-02 02:50:56 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:50:57 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:50:57 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:50:57 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:50:57 - deployment_manager - INFO - --- Building Production Bundles ---
-
-2026-04-02 02:50:58 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:50:59 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:51:00 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:51:01 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:51:01 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:51:02 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:51:02 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
+2026-04-05 14:54:53 - deployment_manager - DEBUG - artifacts/api-server build$ node ./build.mjs
 artifacts/forum build$ vite build --config vite.config.ts
 
-2026-04-02 02:51:04 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
+2026-04-05 14:55:01 - deployment_manager - DEBUG - artifacts/forum build: vite v7.3.1 building client environment for production...
 
-2026-04-02 02:51:04 - deployment_manager - INFO - artifacts/forum build: transforming...
+2026-04-05 14:55:03 - deployment_manager - DEBUG - artifacts/forum build: transforming...
 
-2026-04-02 02:51:05 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+2026-04-05 14:55:09 - deployment_manager - DEBUG - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
 
-2026-04-02 02:51:05 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
+2026-04-05 14:55:09 - deployment_manager - DEBUG - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
 
-2026-04-02 02:51:05 - deployment_manager - INFO - artifacts/api-server build: Done
+2026-04-05 14:55:10 - deployment_manager - DEBUG - artifacts/api-server build: Done
 
-2026-04-02 02:51:21 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
+2026-04-05 14:56:23 - deployment_manager - DEBUG - artifacts/forum build: rendering chunks...
 
-2026-04-02 02:51:21 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
+2026-04-05 14:56:23 - deployment_manager - DEBUG - artifacts/forum build: computing gzip size...
 
-2026-04-02 02:51:21 - deployment_manager - INFO - artifacts/forum build: Done
+2026-04-05 14:56:24 - deployment_manager - DEBUG - artifacts/forum build: Done
 
-2026-04-02 02:51:21 - deployment_manager - INFO - --- Restarting PM2 Processes ---
+2026-04-05 14:56:24 - deployment_manager - DEBUG - /home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644939 Killed                  sudo pkill -9 -f "nodeapp" 2> /dev/null
 
-2026-04-02 02:51:22 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+2026-04-05 14:56:24 - deployment_manager - DEBUG -   Force killing processes on port 80...
 
-2026-04-02 02:51:22 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
+2026-04-05 14:56:24 - deployment_manager - DEBUG - /home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644941 Killed                  sudo pkill -9 -f "/var/www" 2> /dev/null
 
-2026-04-02 02:51:22 - deployment_manager - INFO - [PM2][WARN] No process found
+2026-04-05 14:56:24 - deployment_manager - DEBUG -  86480 86481 86482
+2026-04-05 14:56:26 - deployment_manager - DEBUG -  644942
+2026-04-05 14:56:27 - deployment_manager - DEBUG -  644972
+2026-04-05 14:56:28 - deployment_manager - DEBUG -   Force killing processes on port 443...
 
-2026-04-02 02:51:22 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
+2026-04-05 14:56:28 - deployment_manager - DEBUG -  644996
+2026-04-05 14:56:29 - deployment_manager - DEBUG -  645019
+2026-04-05 14:56:30 - deployment_manager - DEBUG -  645043
+2026-04-05 14:56:31 - deployment_manager - DEBUG -   Force killing processes on port 3000...
 
-2026-04-02 02:51:23 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
+2026-04-05 14:56:31 - deployment_manager - DEBUG -  86271
+2026-04-05 14:56:33 - deployment_manager - DEBUG -  645092
+2026-04-05 14:56:39 - deployment_manager - DEBUG - 
+> @workspace/db@0.0.0 push /home/admin/Scootware-Forum/lib/db
+> drizzle-kit push --config ./drizzle.config.ts
 
-2026-04-02 02:51:23 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
 
-2026-04-02 02:51:23 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
+2026-04-05 14:56:40 - deployment_manager - DEBUG - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
 
-2026-04-02 02:51:23 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
+2026-04-05 14:56:41 - deployment_manager - DEBUG - Using 'pg' driver for database querying
 
-2026-04-02 02:51:24 - deployment_manager - INFO - [PM2] Saving current process list...
-[PM2] Successfully saved in /home/admin/.pm2/dump.pm2
+2026-04-05 14:56:43 - deployment_manager - DEBUG - [i] No changes detected
 
-2026-04-02 02:51:24 - deployment_manager - INFO - [PM2] Init System found: systemd
+2026-04-05 14:56:44 - deployment_manager - DEBUG - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+
+2026-04-05 14:56:45 - deployment_manager - DEBUG - [PM2] [v] All Applications Stopped
+
+2026-04-05 14:56:45 - deployment_manager - DEBUG - [PM2][WARN] No process found
+
+2026-04-05 14:56:45 - deployment_manager - DEBUG - [PM2] [v] PM2 Daemon Stopped
+
+2026-04-05 14:56:46 - deployment_manager - DEBUG - [3/7] Starting API backend on port 3000...
+
+2026-04-05 14:56:46 - deployment_manager - DEBUG - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
+
+2026-04-05 14:56:46 - deployment_manager - DEBUG - [PM2] PM2 Successfully daemonized
+
+2026-04-05 14:56:46 - deployment_manager - DEBUG - [PM2][WARN] Applications scootware-api not running, starting...
+
+2026-04-05 14:56:46 - deployment_manager - DEBUG - [PM2] App [scootware-api] launched (1 instances)
+
+2026-04-05 14:56:47 - deployment_manager - DEBUG - [PM2] Saving current process list...
+
+2026-04-05 14:56:47 - deployment_manager - DEBUG - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
+
+2026-04-05 14:56:49 - deployment_manager - DEBUG - [PM2] Init System found: systemd
 [PM2] To setup the Startup Script, copy/paste the following command:
 
-2026-04-02 02:51:24 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
+2026-04-05 14:56:49 - deployment_manager - DEBUG - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
 
-2026-04-02 02:51:24 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:51:24 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:51:25 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:51:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:25 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:51:25 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:28 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:28 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:51:28 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:28 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:51:28 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:51:28 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:51:28 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:51:28 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:51:29 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:51:29 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:51:29 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:51:29 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:51:29 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:51:29 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:51:29 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:51:29 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:51:29 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:51:29 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:51:29 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:51:29 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:51:30 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 02:51:30 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 02:51:32 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:51:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:34 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 02:51:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:51:34 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 02:51:34 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 02:51:34 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 02:51:34 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 02:51:34 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 02:51:34 - deployment_manager - INFO - SSH connection established
-2026-04-02 02:51:34 - deployment_manager - INFO - Uploading project files...
-2026-04-02 02:51:34 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 02:51:34 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 02:51:34 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 02:51:34 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 02:51:34 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 02:51:34 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 02:51:34 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 02:51:34 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 02:51:34 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 02:51:34 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 02:51:36 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 02:51:44 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 02:51:46 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 02:51:48 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 02:51:51 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 02:51:54 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 02:51:56 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 02:51:58 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 02:52:01 - deployment_manager - INFO -   [PROGRESS] 450 files uploaded...
-2026-04-02 02:52:04 - deployment_manager - INFO -   [PROGRESS] 500 files uploaded...
-2026-04-02 02:52:06 - deployment_manager - INFO -   [PROGRESS] 550 files uploaded...
-2026-04-02 02:52:08 - deployment_manager - INFO -   [PROGRESS] 600 files uploaded...
-2026-04-02 02:52:10 - deployment_manager - INFO -   [PROGRESS] 650 files uploaded...
-2026-04-02 02:52:12 - deployment_manager - INFO -   [PROGRESS] 700 files uploaded...
-2026-04-02 02:52:15 - deployment_manager - INFO -   [PROGRESS] 750 files uploaded...
-2026-04-02 02:52:17 - deployment_manager - INFO -   [PROGRESS] 800 files uploaded...
-2026-04-02 02:52:20 - deployment_manager - INFO -   [PROGRESS] 850 files uploaded...
-2026-04-02 02:52:22 - deployment_manager - INFO -   [PROGRESS] 900 files uploaded...
-2026-04-02 02:52:24 - deployment_manager - INFO -   [PROGRESS] 950 files uploaded...
-2026-04-02 02:52:26 - deployment_manager - INFO -   [PROGRESS] 1000 files uploaded...
-2026-04-02 02:52:28 - deployment_manager - INFO -   [PROGRESS] 1050 files uploaded...
-2026-04-02 02:52:31 - deployment_manager - INFO -   [PROGRESS] 1100 files uploaded...
-2026-04-02 02:52:36 - deployment_manager - INFO -   [PROGRESS] 1150 files uploaded...
-2026-04-02 02:52:38 - deployment_manager - INFO -   [PROGRESS] 1200 files uploaded...
-2026-04-02 02:52:41 - deployment_manager - INFO -   [PROGRESS] 1250 files uploaded...
-2026-04-02 02:52:43 - deployment_manager - INFO -   [PROGRESS] 1300 files uploaded...
-2026-04-02 02:52:45 - deployment_manager - INFO -   [PROGRESS] 1350 files uploaded...
-2026-04-02 02:52:48 - deployment_manager - INFO -   [PROGRESS] 1400 files uploaded...
-2026-04-02 02:52:50 - deployment_manager - INFO -   [PROGRESS] 1450 files uploaded...
-2026-04-02 02:52:52 - deployment_manager - INFO -   [PROGRESS] 1500 files uploaded...
-2026-04-02 02:52:54 - deployment_manager - INFO -   [PROGRESS] 1550 files uploaded...
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/tsconfig.json
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/tsconfig.tsbuildinfo
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=True
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts.map
-2026-04-02 02:52:56 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=True
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=True
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -   [PROGRESS] 1600 files uploaded...
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts.map
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0000_slippery_chimera.sql
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0002_crypto_payments.sql
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0003_login_events.sql
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0004_invites.sql
-2026-04-02 02:52:57 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0005_subscription_posting.sql
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0006_fix_upgrade_type_enum.sql
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/0007_password_reset.sql
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/meta/0000_snapshot.json
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle/meta/_journal.json
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/pg-update.mjs
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 02:52:58 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 02:52:59 - deployment_manager - INFO - [OK] Successfully uploaded 1642 files
-2026-04-02 02:52:59 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 02:52:59 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 02:52:59 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
+2026-04-05 14:56:51 - deployment_manager - DEBUG - [5/7] Applying Nginx configuration...
 
-2026-04-02 02:52:59 - deployment_manager - INFO - Scope: all 9 workspace projects
+2026-04-05 14:56:51 - deployment_manager - DEBUG - === CHECKING FOR CONFLICTING SERVICES ===
+Checking ports 80 and 443 for existing services...
 
-2026-04-02 02:53:00 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
+2026-04-05 14:56:51 - deployment_manager - DEBUG -    Process name: unknown
 
-2026-04-02 02:53:00 - deployment_manager - INFO - Already up to date
+=== STOPPING NGINX SERVICE ===
 
-2026-04-02 02:53:04 - deployment_manager - INFO - 
+2026-04-05 14:56:52 - deployment_manager - DEBUG - 
+=== CLEARING CONFLICTING PROCESSES ===
+Killing any services on ports 80 and 443...
 
-2026-04-02 02:53:04 - deployment_manager - INFO - Done in 5.6s using pnpm v10.33.0
+2026-04-05 14:56:52 - deployment_manager - DEBUG -  645067
+2026-04-05 14:56:54 - deployment_manager - DEBUG - 
+=== VERIFYING PORTS ARE FREE ===
 
-2026-04-02 02:53:04 - deployment_manager - INFO - 
-  Checking for database configuration...
-  Syncing PostgreSQL user password from DATABASE_URL...
+2026-04-05 14:56:55 - deployment_manager - ERROR - Deployment failed: Deployment script failed (exit code 1):
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644939 Killed                  sudo pkill -9 -f "nodeapp" 2> /dev/null
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644941 Killed                  sudo pkill -9 -f "/var/www" 2> /dev/null
+[PM2][WARN] No process found
 
-2026-04-02 02:53:05 - deployment_manager - INFO - 
-> @workspace/db@0.0.0 push-force /home/admin/Scootware-Forum/lib/db
-> drizzle-kit push --force --config ./drizzle.config.ts
-
-
-2026-04-02 02:53:06 - deployment_manager - INFO - Reading config file '/home/admin/Scootware-Forum/lib/db/drizzle.config.ts'
-
-2026-04-02 02:53:06 - deployment_manager - INFO - Using 'pg' driver for database querying
-
-2026-04-02 02:53:06 - deployment_manager - INFO - Error: getaddrinfo ENOTFOUND base
-    at /home/admin/Scootware-Forum/node_modules/.pnpm/pg-pool@3.13.0_pg@8.20.0/node_modules/pg-pool/index.js:45:11
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.query (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:80623:26)
-    at async fromDatabase2 (/home/admin/Scootware-Forum/node_modules/.pnpm/drizzle-kit@0.31.9/node_modules/drizzle-kit/bin.cjs:19276:25) {
-  errno: -3008,
-  code: 'ENOTFOUND',
-  syscall: 'getaddrinfo',
-  hostname: 'base'
-}
-
-2026-04-02 02:53:06 - deployment_manager - INFO - --- Building Production Bundles ---
-
-2026-04-02 02:53:07 - deployment_manager - INFO - 
-> workspace@0.0.0 build /home/admin/Scootware-Forum
-> pnpm run typecheck && pnpm -r --filter '!next-app' --filter '!@workspace/mockup-sandbox' --if-present run build
-
-
-2026-04-02 02:53:08 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck /home/admin/Scootware-Forum
-> pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter "./artifacts/**" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter "./scripts" --if-present run typecheck
-
-
-2026-04-02 02:53:09 - deployment_manager - INFO - 
-> workspace@0.0.0 typecheck:libs /home/admin/Scootware-Forum
-> tsc --build
-
-
-2026-04-02 02:53:10 - deployment_manager - INFO - No projects matched the filters "/home/admin/Scootware-Forum/scripts, @workspace/next-app" in "/home/admin/Scootware-Forum"
-
-2026-04-02 02:53:10 - deployment_manager - INFO - Scope: 3 of 9 workspace projects
-
-2026-04-02 02:53:11 - deployment_manager - INFO - Scope: 7 of 9 workspace projects
-
-2026-04-02 02:53:11 - deployment_manager - INFO - artifacts/api-server build$ node ./build.mjs
-
-2026-04-02 02:53:11 - deployment_manager - INFO - artifacts/forum build$ vite build --config vite.config.ts
-
-2026-04-02 02:53:13 - deployment_manager - INFO - artifacts/forum build: vite v7.3.1 building client environment for production...
-
-2026-04-02 02:53:13 - deployment_manager - INFO - artifacts/forum build: transforming...
-
-2026-04-02 02:53:14 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.data to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:53:14 - deployment_manager - INFO - artifacts/api-server build: Copied postgres.wasm to dist from /home/admin/Scootware-Forum/node_modules/.pnpm/@electric-sql+pglite@0.2.17/node_modules/@electric-sql/pglite/dist
-
-2026-04-02 02:53:14 - deployment_manager - INFO - artifacts/api-server build: Done
-
-2026-04-02 02:53:30 - deployment_manager - INFO - artifacts/forum build: rendering chunks...
-
-2026-04-02 02:53:30 - deployment_manager - INFO - artifacts/forum build: computing gzip size...
-
-2026-04-02 02:53:30 - deployment_manager - INFO - artifacts/forum build: Done
-
-2026-04-02 02:53:31 - deployment_manager - INFO - --- Restarting PM2 Processes ---
-
-2026-04-02 02:53:31 - deployment_manager - INFO - [PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
-
-2026-04-02 02:53:31 - deployment_manager - INFO - [PM2] [v] All Applications Stopped
-
-2026-04-02 02:53:31 - deployment_manager - INFO - [PM2][WARN] No process found
-
-2026-04-02 02:53:31 - deployment_manager - INFO - [PM2] [v] PM2 Daemon Stopped
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2] Spawning PM2 daemon with pm2_home=/home/admin/.pm2
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2] PM2 Successfully daemonized
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2][WARN] Applications scootware-api not running, starting...
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2] App [scootware-api] launched (1 instances)
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2] Saving current process list...
-
-2026-04-02 02:53:32 - deployment_manager - INFO - [PM2] Successfully saved in /home/admin/.pm2/dump.pm2
-
-2026-04-02 02:53:33 - deployment_manager - INFO - [PM2] Init System found: systemd
-[PM2] To setup the Startup Script, copy/paste the following command:
-
-2026-04-02 02:53:33 - deployment_manager - INFO - sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u admin --hp /home/admin
-
-2026-04-02 02:53:33 - deployment_manager - INFO - Remote deployment script executed successfully
-2026-04-02 02:53:33 - deployment_manager - INFO - Verifying deployment...
-2026-04-02 02:53:34 - deployment_manager - INFO - Deployment verification: API is running
-2026-04-02 02:53:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 02:53:34 - deployment_manager - INFO - DEPLOYMENT COMPLETED SUCCESSFULLY
-2026-04-02 02:53:34 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:01:47 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:01:47 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 03:01:47 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:01:47 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 03:01:47 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 03:01:47 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 03:01:47 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 03:01:47 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 03:01:47 - deployment_manager - INFO - SSH connection established
-2026-04-02 03:01:47 - deployment_manager - INFO - Uploading project files...
-2026-04-02 03:01:47 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 03:01:47 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 03:01:47 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 03:01:47 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 03:01:47 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 03:01:47 - deployment_manager - INFO - [SCAN] Found 1642 files (67.2 MB)
-2026-04-02 03:01:47 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 03:01:47 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 03:01:47 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 03:01:47 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 03:01:48 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 03:01:48 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 03:01:50 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 03:01:52 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 03:01:55 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 03:01:58 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 03:02:00 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 03:02:03 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 03:02:05 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 03:02:07 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 03:02:07 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 03:02:08 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 03:02:08 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 03:02:08 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 03:02:08 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 03:02:08 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 03:02:08 - deployment_manager - INFO - [OK] Successfully uploaded 406 files (skipped 1236 unchanged files)
-2026-04-02 03:02:08 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 03:02:08 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 03:02:08 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 03:02:09 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 03:02:09 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 03:02:10 - deployment_manager - INFO - Already up to date
-
-2026-04-02 03:02:13 - deployment_manager - INFO - 
-devDependencies:
-+ @types/bcrypt 6.0.0
-
-
-2026-04-02 03:02:13 - deployment_manager - ERROR - Deployment failed: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
 
 Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644939 Killed                  sudo pkill -9 -f "nodeapp" 2> /dev/null
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644941 Killed                  sudo pkill -9 -f "/var/www" 2> /dev/null
+[PM2][WARN] No process found
+
 
 Traceback:
 Traceback (most recent call last):
-  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy.py", line 115, in <module>
+  File "c:\Users\nigga\Downloads\Scootware Master\Scootware-Forum\Scootware-Forum\deployment-manager\deploy_now.py", line 110, in <module>
     raise Exception(f"Deployment script failed (exit code {returncode}):\n{stderr}")
 Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644939 Killed                  sudo pkill -9 -f "nodeapp" 2> /dev/null
+/home/admin/Scootware-Forum/live-deployment/remote-manage.sh: line 51: 644941 Killed                  sudo pkill -9 -f "/var/www" 2> /dev/null
+[PM2][WARN] No process found
 
-2026-04-02 03:08:30 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:08:30 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 03:08:30 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:08:30 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 03:08:30 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 03:08:30 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 03:08:30 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 03:08:30 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 03:08:31 - deployment_manager - INFO - SSH connection established
-2026-04-02 03:08:31 - deployment_manager - INFO - Uploading project files...
-2026-04-02 03:08:31 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 03:08:31 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 03:08:31 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 03:08:31 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 03:08:31 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 03:08:31 - deployment_manager - INFO - [SCAN] Found 1643 files (67.2 MB)
-2026-04-02 03:08:31 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 03:08:31 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 03:08:31 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 03:08:31 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 03:08:31 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 03:08:31 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 03:08:33 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 03:08:36 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 03:08:38 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 03:08:40 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 03:08:43 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 03:08:45 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 03:08:47 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 03:08:49 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 03:08:50 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 03:08:50 - deployment_manager - INFO - [OK] Successfully uploaded 407 files (skipped 1236 unchanged files)
-2026-04-02 03:08:50 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 03:08:50 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 03:08:50 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 03:08:51 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 03:08:51 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 03:08:52 - deployment_manager - INFO - Already up to date
-
-2026-04-02 03:08:55 - deployment_manager - INFO - 
-
-2026-04-02 03:08:55 - deployment_manager - ERROR - Deployment failed: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Traceback:
-Traceback (most recent call last):
-  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy.py", line 115, in <module>
-    raise Exception(f"Deployment script failed (exit code {returncode}):\n{stderr}")
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-2026-04-02 03:11:22 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:11:22 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 03:11:22 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:11:22 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 03:11:22 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 03:11:22 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 03:11:22 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 03:11:22 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 03:11:22 - deployment_manager - INFO - SSH connection established
-2026-04-02 03:11:22 - deployment_manager - INFO - Uploading project files...
-2026-04-02 03:11:22 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 03:11:22 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 03:11:22 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 03:11:23 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 03:11:23 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 03:11:23 - deployment_manager - INFO - [SCAN] Found 1643 files (67.2 MB)
-2026-04-02 03:11:23 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 03:11:23 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 03:11:23 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 03:11:23 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 03:11:23 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 03:11:23 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 03:11:25 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 03:11:27 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 03:11:30 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 03:11:32 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 03:11:34 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 03:11:36 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 03:11:39 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:11:40 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 03:11:41 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 03:11:41 - deployment_manager - INFO - [OK] Successfully uploaded 407 files (skipped 1236 unchanged files)
-2026-04-02 03:11:41 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 03:11:41 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 03:11:41 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 03:11:42 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 03:11:42 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 03:11:43 - deployment_manager - INFO - Already up to date
-
-2026-04-02 03:11:46 - deployment_manager - INFO - 
-
-2026-04-02 03:11:47 - deployment_manager - ERROR - Deployment failed: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Traceback:
-Traceback (most recent call last):
-  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy.py", line 115, in <module>
-    raise Exception(f"Deployment script failed (exit code {returncode}):\n{stderr}")
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-2026-04-02 03:12:58 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:12:58 - deployment_manager - INFO - FULL PRODUCTION DEPLOYMENT STARTED
-2026-04-02 03:12:58 - deployment_manager - INFO - ======================================================================
-2026-04-02 03:12:58 - deployment_manager - INFO - Deployment Configuration:
-2026-04-02 03:12:58 - deployment_manager - INFO -   VPS: admin@[VPS_IP]
-2026-04-02 03:12:58 - deployment_manager - INFO -   Remote Path: /home/admin/Scootware-Forum
-2026-04-02 03:12:58 - deployment_manager - INFO -   Project Root: ../
-2026-04-02 03:12:58 - deployment_manager - INFO - Connecting to VPS...
-2026-04-02 03:12:58 - deployment_manager - INFO - SSH connection established
-2026-04-02 03:12:58 - deployment_manager - INFO - Uploading project files...
-2026-04-02 03:12:58 - deployment_manager - INFO - [START] Beginning file upload...
-2026-04-02 03:12:58 - deployment_manager - INFO - [DEBUG] Exclude patterns count: 26
-2026-04-02 03:12:58 - deployment_manager - INFO - [DEBUG] Patterns: .git, .github, *.local, .venv, venv...
-2026-04-02 03:12:58 - deployment_manager - INFO - [DEBUG] Excluded 17 directories
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/.agents
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/.git
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/.github
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/.pglite-data
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/.venv
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/artifacts/api-server/node_modules
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/artifacts/forum/node_modules
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/artifacts/mockup-sandbox/node_modules
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/.next
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum/artifacts/next-app/node_modules
-2026-04-02 03:12:58 - deployment_manager - INFO -        ... and 7 more
-2026-04-02 03:12:58 - deployment_manager - INFO - [SCAN] Found 1643 files (67.2 MB)
-2026-04-02 03:12:58 - deployment_manager - INFO - [INFO] lib/db files to upload: 41
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\drizzle.config.ts
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\package.json
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.json
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\tsconfig.tsbuildinfo
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\index.d.ts.map
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\crypto_payments.d.ts.map
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts
-2026-04-02 03:12:58 - deployment_manager - INFO -        - Scootware-Forum\lib\db\dist\schema\forum.d.ts.map
-2026-04-02 03:12:58 - deployment_manager - INFO - [INFO] Analyzing local file metadata and checking cache...
-2026-04-02 03:12:59 - deployment_manager - INFO - [UPLOAD] Starting transfer...
-2026-04-02 03:13:02 - deployment_manager - INFO -   [SYNC] 500 files already up to date (cached)...
-2026-04-02 03:13:02 - deployment_manager - INFO -   [SYNC] 1000 files already up to date (cached)...
-2026-04-02 03:13:03 - deployment_manager - INFO -   [PROGRESS] 50 files uploaded...
-2026-04-02 03:13:06 - deployment_manager - INFO -   [PROGRESS] 100 files uploaded...
-2026-04-02 03:13:08 - deployment_manager - INFO -   [PROGRESS] 150 files uploaded...
-2026-04-02 03:13:10 - deployment_manager - INFO -   [PROGRESS] 200 files uploaded...
-2026-04-02 03:13:12 - deployment_manager - INFO -   [PROGRESS] 250 files uploaded...
-2026-04-02 03:13:15 - deployment_manager - INFO -   [PROGRESS] 300 files uploaded...
-2026-04-02 03:13:17 - deployment_manager - INFO -   [PROGRESS] 350 files uploaded...
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/drizzle.config.ts: critical=True, will_upload=True
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/drizzle.config.ts
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/package.json: critical=True, will_upload=True
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/package.json
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.json: critical=False, will_upload=False
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/tsconfig.tsbuildinfo: critical=False, will_upload=False
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts: critical=True, will_upload=True
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/index.d.ts
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/index.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts: critical=True, will_upload=True
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts
-2026-04-02 03:13:19 - deployment_manager - INFO -   [PROGRESS] 400 files uploaded...
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/crypto_payments.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts: critical=True, will_upload=True
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/forum.d.ts
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] Scootware-Forum/lib/db/dist/schema/forum.d.ts.map: critical=False, will_upload=False
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/index.d.ts
-2026-04-02 03:13:19 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/login_events.d.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/profile_posts.d.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/shoutbox.d.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/site_config.d.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/dist/schema/users.d.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/index.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/crypto_payments.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/forum.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/index.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/login_events.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/profile_posts.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/shoutbox.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/site_config.ts
-2026-04-02 03:13:20 - deployment_manager - INFO -        [lib/db] UPLOADED: Scootware-Forum/lib/db/src/schema/users.ts
-2026-04-02 03:13:20 - deployment_manager - INFO - [OK] Successfully uploaded 416 files (skipped 1227 unchanged files)
-2026-04-02 03:13:20 - deployment_manager - INFO - Files uploaded successfully
-2026-04-02 03:13:20 - deployment_manager - INFO - Running remote deployment script (all)...
-2026-04-02 03:13:20 - deployment_manager - INFO - --- Updating Dependencies and Migrations ---
-  Running: pnpm install
-
-2026-04-02 03:13:21 - deployment_manager - INFO - Scope: all 9 workspace projects
-
-2026-04-02 03:13:21 - deployment_manager - INFO - Lockfile is up to date, resolution step is skipped
-
-2026-04-02 03:13:22 - deployment_manager - INFO - Already up to date
-
-2026-04-02 03:13:25 - deployment_manager - INFO - 
-
-2026-04-02 03:13:25 - deployment_manager - ERROR - Deployment failed: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
-
-Traceback:
-Traceback (most recent call last):
-  File "C:\Users\nigga\Downloads\Scootware-Forum\Scootware-Forum\deployment-manager\deploy.py", line 115, in <module>
-    raise Exception(f"Deployment script failed (exit code {returncode}):\n{stderr}")
-Exception: Deployment script failed (exit code 1):
-'charmap' codec can't encode character '\u256d' in position 6: character maps to <undefined>
 

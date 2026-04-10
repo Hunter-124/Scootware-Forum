@@ -4,7 +4,7 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 from config import Config
-from ssh_manager import SSHManager, ArchiveUploader
+from ssh_manager import SSHManager, DirectUploader
 from error_logger import ErrorLogger
 from pathlib import Path
 import time
@@ -54,49 +54,36 @@ try:
     print(f"      [OK] Connected to {vps_host}")
     error_logger.log_info("SSH connection established")
     
-    # Step 2: Create Tarball
-    print("\n[2/5] Creating project archive...")
-    error_logger.log_info("Creating project archive...")
+    # Step 2: Direct Project Upload
+    print("\n[2/5] Uploading project files...")
+    error_logger.log_info("Uploading project files...")
     
-    # Get absolute path
+    # Resolve absolute path for project root
     if not Path(project_root).is_absolute():
-        project_root = Path.cwd() / project_root
+        # Get directory where this script is located (deployment-manager/)
+        script_dir = Path(__file__).resolve().parent
+        # Go up 1 level to get to Scootware-Forum root
+        project_root = str((script_dir.parent).resolve())
     
     print(f"      Source: {project_root}")
-    
-    success, tarball_path = ArchiveUploader.create_tarball(
-        str(project_root),
-        exclude_patterns
-    )
-    
-    if not success:
-        raise Exception(f"Tarball creation failed: {tarball_path}")
-    
-    tarball_size = Path(tarball_path).stat().st_size / (1024 * 1024)
-    print(f"      [OK] Archive created: {tarball_path}")
-    print(f"        Size: {tarball_size:.2f} MB")
-    error_logger.log_info(f"Archive created: {tarball_path} ({tarball_size:.2f} MB)")
-    
-    # Step 3: Upload and Extract
-    print("\n[3/5] Uploading archive to VPS...")
-    error_logger.log_info("Uploading archive to VPS...")
     
     def upload_progress(msg):
         print(f"      {msg}")
         error_logger.log_debug(msg)
     
-    success, msg = ArchiveUploader.upload_and_extract(
+    success, msg = DirectUploader.upload_project(
         ssh,
-        tarball_path,
+        project_root,
         remote_path,
+        exclude_patterns,
         progress_callback=upload_progress
     )
     
     if not success:
-        raise Exception(f"Upload/extract failed: {msg}")
+        raise Exception(f"Upload failed: {msg}")
     
-    print(f"      [OK] Archive uploaded and extracted")
-    error_logger.log_info("Archive uploaded and extracted successfully")
+    print(f"      [OK] Project files uploaded successfully")
+    error_logger.log_info("Project files uploaded successfully")
     
     # Step 4: Run Remote Deployment Script
     print("\n[4/5] Building and restarting services...")

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Check, Zap, ShoppingCart, Calendar } from "lucide-react";
 import { useGetProducts } from "@workspace/api-client-react";
 import { formatDistanceToNow } from "date-fns";
+import { cn, formatUpgradeDisplay } from "@/lib/utils";
 
 export default function Upgrades() {
   const { user, isAuthenticated } = useAuth();
@@ -86,7 +87,7 @@ export default function Upgrades() {
               <div key={product.id} className="bg-primary/5 border border-primary/30 rounded-lg p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">{formatUpgradeDisplay(product.name)}</h3>
                     <p className="text-muted-foreground">{product.description}</p>
                   </div>
                   <Check className="w-8 h-8 text-accent flex-shrink-0 mt-1" />
@@ -100,7 +101,7 @@ export default function Upgrades() {
                         ? "bg-yellow-500/20 border-yellow-500/50 text-yellow-300"
                         : "bg-primary/20 border-primary/50 text-primary"
                     )}>
-                      {product.tier || "premium"}
+                      {formatUpgradeDisplay(product.tier || "premium")}
                     </div>
                   </div>
                   <div>
@@ -164,7 +165,7 @@ export default function Upgrades() {
                       : "border-white/10 bg-white/5 hover:border-primary/30"
                   }`}
                 >
-                  <h3 className="text-lg font-bold text-white mb-2">{product.name}</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">{formatUpgradeDisplay(product.name)}</h3>
                   <p className="text-muted-foreground text-sm mb-4">{product.description}</p>
                   
                   <div className="mb-6 pt-4 border-t border-white/5">

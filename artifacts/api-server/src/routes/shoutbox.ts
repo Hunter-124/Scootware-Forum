@@ -277,7 +277,9 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
 
     // Handle /roll command
     if (content.toLowerCase() === "/roll") {
-      const total = Math.floor(Math.random() * 12) + 2;
+      const die1 = Math.floor(Math.random() * 6) + 1;
+      const die2 = Math.floor(Math.random() * 6) + 1;
+      const total = die1 + die2;
       content = `🎲 ${total}`;
       
       // Get or create Scoot-bot user for roll messages

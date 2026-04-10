@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { useGetCategories } from "@workspace/api-client-react";
 import { MessageSquare, Users, Zap, ShieldAlert, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatUpgradeDisplay } from "@/lib/utils";
 import { PRODUCT_ICONS, PRODUCT_IMAGES, getCategoryImage } from "@/lib/product-assets";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -22,7 +22,13 @@ export default function Home() {
   const { leftCol, rightCol } = React.useMemo(() => {
     if (!categories) return { leftCol: [], rightCol: [] };
 
-    const find = (id: string, n?: string) => categories.find((c: any) => c.productId === id || c.name === n);
+    const find = (id: string, names: string | string[] = []) => {
+      const nameList = Array.isArray(names) ? names : [names].filter(Boolean);
+      return categories.find((c: any) => 
+        (id && c.productId === id) || 
+        nameList.some(n => c.name === n)
+      );
+    };
     
     // Strategic split to balance subforum counts (7 vs 7) and eliminate vertical gaps
     const left = [
@@ -35,7 +41,8 @@ export default function Home() {
     const right = [
       find("", "Product Support"),
       find("TARKOV"),
-      find("RUST")
+      find("RUST"),
+      find("CS2", ["CS2 Discussions", "Counter-Strike 2", "Counter-Strike 2 Access"])
     ].filter(Boolean);
 
     return { leftCol: left, rightCol: right };
@@ -56,7 +63,7 @@ export default function Home() {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-xl font-display font-bold text-white tracking-wide truncate drop-shadow-lg">
-              {category.name.replace(" Discussions", "")}
+              {formatUpgradeDisplay(category.name.replace(" Discussions", ""))}
             </h3>
             {category.description && (
               <p className="text-[10px] uppercase font-bold text-gray-300 truncate tracking-widest opacity-80">{category.description}</p>

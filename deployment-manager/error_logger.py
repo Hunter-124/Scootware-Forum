@@ -103,6 +103,29 @@ class ErrorLogger:
         """Log success message."""
         self.logger.info(f"[OK] {message}")
 
+    def clear(self) -> None:
+        """Clear all logs by closing handlers, truncating file, and re-initializing."""
+        # 1. Close all handlers to release file lock
+        for handler in self.logger.handlers[:]:
+            handler.close()
+            self.logger.removeHandler(handler)
+        
+        # 2. Truncate the file
+        if self.log_file.exists():
+            try:
+                with open(self.log_file, "w") as f:
+                    f.truncate(0)
+            except Exception as e:
+                # If we still can't truncate, try to delete (may still fail on Windows)
+                try:
+                    self.log_file.unlink()
+                except Exception:
+                    pass
+        
+        # 3. Re-setup the logger
+        self.logger = self._setup_logger()
+        self.log_info("Log file cleared and logger re-initialized")
+
     def get_recent_logs(self, lines: int = 50) -> str:
         """Get recent log lines.
         

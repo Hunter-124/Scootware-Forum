@@ -68,14 +68,35 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://static.cloudflareinsights.com"],
+      connectSrc: ["'self'", "https://cloudflareinsights.com", "https://static.cloudflareinsights.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
+      fontSrc: ["'self'", "https:", "data:"],
     },
   },
 }));
 
 // CORS configuration
+const allowedOriginsString = process.env.ALLOWED_ORIGINS;
+let allowedOrigins: string[] = [
+  process.env.SITE_URL || "https://scootware.us",
+  process.env.FRONTEND_URL || "https://scootware.us",
+  "http://localhost:3000",
+  "http://localhost:5173",
+].filter(Boolean) as string[];
+
+if (allowedOriginsString) {
+  try {
+    const parsed = JSON.parse(allowedOriginsString);
+    if (Array.isArray(parsed)) {
+      allowedOrigins = [...new Set([...allowedOrigins, ...parsed])];
+    }
+  } catch (err) {
+    logger.error({ err, allowedOriginsString }, "Failed to parse ALLOWED_ORIGINS environment variable as JSON");
+  }
+}
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);

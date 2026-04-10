@@ -57,3 +57,18 @@ Thumbs.db
 # Database files (local development/testing only, never deploy)
 .pglite-data/
 pglite-data/
+
+# Temporary files and archives
+*.tar.gz
+*.log
+.deploy_cache.json
+scratch/
+build-output.txt
+
+# Python
+*.pyc
+__pycache__/
+
+# Secrets and Keys
+*.pem
+*.ppk

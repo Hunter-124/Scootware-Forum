@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
-
 # This script installs the production nginx config and restarts nginx.
 # Run as root or with sudo.
-# SAFEGUARDS: Checks for conflicting services, kills them, verifies nginx starts
 
+# SAFEGUARDS: Checks for conflicting services, kills them, verifies nginx starts
 SOURCE_CONFIG="$(dirname "$0")/nginx.conf.prod"
 DEST_CONFIG="/etc/nginx/sites-available/scootware"
 ENABLE_LINK="/etc/nginx/sites-enabled/scootware"
@@ -17,7 +16,6 @@ fi
 # Step 1: Identify conflicting services BEFORE killing anything
 echo "=== CHECKING FOR CONFLICTING SERVICES ==="
 echo "Checking ports 80 and 443 for existing services..."
-
 CONFLICTS_80=""
 CONFLICTS_443=""
 
@@ -48,7 +46,6 @@ sleep 1
 echo ""
 echo "=== CLEARING CONFLICTING PROCESSES ==="
 echo "Killing any services on ports 80 and 443..."
-
 if command -v fuser >/dev/null 2>&1; then
   sudo fuser -k 80/tcp 2>/dev/null || true
   sudo fuser -k 443/tcp 2>/dev/null || true
@@ -70,7 +67,7 @@ if command -v fuser >/dev/null 2>&1; then
     echo "❌ ERROR: Port 80 is still in use!"
     exit 1
   fi
-  
+    
   if ! sudo fuser 443/tcp 2>/dev/null; then
     echo "✓ Port 443 is now free"
   else
@@ -82,7 +79,6 @@ fi
 # Step 5: Deploy nginx configuration
 echo ""
 echo "=== DEPLOYING NGINX CONFIGURATION ==="
-
 sudo cp "$SOURCE_CONFIG" "$DEST_CONFIG"
 sudo ln -sf "$DEST_CONFIG" "$ENABLE_LINK"
 
@@ -106,7 +102,6 @@ echo "✓ Nginx configuration is valid"
 # Step 6: Start nginx and verify
 echo ""
 echo "=== STARTING NGINX SERVICE ==="
-
 if ! sudo systemctl start nginx; then
   echo "❌ ERROR: Failed to start Nginx service!"
   echo ""
@@ -114,7 +109,6 @@ if ! sudo systemctl start nginx; then
   sudo journalctl -xeu nginx.service | tail -30
   exit 1
 fi
-
 echo "✓ Nginx service started"
 
 # Verify nginx is actually running
@@ -130,14 +124,13 @@ fi
 # Step 7: Verify ports are listening
 echo ""
 echo "=== VERIFYING PORT LISTENERS ==="
-
 if command -v ss >/dev/null 2>&1; then
   if ss -tlnp | grep -q ':80'; then
     echo "✓ Nginx is listening on port 80"
   else
     echo "❌ WARNING: Port 80 is not listening!"
   fi
-  
+    
   if ss -tlnp | grep -q ':443'; then
     echo "✓ Nginx is listening on port 443"
   else

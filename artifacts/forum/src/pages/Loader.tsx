@@ -19,6 +19,7 @@ const products = [
   { id: "RUST", status: "stable", version: "2.1.0", name: "Rust Access" },
   { id: "DAYZ", status: "beta",   version: "3.0.0-beta", name: "DayZ Access" },
   { id: "TARKOV", status: "stable", version: "1.4.7", name: "Tarkov Access" },
+  { id: "CS2", status: "stable", version: "1.0.0", name: "Counter-Strike 2 Access" },
   { id: "SPOOFER", status: "stable", version: "2.6.2", name: "Spoofer Module" },
 ];
 

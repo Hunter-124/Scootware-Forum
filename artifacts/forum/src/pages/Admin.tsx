@@ -2,19 +2,41 @@ import React, { useState } from "react";
 import { useAdminGetUsers, useAdminGetConfig, useAdminUpdateConfig, type SiteConfigInviteRequestMode } from "@workspace/api-client-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
-import { Shield, Settings, Users, Search, Save, AlertCircle, Plus, Trash2, Slash, Unlock, ChevronDown, X, Download, Mail } from "lucide-react";
+import { Shield, Settings, Users, Search, Save, AlertCircle, Plus, Trash2, Slash, Unlock, ChevronDown, X, Download, Mail, Chrome, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn, getRoleColor, formatDate } from "@/lib/utils";
+import { cn, getRoleColor, formatDate, formatUpgradeDisplay } from "@/lib/utils";
 import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 import { toast } from "sonner";
 
-const PRODUCTS = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "SPOOFER"] as const;
+const PRODUCTS = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "CS2", "SPOOFER"] as const;
 const TIERS = ["premium", "lifetime"] as const;
+
+// Branded SSO Icons
+const SteamIcon = ({ className }: { className?: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 5.568 3.797 10.25 8.922 11.603l-.014-.005c.814-.366 1.173-1.096 1.173-1.096.012-.023.013-.046.002-.066l-1.085-1.53c-.007-.01-.019-.015-.03-.014-.012.001-.023.008-.028.02a3.486 3.486 0 0 1-.871.218 1.867 1.867 0 1 1 0-3.734 1.867 1.867 0 0 1 0 3.734c.045 0 .09.002.133.006.012.001.023-.005.029-.016l1.222-1.721c.54.148 1.11.226 1.7.226 3.482 0 6.305-2.823 6.305-6.305s-2.823-6.305-6.305-6.305-6.305 2.823-6.305 6.305c0 .324.025.642.072.953.002.012.012.02.024.019.012-.001.021-.01.02-.023a4.343 4.343 0 0 1 4.364-4.502c2.395 0 4.336 1.942 4.336 4.337s-1.941 4.336-4.336 4.336c-.464 0-.91-.073-1.328-.209-.012-.004-.025 0-.031.011l-1.573 1.107c-.122.14-.15.424-.04.64l3.181 1.312a12.002 12.002 0 0 0 10.05-11.144c0-6.627-5.373-12-12-12z"/>
+  </svg>
+);
+
+const DiscordIcon = ({ className }: { className?: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.069.069 0 0 0-.032.027C.533 9.048-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+  </svg>
+);
+
+const GoogleIcon = ({ className }: { className?: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" className={className}>
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"/>
+  </svg>
+);
 
 export default function AdminDashboard() {
   const { isAdmin } = useAuth();
-  const [activeTab, setActiveTab] = useState<'users' | 'config' | 'logins' | 'invites' | 'loaders' | 'rate-limits' | 'email-settings'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'config' | 'logins' | 'invites' | 'loaders' | 'product-assets' | 'rate-limits' | 'email-settings'>('users');
   const [search, setSearch] = useState("");
   
   if (!isAdmin) {
@@ -77,6 +99,13 @@ export default function AdminDashboard() {
             <Download className="w-4 h-4" /> Loader Version
           </Button>
           <Button 
+            variant={activeTab === 'product-assets' ? 'glow' : 'outline'} 
+            onClick={() => setActiveTab('product-assets')}
+            className="gap-2"
+          >
+            <Download className="w-4 h-4" /> Product Assets
+          </Button>
+          <Button 
             variant={activeTab === 'rate-limits' ? 'glow' : 'outline'} 
             onClick={() => setActiveTab('rate-limits')}
             className="gap-2"
@@ -97,6 +126,7 @@ export default function AdminDashboard() {
         {activeTab === 'logins' && <LoginEventsTab />}
         {activeTab === 'invites' && <InvitesTab />}
         {activeTab === 'loaders' && <LoadersTab />}
+        {activeTab === 'product-assets' && <ProductAssetsTab />}
         {activeTab === 'rate-limits' && <RateLimitingTab />}
         {activeTab === 'email-settings' && <EmailSettingsTab />}
       </div>
@@ -170,7 +200,10 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
   const [verifyingId, setVerifyingId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [banningId, setBanningId] = useState<number | null>(null);
-  const [togglingAdminId, setTogglingAdminId] = useState<number | null>(null);
+  const [togglingRoleId, setTogglingRoleId] = useState<number | null>(null);
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
+  const [roleModalUserId, setRoleModalUserId] = useState<number | null>(null);
+  const [roleModalCurrentRole, setRoleModalCurrentRole] = useState<string>("user");
   const [subModalOpen, setSubModalOpen] = useState(false);
   const [subModalUserId, setSubModalUserId] = useState<number | null>(null);
   const [subModalActiveProducts, setSubModalActiveProducts] = useState<any[]>([]);
@@ -224,23 +257,24 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
     }
   };
 
-  const handleToggleAdmin = async (userId: number, isAdmin: boolean) => {
-    setTogglingAdminId(userId);
+  const handleUpdateRole = async (userId: number, role: string) => {
+    setTogglingRoleId(userId);
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: isAdmin ? "user" : "admin" }),
+        body: JSON.stringify({ role }),
         credentials: "include"
       });
       if (!res.ok) throw new Error("Failed to update role");
-      toast.success(isAdmin ? "Removed admin status" : "Promoted to admin");
+      toast.success(`User role updated to ${role}`);
       refetch();
+      setRoleModalOpen(false);
     } catch (err) {
       console.error(err);
-      toast.error(`Failed to ${isAdmin ? "remove" : "grant"} admin status`);
+      toast.error(`Failed to update user role`);
     } finally {
-      setTogglingAdminId(null);
+      setTogglingRoleId(null);
     }
   };
 
@@ -269,6 +303,12 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
     setSubModalUserId(userId);
     setSubModalActiveProducts(activeProducts);
     setSubModalOpen(true);
+  };
+
+  const handleOpenRoleModal = (userId: number, currentRole: string) => {
+    setRoleModalUserId(userId);
+    setRoleModalCurrentRole(currentRole);
+    setRoleModalOpen(true);
   };
 
   const handleSubscriptionConfirm = async (
@@ -372,8 +412,8 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    {user.role === "admin" ? (
-                      <RoleStatusBadge role="admin" compact />
+                    {user.role === "admin" || user.role === "mod" ? (
+                      <RoleStatusBadge role={user.role} compact />
                     ) : user.activeProducts && user.activeProducts.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {user.activeProducts.map((ap: any) => (
@@ -387,23 +427,43 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
                             )}
                             title={`${ap.tier} - expires ${new Date(ap.expiresAt).toLocaleDateString()}`}
                           >
-                            {ap.productId}
+                            {formatUpgradeDisplay(ap.productId)}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border bg-muted/20 border-muted/50 text-muted-foreground">
-                        User
-                      </span>
+                      <RoleStatusBadge role="user" compact />
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      {user.isBanned 
-                        ? <span className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3"/>Banned</span> 
-                        : <span className="text-xs text-green-500">Active</span>}
-                      {!user.isEmailVerified && (
-                        <span className="text-xs text-yellow-500 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>Unverified</span>
+                    <div className="space-y-2">
+                      <div className="space-y-1">
+                        {user.isBanned 
+                          ? <span className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3"/>Banned</span> 
+                          : <span className="text-xs text-green-500">Active</span>}
+                        {!user.isEmailVerified && (
+                          <span className="text-xs text-yellow-500 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>Unverified</span>
+                        )}
+                      </div>
+                      {/* SSO Providers */}
+                      {(user.googleId || user.discordId || user.steamId) && (
+                        <div className="flex gap-2 mt-2">
+                          {user.googleId && (
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-white/5 border border-white/10 rounded text-white" title="Google linked">
+                              <GoogleIcon className="w-3.5 h-3.5" />
+                            </div>
+                          )}
+                          {user.discordId && (
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-[#5865F2]/10 border border-[#5865F2]/30 rounded text-[#5865F2]" title="Discord linked">
+                              <DiscordIcon className="w-3.5 h-3.5" />
+                            </div>
+                          )}
+                          {user.steamId && (
+                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-[#171a21]/40 border border-[#171a21]/50 rounded text-white" title="Steam linked">
+                              <SteamIcon className="w-3.5 h-3.5 text-[#66c0f4]" />
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                   </td>
@@ -444,11 +504,11 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className={cn("h-7 px-2", user.role === "admin" ? "text-purple-500 hover:bg-purple-500/10" : "text-cyan-500 hover:bg-cyan-500/10")}
-                        disabled={togglingAdminId === user.id}
-                        onClick={() => handleToggleAdmin(user.id, user.role === "admin")}
+                        className={cn("h-7 px-2", user.role === "admin" ? "text-amber-500 hover:bg-amber-500/10" : user.role === "mod" ? "text-indigo-400 hover:bg-indigo-500/10" : "text-zinc-400 hover:bg-zinc-400/10")}
+                        disabled={togglingRoleId === user.id}
+                        onClick={() => handleOpenRoleModal(user.id, user.role)}
                       >
-                        {togglingAdminId === user.id ? "..." : (user.role === "admin" ? "Demote" : "Promote")}
+                        {togglingRoleId === user.id ? "..." : "Role"}
                       </Button>
 
                       <Button 
@@ -481,6 +541,14 @@ function UserManagementTab({ search, setSearch }: { search: string, setSearch: (
         activeProducts={subModalActiveProducts}
         onConfirm={handleSubscriptionConfirm}
         onClose={() => setSubModalOpen(false)}
+      />
+    )}
+
+    {roleModalOpen && (
+      <RoleSelectionModal
+        currentRole={roleModalCurrentRole}
+        onConfirm={(role) => handleUpdateRole(roleModalUserId!, role)}
+        onClose={() => setRoleModalOpen(false)}
       />
     )}
     </>
@@ -1224,6 +1292,24 @@ function RateLimitingTab() {
           />
         </div>
 
+        {/* Change Password */}
+        <div className="pt-6 border-t border-white/10">
+          <RateLimitSection 
+            title="Change Password" 
+            category="ChangePassword"
+            description="Limit password change attempts for authenticated users"
+          />
+        </div>
+
+        {/* Change Username */}
+        <div className="pt-6 border-t border-white/10">
+          <RateLimitSection 
+            title="Change Username" 
+            category="ChangeUsername"
+            description="Limit username change attempts for authenticated users"
+          />
+        </div>
+
         {/* SSO Link */}
         <div className="pt-6 border-t border-white/10">
           <RateLimitSection 
@@ -1548,7 +1634,7 @@ function SubscriptionModal({
                   )}
                   title={`Expires: ${new Date(ap.expiresAt).toLocaleDateString()}`}
                 >
-                  {ap.productId} ({ap.tier}) • Expires {new Date(ap.expiresAt).toLocaleDateString()}
+                  {formatUpgradeDisplay(ap.productId)} ({ap.tier}) • Expires {new Date(ap.expiresAt).toLocaleDateString()}
                 </div>
               ))}
             </div>
@@ -1605,7 +1691,7 @@ function SubscriptionModal({
                       )}
                       title={isExisting ? "User already has this subscription" : ""}
                     >
-                      {selectedProducts.has(product) && "✓ "}{product}{isExisting && " ◆"}
+                      {selectedProducts.has(product) && "✓ "}{formatUpgradeDisplay(product)}{isExisting && " ◆"}
                     </button>
                   );
                 })}
@@ -1670,7 +1756,7 @@ function SubscriptionModal({
                         : "bg-black/40 border-white/10 text-muted-foreground hover:border-white/20"
                     )}
                   >
-                    {selectedExtendProducts.has(product.productId) && "✓ "}{product.productId}
+                    {selectedExtendProducts.has(product.productId) && "✓ "}{formatUpgradeDisplay(product.productId)}
                   </button>
                 ))}
               </div>
@@ -1843,3 +1929,262 @@ function EmailSettingsTab() {
     </div>
   );
 }
+
+function RoleSelectionModal({ 
+  currentRole, 
+  onConfirm, 
+  onClose 
+}: { 
+  currentRole: string; 
+  onConfirm: (role: string) => void; 
+  onClose: () => void; 
+}) {
+  const roles = [
+    { id: "user", label: "User", description: "Standard forum member permissions.", color: "text-zinc-400", bg: "bg-zinc-400/10", border: "border-zinc-400/30" },
+    { id: "mod", label: "Moderator", description: "Management access: moderate threads and users.", color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/30" },
+    { id: "admin", label: "Administrator", description: "Full system access: config, payments, and loaders.", color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+  ];
+
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] backdrop-blur-sm">
+      <div className="glass-panel border border-white/10 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold">Adjust Operative Classification</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {roles.map((role) => (
+            <button
+              key={role.id}
+              onClick={() => onConfirm(role.id)}
+              className={cn(
+                "w-full text-left p-4 rounded-xl border transition-all duration-200 group relative overflow-hidden",
+                currentRole === role.id 
+                  ? cn(role.bg, role.border, "ring-1", role.id === 'admin' ? "ring-amber-500/50" : role.id === 'mod' ? "ring-indigo-500/50" : "ring-white/20")
+                  : "bg-black/40 border-white/5 hover:border-white/20 hover:bg-white/[0.02]"
+              )}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className={cn("font-bold text-sm uppercase tracking-wider", role.color)}>{role.label}</span>
+                {currentRole === role.id && (
+                  <div className={cn("px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 border border-white/10 text-white uppercase")}>
+                    Current
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground group-hover:text-muted-foreground/80 leading-relaxed">
+                {role.description}
+              </p>
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-white/10">
+          <Button variant="outline" onClick={onClose} className="w-full">
+            CANCEL
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductAssetsTab() {
+  const [assets, setAssets] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState(PRODUCTS[0]);
+  const [assetType, setAssetType] = useState<"primary_exe" | "dll" | "driver" | "config" | "other">("primary_exe");
+  const [version, setVersion] = useState("1.0.0");
+  const [isActive, setIsActive] = useState(true);
+  const [allocationSize, setAllocationSize] = useState("");
+
+  const fetchAssets = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/products/${selectedProduct}/assets`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch assets");
+      const data = await res.json();
+      setAssets(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load product assets");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchAssets();
+  }, [selectedProduct]);
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile) return toast.error("Please select a file");
+    
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("version", version);
+    formData.append("assetType", assetType);
+    formData.append("isActive", String(isActive));
+
+    if (allocationSize) {
+      formData.append("allocationSize", allocationSize);
+    }
+
+    try {
+      const res = await fetch(`/api/products/${selectedProduct}/assets`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Upload failed");
+      }
+      
+      toast.success("Asset uploaded successfully");
+      setSelectedFile(null);
+      fetchAssets();
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Delete this asset permanently?")) return;
+    try {
+      const res = await fetch(`/api/products/${selectedProduct}/assets/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete asset");
+      toast.success("Asset deleted");
+      fetchAssets();
+    } catch (err) {
+      console.error(err);
+      toast.error("Delete failed");
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="glass-panel border border-white/10 rounded-2xl p-6 shadow-2xl">
+        <h2 className="text-xl font-bold mb-4">Upload Product Asset</h2>
+        <form onSubmit={handleUpload} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Product</label>
+              <select 
+                value={selectedProduct} 
+                onChange={e => setSelectedProduct(e.target.value as any)}
+                className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-sm"
+              >
+                {PRODUCTS.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Asset Type</label>
+              <select 
+                value={assetType} 
+                onChange={e => setAssetType(e.target.value as any)}
+                className="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-sm"
+              >
+                <option value="primary_exe">Primary EXE</option>
+                <option value="dll">DLL Payload</option>
+                <option value="driver">Kernel Driver</option>
+                <option value="config">Config File</option>
+                <option value="other">Other/Data</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Version</label>
+              <Input 
+                value={version} 
+                onChange={e => setVersion(e.target.value)} 
+                className="bg-black/40" 
+                required 
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Custom Alloc (Bytes) <span className="text-muted-foreground text-xs">(optional)</span></label>
+              <Input 
+                type="number"
+                placeholder="e.g. 52428800 (50MB)"
+                className="bg-black/40" 
+                value={allocationSize}
+                onChange={e => setAllocationSize(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">File</label>
+              <input 
+                type="file" 
+                onChange={e => setSelectedFile(e.target.files?.[0] || null)}
+                className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/20 file:text-primary hover:file:bg-primary/30 cursor-pointer"
+                required
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="checkbox" checked={isActive} onChange={e => setIsActive(e.target.checked)} className="w-4 h-4" />
+            <label className="text-sm text-muted-foreground">Mark as active</label>
+          </div>
+          <Button type="submit" disabled={uploading} variant="glow" className="w-full">
+            <Download className="w-4 h-4 mr-2" /> {uploading ? "Uploading..." : "Upload Asset"}
+          </Button>
+        </form>
+      </div>
+
+      <div className="glass-panel border border-white/10 rounded-2xl p-6 shadow-2xl">
+        <h2 className="text-xl font-bold mb-4">Assets for {selectedProduct}</h2>
+        {isLoading ? <p>Loading...</p> : assets.length === 0 ? <p className="text-sm text-muted-foreground">No assets found for this product.</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs uppercase bg-white/[0.02] border-b border-white/5">
+                <tr>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3">Version</th>
+                  <th className="px-4 py-3">File</th>
+                  <th className="px-4 py-3">Size</th>
+                  <th className="px-4 py-3">Alloc</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {assets.map(asset => (
+                  <tr key={asset.id} className="hover:bg-white/[0.02]">
+                    <td className="px-4 py-3">{asset.assetType}</td>
+                    <td className="px-4 py-3">{asset.version}</td>
+                    <td className="px-4 py-3">{asset.fileName}</td>
+                    <td className="px-4 py-3">{(asset.fileSize / 1024 / 1024).toFixed(2)} MB</td>
+                    <td className="px-4 py-3">{asset.allocationSize ? (asset.allocationSize / 1024 / 1024).toFixed(2) + " MB" : "Auto"}</td>
+                    <td className="px-4 py-3 text-xs">
+                      {asset.isActive ? <span className="text-green-400">ACTIVE</span> : <span className="text-zinc-500">INACTIVE</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Button size="sm" variant="ghost" className="text-red-400 hover:bg-red-500/10" onClick={() => handleDelete(asset.id)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+

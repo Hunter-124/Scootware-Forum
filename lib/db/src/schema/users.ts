@@ -2,9 +2,9 @@ import { pgTable, text, serial, boolean, timestamp, integer, pgEnum, index } fro
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const roleEnum = pgEnum("user_role", ["user", "admin"]);
+export const roleEnum = pgEnum("user_role", ["user", "admin", "mod"]);
 
-export const PRODUCT_IDS = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "SPOOFER"] as const;
+export const PRODUCT_IDS = ["BODYCAM", "RUST", "DAYZ", "TARKOV", "CS2", "SPOOFER"] as const;
 export type ProductId = typeof PRODUCT_IDS[number];
 export const SPOOFER_PRODUCT: ProductId = "SPOOFER";
 
@@ -39,6 +39,7 @@ export const usersTable = pgTable("users", {
   googleId: text("google_id"),
   discordId: text("discord_id"),
   steamId: text("steam_id"),
+  aboutMe: text("about_me"),
   postCount: integer("post_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -110,6 +111,18 @@ export const subscriptionExtensionsTable = pgTable("subscription_extensions", {
   index("idx_subscription_extensions_user_product").on(table.userId, table.productId),
 ]);
 
+export const accountChangesTable = pgTable("account_changes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
+  changeType: text("change_type").notNull(), // 'password' or 'username'
+  oldValue: text("old_value"), // for username changes, stores old username
+  newValue: text("new_value"), // for username, stores new username
+  changedAt: timestamp("changed_at").notNull().defaultNow(),
+}, (table) => [
+  // For checking cooldown periods
+  index("idx_account_changes_user_type").on(table.userId, table.changeType, table.changedAt),
+]);
+
 export const loaderVersionsTable = pgTable("loader_versions", {
   id: serial("id").primaryKey(),
   version: text("version").notNull().unique(),
@@ -127,6 +140,25 @@ export const loaderVersionsTable = pgTable("loader_versions", {
   index("idx_loader_versions_is_active").on(table.isActive),
 ]);
 
+export const productAssetsTable = pgTable("product_assets", {
+  id: serial("id").primaryKey(),
+  productId: text("product_id").notNull(),
+  assetType: text("asset_type").notNull().default("primary_exe"), // e.g. primary_exe, dll, driver
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileSize: integer("file_size").notNull(),
+  allocationSize: integer("allocation_size"), // Optional pre-allocated padding size for memory injection
+  version: text("version").notNull().default("1.0.0"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdBy: integer("created_by").notNull().references(() => usersTable.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  // For quick lookup of product assets
+  index("idx_product_assets_product").on(table.productId),
+  index("idx_product_assets_active").on(table.isActive),
+]);
+
 export const insertUserSchema = createInsertSchema(usersTable).omit({
   id: true,
   createdAt: true,
@@ -137,3 +169,4 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof usersTable.$inferSelect;
 export type ProductAccess = typeof productAccessTable.$inferSelect;
 export type LoaderVersion = typeof loaderVersionsTable.$inferSelect;
+export type ProductAsset = typeof productAssetsTable.$inferSelect;

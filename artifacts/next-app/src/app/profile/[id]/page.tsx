@@ -1,13 +1,15 @@
-import { db, usersTable, threadsTable, postsTable, productAccessTable, type ProductAccess } from "@workspace/db";
-import { eq, desc, gt, and } from "drizzle-orm";
+import { db, usersTable, threadsTable, postsTable, productAccessTable, inviteCodesTable, siteConfigTable, type ProductAccess } from "@workspace/db";
+import { eq, desc, gt, and, count } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { User, Activity, Calendar, ShieldAlert, Upload, Send, MessageSquare, Cpu } from "lucide-react";
+import { User, Activity, Calendar, ShieldAlert, Upload, Send, MessageSquare, Cpu, Edit2, X, Check } from "lucide-react";
 import { cn, formatDate, getRoleColor } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { RoleStatusBadge } from "@/components/RoleStatusBadge";
 import { ProductAccessCard } from "@/components/profile/ProductAccessCard";
+import { AboutMeEditButton } from "@/components/profile/AboutMeEditButton";
+import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 
 export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -33,6 +35,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
       )
     )
     .orderBy(desc(productAccessTable.grantedAt)) as ProductAccess[];
+
+  // Check if invite mode is enabled and count invites created by user
+  const siteConfigRows = await db.select().from(siteConfigTable).where(eq(siteConfigTable.key, "inviteRequestMode"));
+  const inviteMode = siteConfigRows.length > 0 ? siteConfigRows[0].value : "admin";
+  let inviteCount = 0;
+  if (inviteMode === "invite") {
+    const inviteCountResult = await db
+      .select({ count: count() })
+      .from(inviteCodesTable)
+      .where(eq(inviteCodesTable.createdBy, userId));
+    inviteCount = inviteCountResult[0]?.count || 0;
+  }
 
   // Fetch recent forum activity (posts)
   const recentPosts = await db
@@ -87,7 +101,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
                   </div>
                 )}
                 <div className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-                  <Calendar className="w-3.5 h-3.5 text-primary" /> Established {new Date(user.createdAt).getFullYear()}
+                  <Calendar className="w-3.5 h-3.5 text-primary" /> Established {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </div>
               </div>
             </div>
@@ -172,6 +186,64 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
           {/* Sidebar Info */}
           <div className="space-y-8">
+            {/* About Me Section */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
+                <User className="w-6 h-6 text-accent" /> About
+              </h2>
+              
+              <div className="glass-panel p-8 rounded-[2rem] border border-white/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
+                
+                <div className="relative z-10 space-y-4">
+                  {user.aboutMe ? (
+                    <p className="text-sm leading-relaxed text-gray-300 italic">"{user.aboutMe}"</p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic opacity-50">No about me provided yet</p>
+                  )}
+                  
+                  {isOwnProfile && (
+                    <AboutMeEditButton initialAboutMe={user.aboutMe || ""} userId={userId} />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Section */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
+                <Activity className="w-6 h-6 text-accent" /> Stats
+              </h2>
+              
+              <div className="glass-panel p-6 rounded-[2rem] border border-white/10 space-y-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] -mr-16 -mt-16 rounded-full" />
+                
+                <div className="relative z-10 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Join Date</span>
+                    <span className="text-sm font-black text-white">{new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                  </div>
+                  
+                  <div className="h-px bg-white/5 w-full" />
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Transmissions</span>
+                    <span className="text-sm font-black text-white">{user.postCount}</span>
+                  </div>
+
+                  {inviteMode === "invite" && (
+                    <>
+                      <div className="h-px bg-white/5 w-full" />
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Invites Sent</span>
+                        <span className="text-sm font-black text-white">{inviteCount}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <h2 className="text-2xl font-display font-black flex items-center gap-4 border-b border-white/10 pb-4 uppercase tracking-[0.1em]">
               <ShieldAlert className="w-6 h-6 text-accent" /> Identity Status
             </h2>
@@ -207,6 +279,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
                      <Activity className="w-5 h-5 text-accent group-hover:scale-110 transition-transform" />
                      <span className="text-[10px] font-black uppercase tracking-widest">Analyze Pattern</span>
                   </Button>
+                  {isOwnProfile && (
+                    <DeleteAccountDialog 
+                      userId={userId} 
+                      username={user.username}
+                      hasPassword={!!user.passwordHash}
+                    />
+                  )}
                </div>
             </div>
           </div>

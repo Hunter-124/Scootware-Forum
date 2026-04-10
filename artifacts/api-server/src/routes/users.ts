@@ -1,10 +1,11 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { db } from "@workspace/db";
-import { usersTable, profilePostsTable, inviteCodesTable, inviteRequestsTable, siteConfigTable, productAccessTable, profilePostAttachmentsTable, postsTable } from "@workspace/db";
+import { usersTable, profilePostsTable, inviteCodesTable, inviteRequestsTable, siteConfigTable, productAccessTable, profilePostAttachmentsTable, postsTable, accountChangesTable } from "@workspace/db";
 import { eq, desc, and, gt, sql } from "drizzle-orm";
 import { avatarUpload, processAndSaveAvatar, postAttachmentUpload, savePostAttachment } from "../lib/upload";
 import { z } from "zod";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
 
 const router: IRouter = Router();
 
@@ -37,6 +38,7 @@ router.get("/:userId", async (req: Request, res: Response) => {
         upgradeType: usersTable.upgradeType,
         upgradeExpiresAt: usersTable.upgradeExpiresAt,
         avatarUrl: usersTable.avatarUrl,
+        aboutMe: usersTable.aboutMe,
         isBanned: usersTable.isBanned,
         isEmailVerified: usersTable.isEmailVerified,
         createdAt: usersTable.createdAt,
@@ -51,6 +53,20 @@ router.get("/:userId", async (req: Request, res: Response) => {
     }
 
     const activeProducts = await getUserActiveProducts(userId);
+
+    // Check if invite mode is enabled to determine if we should count invites
+    const siteConfigRows = await db.select().from(siteConfigTable).where(eq(siteConfigTable.key, "inviteRequestMode"));
+    const inviteMode = siteConfigRows.length > 0 ? siteConfigRows[0].value : "admin";
+    
+    let inviteCount = 0;
+    if (inviteMode === "invite") {
+      // Count invites created by this user
+      const inviteCountResult = await db
+        .select({ count: sql<number>`COUNT(*)::int` })
+        .from(inviteCodesTable)
+        .where(eq(inviteCodesTable.createdBy, userId));
+      inviteCount = inviteCountResult[0]?.count || 0;
+    }
 
     const recentPosts = await db
       .select({
@@ -68,7 +84,7 @@ router.get("/:userId", async (req: Request, res: Response) => {
       .limit(20);
 
     res.json({
-      user: mapUser(user, activeProducts),
+      user: mapUser(user, activeProducts, inviteCount),
       recentPosts: recentPosts.map((p: any) => ({
         ...p,
         authorUsername: p.authorUsername || "Unknown",
@@ -102,6 +118,47 @@ router.post("/:userId/avatar", requireAuth, avatarUpload.single("avatar"), async
   } catch (err) {
     req.log.error({ err }, "Avatar upload error");
     res.status(400).json({ error: "Failed to process image" });
+  }
+});
+
+router.patch("/:userId/about-me", requireAuth, async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId as any);
+  const currentUser = req.user as any;
+  const { aboutMe } = req.body;
+
+  if (isNaN(userId)) {
+    res.status(400).json({ error: "Invalid user ID" });
+    return;
+  }
+
+  if (currentUser.id !== userId && currentUser.role !== "admin") {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  if (typeof aboutMe !== "string") {
+    res.status(400).json({ error: "About me must be a string" });
+    return;
+  }
+
+  if (aboutMe.length > 2000) {
+    res.status(400).json({ error: "About me must be 2000 characters or less" });
+    return;
+  }
+
+  // Validate that aboutMe doesn't contain script tags or dangerous HTML
+  const dangerousPatterns = /<script|javascript:|on\w+\s*=|iframe|embed|object/gi;
+  if (dangerousPatterns.test(aboutMe)) {
+    res.status(400).json({ error: "About me contains invalid content" });
+    return;
+  }
+
+  try {
+    await db.update(usersTable).set({ aboutMe: aboutMe || null }).where(eq(usersTable.id, userId));
+    res.json({ message: "About me updated", aboutMe: aboutMe || null });
+  } catch (err) {
+    req.log.error({ err }, "Update about me error");
+    res.status(500).json({ error: "Failed to update about me" });
   }
 });
 
@@ -266,8 +323,8 @@ router.post("/me/request-invite", requireAuth, async (req: Request, res: Respons
     const inviteRequestMode = configRows2.length > 0 ? configRows2[0].value : "admin";
 
     if (inviteRequestMode === 'auto') {
-      // Auto-approve and generate invite code
-      const code = crypto.randomBytes(12).toString('base64url').replace(/[-_]/g, '').slice(0, 16).toUpperCase();
+      // Auto-approve and generate invite code with strong entropy
+      const code = crypto.randomBytes(32).toString('hex').toUpperCase().slice(0, 32);
       await db.insert(inviteCodesTable).values({ code, createdBy: currentUser.id });
       await db.update(inviteRequestsTable).set({ status: 'approved', processedAt: new Date() }).where(eq(inviteRequestsTable.id, newReq.id));
       res.json({ message: 'Invite automatically granted. Check your profile for your invite code.' });
@@ -346,9 +403,10 @@ router.put("/:userId/posts/:postId", requireAuth, async (req: Request, res: Resp
 // Get attachments for a profile post
 router.get("/:userId/posts/:postId/attachments", async (req: Request, res: Response) => {
   const postId = parseInt(req.params.postId as string);
+  const userId = parseInt(req.params.userId as string);
 
-  if (isNaN(postId)) {
-    res.status(400).json({ error: "Invalid post ID" });
+  if (isNaN(postId) || isNaN(userId)) {
+    res.status(400).json({ error: "Invalid post ID or user ID" });
     return;
   }
 
@@ -360,6 +418,12 @@ router.get("/:userId/posts/:postId/attachments", async (req: Request, res: Respo
       .limit(1);
 
     if (!post) {
+      res.status(404).json({ error: "Post not found" });
+      return;
+    }
+
+    // Verify the post belongs to the requested user
+    if (post.profileUserId !== userId) {
       res.status(404).json({ error: "Post not found" });
       return;
     }
@@ -503,6 +567,194 @@ router.delete("/:userId/posts/attachments/:attachmentId", requireAuth, async (re
   }
 });
 
+// Delete user account
+router.delete("/:userId/delete", requireAuth, async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId as string);
+  const currentUser = req.user as any;
+  const { password } = req.body;
+
+  if (isNaN(userId)) {
+    res.status(400).json({ error: "Invalid user ID" });
+    return;
+  }
+
+  // Only allow users to delete their own account (unless admin)
+  if (currentUser.id !== userId && currentUser.role !== "admin") {
+    res.status(403).json({ error: "You can only delete your own account" });
+    return;
+  }
+
+  try {
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // If user has a password (not SSO-only), require password verification
+    if (user.passwordHash) {
+      if (!password || typeof password !== "string") {
+        res.status(400).json({ error: "Password required for account deletion" });
+        return;
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+      if (!isValidPassword) {
+        res.status(401).json({ error: "Invalid password" });
+        return;
+      }
+    }
+
+    // Delete the user (cascade delete will handle related data)
+    await db.delete(usersTable).where(eq(usersTable.id, userId));
+
+    // If the current user is deleting their own account, log them out
+    if (currentUser.id === userId) {
+      req.logout((err) => {
+        if (err) {
+          req.log.error({ err }, "Logout after account deletion error");
+        }
+        res.json({ message: "Account deleted successfully" });
+      });
+    } else {
+      // Admin deleting another user
+      res.json({ message: "Account deleted successfully" });
+    }
+  } catch (err) {
+    req.log.error({ err }, "Delete account error");
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+});
+
+// Change username for authenticated user (requires current password if account has one, or new password for SSO-only accounts)
+const changeUsernameSchema = z.object({
+  newUsername: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
+  currentPassword: z.string().min(1).optional(),
+  newPassword: z.string().min(8).max(128).optional(),
+});
+
+router.patch("/:userId/username", requireAuth, async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId as string);
+  const currentUser = req.user as any;
+
+  if (isNaN(userId)) {
+    res.status(400).json({ error: "Invalid user ID" });
+    return;
+  }
+
+  // Only allow users to change their own username (unless admin)
+  if (currentUser.id !== userId && currentUser.role !== "admin") {
+    res.status(403).json({ error: "You can only change your own username" });
+    return;
+  }
+
+  const parse = changeUsernameSchema.safeParse(req.body);
+  if (!parse.success) {
+    res.status(400).json({ error: parse.error.issues[0]?.message || "Validation error" });
+    return;
+  }
+
+  const { newUsername, currentPassword, newPassword } = parse.data;
+
+  try {
+    // Get site config for rate limiting
+    const configRows = await db.select().from(siteConfigTable).where(eq(siteConfigTable.key, "rateLimitChangeUsernamePerWindow"));
+    const maxAttempts = configRows.length > 0 ? Number(configRows[0].value) : 3;
+    
+    const windowMsRows = await db.select().from(siteConfigTable).where(eq(siteConfigTable.key, "rateLimitChangeUsernameWindowMs"));
+    const windowMs = windowMsRows.length > 0 ? Number(windowMsRows[0].value) : 86400000;
+
+    // Check rate limiting
+    const fromTime = new Date(Date.now() - windowMs);
+    const recentChanges = await db
+      .select()
+      .from(accountChangesTable)
+      .where(
+        and(
+          eq(accountChangesTable.userId, userId),
+          eq(accountChangesTable.changeType, "username"),
+          gt(accountChangesTable.changedAt, fromTime)
+        )
+      );
+
+    if (recentChanges.length >= maxAttempts) {
+      const remaining = Math.ceil((recentChanges[0].changedAt.getTime() + windowMs - Date.now()) / 1000 / 3600);
+      res.status(429).json({ 
+        error: `Too many username changes. Please try again in ${remaining} hour${remaining === 1 ? "" : "s"}.`,
+        retryAfter: remaining * 3600
+      });
+      return;
+    }
+
+    // Fetch current user from DB
+    const [user] = await db.select().from(usersTable)
+      .where(eq(usersTable.id, userId)).limit(1);
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    // Verify current password if user has one
+    if (user.passwordHash) {
+      // User has password - require current password verification
+      if (!currentPassword) {
+        res.status(400).json({ error: "Current password is required" });
+        return;
+      }
+      const passwordValid = await bcrypt.compare(currentPassword, user.passwordHash);
+      if (!passwordValid) {
+        res.status(401).json({ error: "Current password is incorrect" });
+        return;
+      }
+    } else {
+      // SSO-only user - require them to create a password first before changing username
+      res.status(403).json({ 
+        error: "You must create a password before changing your username.",
+        requiresPassword: true 
+      });
+      return;
+    }
+
+    // Check if username is already taken
+    if (newUsername !== user.username) {
+      const [existing] = await db.select().from(usersTable)
+        .where(eq(usersTable.username, newUsername)).limit(1);
+      if (existing) {
+        res.status(400).json({ error: "Username already taken" });
+        return;
+      }
+    } else {
+      res.status(400).json({ error: "New username must be different from current username" });
+      return;
+    }
+
+    const oldUsername = user.username;
+
+    // Update username
+    const [updated] = await db.update(usersTable).set({ username: newUsername })
+      .where(eq(usersTable.id, userId)).returning();
+
+    // Track the change
+    await db.insert(accountChangesTable).values({
+      userId: userId,
+      changeType: "username",
+      oldValue: oldUsername,
+      newValue: newUsername,
+    });
+
+    res.json({ message: "Username changed successfully.", username: newUsername });
+  } catch (err) {
+    req.log.error({ err }, "Change username error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;
 
 async function getUserActiveProducts(userId: number) {
@@ -525,7 +777,7 @@ async function getUserActiveProducts(userId: number) {
   });
 }
 
-function mapUser(user: any, activeProducts: any[] = []) {
+function mapUser(user: any, activeProducts: any[] = [], inviteCount: number = 0) {
   return {
     id: user.id,
     username: user.username,
@@ -535,9 +787,11 @@ function mapUser(user: any, activeProducts: any[] = []) {
     upgradeExpiresAt: user.upgradeExpiresAt ?? null,
     activeProducts,
     avatarUrl: user.avatarUrl ?? null,
+    aboutMe: user.aboutMe ?? null,
     isBanned: user.isBanned,
     isEmailVerified: user.isEmailVerified,
     createdAt: user.createdAt,
     postCount: user.postCount,
+    inviteCount,
   };
 }

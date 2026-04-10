@@ -268,6 +268,7 @@ class SSHManager:
             channel = stdout.channel
 
             out_text = []
+            err_text = []
             
             while not channel.exit_status_ready() or channel.recv_ready() or channel.recv_stderr_ready():
                 if channel.recv_ready():
@@ -280,8 +281,7 @@ class SSHManager:
                 if channel.recv_stderr_ready():
                     data = channel.recv_stderr(1024).decode('utf-8', errors='replace')
                     if data:
-                        # Append stderr to output as well for visibility
-                        out_text.append(data)
+                        err_text.append(data)
                         if progress_callback:
                             progress_callback(data)
                 
@@ -289,7 +289,7 @@ class SSHManager:
                 time.sleep(0.01) # Small sleep to prevent CPU spinning
 
             returncode = channel.recv_exit_status()
-            return returncode, "".join(out_text), ""
+            return returncode, "".join(out_text), "".join(err_text)
 
         except Exception as e:
             return 1, "", str(e)

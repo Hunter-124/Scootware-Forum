@@ -7,9 +7,11 @@ import { logger } from "./logger";
 const AVATARS_DIR = path.resolve("uploads/avatars");
 const LOADERS_DIR = path.resolve("uploads/loaders");
 const ATTACHMENTS_DIR = path.resolve("uploads/attachments");
+const PRODUCT_ASSETS_DIR = path.resolve("uploads/product_assets");
 fs.mkdirSync(AVATARS_DIR, { recursive: true });
 fs.mkdirSync(LOADERS_DIR, { recursive: true });
 fs.mkdirSync(ATTACHMENTS_DIR, { recursive: true });
+fs.mkdirSync(PRODUCT_ASSETS_DIR, { recursive: true });
 
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -88,6 +90,16 @@ export const loaderUpload = multer({
     }
   },
 });
+
+export const productAssetUpload = multer({
+  storage,
+  limits: {
+    fileSize: 500 * 1024 * 1024, // 500MB maximum for product assets
+    files: 1,
+    fields: 10,
+  },
+});
+
 
 export const postAttachmentUpload = multer({
   storage,
@@ -184,3 +196,28 @@ export async function savePostAttachment(buffer: Buffer, originalFilename: strin
     filePath: `/uploads/attachments/${filename}`,
   };
 }
+
+export async function saveProductAssetFile(buffer: Buffer, productId: string, assetType: string, originalName: string, version: string): Promise<string> {
+  if (!buffer || buffer.length === 0) {
+    throw new Error("File buffer is empty");
+  }
+
+  const ext = path.extname(originalName);
+  const name = path.basename(originalName, ext).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  const filename = `Asset_${productId}_${assetType}_${version}_${Date.now()}${ext}`;
+  const outputPath = path.join(PRODUCT_ASSETS_DIR, filename);
+
+  try {
+    if (!fs.existsSync(PRODUCT_ASSETS_DIR)) {
+      fs.mkdirSync(PRODUCT_ASSETS_DIR, { recursive: true });
+    }
+    fs.writeFileSync(outputPath, buffer);
+    logger.info({ productId, assetType, filename, size: buffer.length, path: outputPath }, "Product asset file saved successfully");
+    return filename;
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    logger.error({ productId, filename, error: errorMsg }, "Failed to save product asset file");
+    throw new Error(`Failed to save product asset file: ${errorMsg}`);
+  }
+}
+

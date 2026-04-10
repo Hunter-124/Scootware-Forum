@@ -15,7 +15,12 @@ import {
   cryptoPaymentRequestsTable,
   productAccessTable,
   subscriptionExtensionsTable,
+  accountChangesTable,
+  loaderVersionsTable,
+  postAttachmentsTable,
+  profilePostAttachmentsTable,
   SUBSCRIPTION_TYPES,
+  PRODUCT_IDS,
 } from "@workspace/db";
 import { eq, ilike, or, sql, desc, inArray, and, gt } from "drizzle-orm";
 import { z } from "zod";
@@ -65,6 +70,9 @@ router.get("/users", async (req: Request, res: Response) => {
         isBanned: usersTable.isBanned,
         isEmailVerified: usersTable.isEmailVerified,
         createdAt: usersTable.createdAt,
+        googleId: usersTable.googleId,
+        discordId: usersTable.discordId,
+        steamId: usersTable.steamId,
         postCount: sql<number>`(SELECT COUNT(*)::int FROM ${postsTable} p WHERE p.author_id = ${usersTable.id})`,
       })
       .from(usersTable)
@@ -112,7 +120,7 @@ router.get("/users", async (req: Request, res: Response) => {
 
 const updateUserSchema = z.object({
   username: z.string().min(3).max(30).optional(),
-  role: z.enum(["user", "admin"]).optional(),
+  role: z.enum(["user", "admin", "mod"]).optional(),
   upgradeType: z.enum(SUBSCRIPTION_TYPES as [string, ...string[]]).nullable().optional(),
   upgradeExpiresAt: z.string().datetime().nullable().optional(),
   productIds: z.array(z.string()).optional(),
@@ -178,6 +186,14 @@ router.patch("/users/:userId", async (req: Request, res: Response) => {
       const productIds = parse.data.productIds;
       const tier = parse.data.tier || "premium";
 
+      // Validate all productIds are valid
+      const validIds = PRODUCT_IDS as unknown as string[];
+      const invalidIds = productIds.filter(id => !validIds.includes(id));
+      if (invalidIds.length > 0) {
+        res.status(400).json({ error: `Invalid product IDs: ${invalidIds.join(', ')}` });
+        return;
+      }
+
       if (productIds.length === 0) {
         // Remove all product access
         await db.delete(productAccessTable).where(eq(productAccessTable.userId, userId));
@@ -187,9 +203,13 @@ router.patch("/users/:userId", async (req: Request, res: Response) => {
         // Delete existing product access
         await db.delete(productAccessTable).where(eq(productAccessTable.userId, userId));
 
-        // Insert new product access entries (30 day expiry) - batch insert
+        // Insert new product access entries (lifetime = 100 years, otherwise 30 days) - batch insert
         const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 30);
+        if (tier === "lifetime") {
+          expiresAt.setFullYear(expiresAt.getFullYear() + 100);
+        } else {
+          expiresAt.setDate(expiresAt.getDate() + 30);
+        }
 
         const accessEntries = productIds.map(productId => ({
           userId,
@@ -302,27 +322,50 @@ router.delete("/users/:userId", async (req: Request, res: Response) => {
   }
 
   try {
-    // Retrieve ALL threads by the user
+    // 1. Retrieve user's threads, posts, and profile posts
     const userThreads = await db.select({ id: threadsTable.id }).from(threadsTable).where(eq(threadsTable.authorId, userId));
     const threadIds = userThreads.map((t: any) => t.id);
 
-    // Batch all deletion operations in parallel for better performance
-    // This avoids locking the database with sequential operations
-    const deleteOps = [
-      threadIds.length > 0 ? db.delete(postsTable).where(inArray(postsTable.threadId, threadIds)) : null,
-      db.delete(postsTable).where(eq(postsTable.authorId, userId)),
-      db.delete(profilePostsTable).where(or(eq(profilePostsTable.authorId, userId), eq(profilePostsTable.profileUserId, userId))),
-      db.delete(shoutboxTable).where(eq(shoutboxTable.authorId, userId)),
+    let postFilter = eq(postsTable.authorId, userId);
+    if (threadIds.length > 0) postFilter = or(eq(postsTable.authorId, userId), inArray(postsTable.threadId, threadIds)) as any;
+    const userPosts = await db.select({ id: postsTable.id }).from(postsTable).where(postFilter);
+    const postIds = userPosts.map((p: any) => p.id);
+
+    const profPosts = await db.select({ id: profilePostsTable.id }).from(profilePostsTable).where(or(eq(profilePostsTable.authorId, userId), eq(profilePostsTable.profileUserId, userId)));
+    const profilePostIds = profPosts.map((p: any) => p.id);
+
+    // 2. Clear dependencies and attachments in parallel first (Level 1)
+    const depsOps = [
+      postIds.length > 0 ? db.delete(postAttachmentsTable).where(inArray(postAttachmentsTable.postId, postIds)) : null,
+      db.delete(postAttachmentsTable).where(eq(postAttachmentsTable.uploadedBy, userId)),
+      profilePostIds.length > 0 ? db.delete(profilePostAttachmentsTable).where(inArray(profilePostAttachmentsTable.profilePostId, profilePostIds)) : null,
+      db.delete(profilePostAttachmentsTable).where(eq(profilePostAttachmentsTable.uploadedBy, userId)),
+      db.delete(shoutboxRateLimitTable).where(eq(shoutboxRateLimitTable.userId, userId)),
       db.delete(cryptoPaymentRequestsTable).where(eq(cryptoPaymentRequestsTable.userId, userId)),
       db.delete(productAccessTable).where(eq(productAccessTable.userId, userId)),
+      db.delete(subscriptionExtensionsTable).where(eq(subscriptionExtensionsTable.userId, userId)),
+      db.delete(accountChangesTable).where(eq(accountChangesTable.userId, userId)),
       db.delete(loginEventsTable).where(eq(loginEventsTable.userId, userId)),
-      threadIds.length > 0 ? db.delete(threadsTable).where(inArray(threadsTable.id, threadIds)) : null,
-      db.delete(threadsTable).where(eq(threadsTable.authorId, userId)), // Fallback for any remaining
+      db.update(inviteCodesTable).set({ createdBy: null }).where(eq(inviteCodesTable.createdBy, userId)),
+      db.update(inviteCodesTable).set({ usedBy: null }).where(eq(inviteCodesTable.usedBy, userId)),
+      db.update(inviteRequestsTable).set({ processedBy: null }).where(eq(inviteRequestsTable.processedBy, userId)),
+      db.update(subscriptionExtensionsTable).set({ extendedBy: null }).where(eq(subscriptionExtensionsTable.extendedBy, userId)),
+      db.update(loaderVersionsTable).set({ createdBy: null }).where(eq(loaderVersionsTable.createdBy, userId)),
     ].filter(Boolean) as any[];
+    await Promise.all(depsOps);
 
-    // Execute all deletes in parallel
-    await Promise.all(deleteOps);
+    // 3. Clear posts and shoutbox next (Level 2)
+    const midOps = [
+      postIds.length > 0 ? db.delete(postsTable).where(inArray(postsTable.id, postIds)) : null,
+      profilePostIds.length > 0 ? db.delete(profilePostsTable).where(inArray(profilePostsTable.id, profilePostIds)) : null,
+      db.delete(shoutboxTable).where(eq(shoutboxTable.authorId, userId)),
+    ].filter(Boolean) as any[];
+    await Promise.all(midOps);
 
+    // 4. Clear threads (Level 3)
+    if (threadIds.length > 0) await db.delete(threadsTable).where(inArray(threadsTable.id, threadIds));
+
+    // 5. Finally delete the user
     const [deletedUser] = await db.delete(usersTable).where(eq(usersTable.id, userId)).returning();
     
     if (!deletedUser) {
@@ -348,26 +391,50 @@ router.post("/users/:userId/delete", async (req: Request, res: Response) => {
   }
 
   try {
-    // Retrieve ALL threads by the user
+    // 1. Retrieve user's threads, posts, and profile posts
     const userThreads = await db.select({ id: threadsTable.id }).from(threadsTable).where(eq(threadsTable.authorId, userId));
     const threadIds = userThreads.map((t: any) => t.id);
 
-    // Batch all deletion operations in parallel for better performance
-    const deleteOps = [
-      threadIds.length > 0 ? db.delete(postsTable).where(inArray(postsTable.threadId, threadIds)) : null,
-      db.delete(postsTable).where(eq(postsTable.authorId, userId)),
-      db.delete(profilePostsTable).where(or(eq(profilePostsTable.authorId, userId), eq(profilePostsTable.profileUserId, userId))),
-      db.delete(shoutboxTable).where(eq(shoutboxTable.authorId, userId)),
+    let postFilter = eq(postsTable.authorId, userId);
+    if (threadIds.length > 0) postFilter = or(eq(postsTable.authorId, userId), inArray(postsTable.threadId, threadIds)) as any;
+    const userPosts = await db.select({ id: postsTable.id }).from(postsTable).where(postFilter);
+    const postIds = userPosts.map((p: any) => p.id);
+
+    const profPosts = await db.select({ id: profilePostsTable.id }).from(profilePostsTable).where(or(eq(profilePostsTable.authorId, userId), eq(profilePostsTable.profileUserId, userId)));
+    const profilePostIds = profPosts.map((p: any) => p.id);
+
+    // 2. Clear dependencies and attachments in parallel first (Level 1)
+    const depsOps = [
+      postIds.length > 0 ? db.delete(postAttachmentsTable).where(inArray(postAttachmentsTable.postId, postIds)) : null,
+      db.delete(postAttachmentsTable).where(eq(postAttachmentsTable.uploadedBy, userId)),
+      profilePostIds.length > 0 ? db.delete(profilePostAttachmentsTable).where(inArray(profilePostAttachmentsTable.profilePostId, profilePostIds)) : null,
+      db.delete(profilePostAttachmentsTable).where(eq(profilePostAttachmentsTable.uploadedBy, userId)),
+      db.delete(shoutboxRateLimitTable).where(eq(shoutboxRateLimitTable.userId, userId)),
       db.delete(cryptoPaymentRequestsTable).where(eq(cryptoPaymentRequestsTable.userId, userId)),
       db.delete(productAccessTable).where(eq(productAccessTable.userId, userId)),
+      db.delete(subscriptionExtensionsTable).where(eq(subscriptionExtensionsTable.userId, userId)),
+      db.delete(accountChangesTable).where(eq(accountChangesTable.userId, userId)),
       db.delete(loginEventsTable).where(eq(loginEventsTable.userId, userId)),
-      threadIds.length > 0 ? db.delete(threadsTable).where(inArray(threadsTable.id, threadIds)) : null,
-      db.delete(threadsTable).where(eq(threadsTable.authorId, userId)), // Fallback for any remaining
+      db.update(inviteCodesTable).set({ createdBy: null }).where(eq(inviteCodesTable.createdBy, userId)),
+      db.update(inviteCodesTable).set({ usedBy: null }).where(eq(inviteCodesTable.usedBy, userId)),
+      db.update(inviteRequestsTable).set({ processedBy: null }).where(eq(inviteRequestsTable.processedBy, userId)),
+      db.update(subscriptionExtensionsTable).set({ extendedBy: null }).where(eq(subscriptionExtensionsTable.extendedBy, userId)),
+      db.update(loaderVersionsTable).set({ createdBy: null }).where(eq(loaderVersionsTable.createdBy, userId)),
     ].filter(Boolean) as any[];
+    await Promise.all(depsOps);
 
-    // Execute all deletes in parallel
-    await Promise.all(deleteOps);
+    // 3. Clear posts and shoutbox next (Level 2)
+    const midOps = [
+      postIds.length > 0 ? db.delete(postsTable).where(inArray(postsTable.id, postIds)) : null,
+      profilePostIds.length > 0 ? db.delete(profilePostsTable).where(inArray(profilePostsTable.id, profilePostIds)) : null,
+      db.delete(shoutboxTable).where(eq(shoutboxTable.authorId, userId)),
+    ].filter(Boolean) as any[];
+    await Promise.all(midOps);
 
+    // 4. Clear threads (Level 3)
+    if (threadIds.length > 0) await db.delete(threadsTable).where(inArray(threadsTable.id, threadIds));
+
+    // 5. Finally delete the user
     const [deletedUser] = await db.delete(usersTable).where(eq(usersTable.id, userId)).returning();
     
     if (!deletedUser) {
@@ -404,6 +471,10 @@ router.post("/users/:userId/verify-email", async (req: Request, res: Response) =
 const CONFIG_KEYS = [
   "siteName", "siteDescription", "maintenanceMode", "registrationMode", "requireEmailVerification", 
   "inviteRequestMode", "inviteRequestCooldownDays", "products",
+  // Email templates (accessible to mods and admins)
+  "emailVerificationSubject", "emailVerificationBody",
+  "emailPasswordResetSubject", "emailPasswordResetBody",
+  "emailWelcomeSubject", "emailWelcomeBody",
   // Shoutbox rate limiting (in rate limits tab)
   "shoutboxRateLimitPerWindow", "shoutboxRateLimitWindowMs", "shoutboxRateLimitStrikeDecayMs", 
   "shoutboxRateLimitMaxStrikes", "shoutboxMaxMessages", "shoutboxMaxCharacters",
@@ -443,6 +514,13 @@ router.get("/config", async (req: Request, res: Response) => {
       requireEmailVerification: true,
       inviteRequestMode: "admin",
       inviteRequestCooldownDays: 7,
+      // Email templates
+      emailVerificationSubject: "Verify your email",
+      emailVerificationBody: "Please click the link to verify your email: {link}",
+      emailPasswordResetSubject: "Reset your password",
+      emailPasswordResetBody: "Please click the link to reset your password: {link}",
+      emailWelcomeSubject: "Welcome to our community",
+      emailWelcomeBody: "Welcome {username}! We're excited to have you join us.",
       // Shoutbox
       shoutboxRateLimitPerWindow: 5,
       shoutboxRateLimitWindowMs: 10000,
@@ -666,6 +744,13 @@ router.patch("/config", async (req: Request, res: Response) => {
       requireEmailVerification: true,
       inviteRequestMode: "admin",
       inviteRequestCooldownDays: 7,
+      // Email templates
+      emailVerificationSubject: "Verify your email",
+      emailVerificationBody: "Please click the link to verify your email: {link}",
+      emailPasswordResetSubject: "Reset your password",
+      emailPasswordResetBody: "Please click the link to reset your password: {link}",
+      emailWelcomeSubject: "Welcome to our community",
+      emailWelcomeBody: "Welcome {username}! We're excited to have you join us.",
       // Shoutbox
       shoutboxRateLimitPerWindow: 5,
       shoutboxRateLimitWindowMs: 10000,
