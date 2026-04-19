@@ -1,7 +1,7 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import { shoutboxTable, usersTable, shoutboxRateLimitTable, siteConfigTable } from "@workspace/db";
-import { eq, desc, and, gt, lt, or, isNull } from "drizzle-orm";
+import { eq, desc, and, gt, lt, or, isNull, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 const router: IRouter = Router();
@@ -341,7 +341,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
         const idsToDelete = oldestMessages.map((m: any) => m.id);
         await db
           .delete(shoutboxTable)
-          .where(shoutboxTable.id.inArray(idsToDelete));
+          .where(inArray(shoutboxTable.id, idsToDelete));
       }
     }
 

@@ -1,10 +1,12 @@
 import { Router, type IRouter, type Request, type Response } from "express";
+import crypto from "crypto";
 import { db } from "@workspace/db";
 import {
   productAssetsTable,
   productAccessTable,
+  usersTable,
 } from "@workspace/db";
-import { eq, and, gt, desc } from "drizzle-orm";
+import { eq, and, gt, desc, sql } from "drizzle-orm";
 import { z } from "zod";
 import path from "path";
 import fs from "fs";
@@ -31,6 +33,13 @@ function requireAdmin(req: Request, res: Response, next: any) {
 
 // Middleware: Check if user has active product subscription
 async function requireProductSubscription(req: Request, res: Response, next: any) {
+  req.log?.info({ 
+    url: req.originalUrl, 
+    headers: { ...req.headers, cookie: req.headers.cookie ? "[REDACTED]" : undefined },
+    isAuthed: req.isAuthenticated ? req.isAuthenticated() : false,
+    user: req.user ? (req.user as any).username : "null" 
+  }, "RequireProductSubscription check");
+
   const user = req.user as any;
   if (!user) {
     res.status(401).json({ error: "Not authenticated" });
@@ -50,7 +59,7 @@ async function requireProductSubscription(req: Request, res: Response, next: any
       .from(productAccessTable)
       .where(and(
         eq(productAccessTable.userId, user.id),
-        eq(productAccessTable.productId, productId),
+        sql`lower(${productAccessTable.productId}) = lower(${productId})`,
         gt(productAccessTable.expiresAt, now)
       ))
       .limit(1);
@@ -69,7 +78,7 @@ async function requireProductSubscription(req: Request, res: Response, next: any
 
 // GET /api/products/:productId/assets - List all assets for a product (admin only)
 router.get("/:productId/assets", requireAdmin, async (req: Request, res: Response) => {
-  const productId = req.params.productId;
+  const productId = req.params.productId as string;
   try {
     const assets = await db
       .select()
@@ -87,7 +96,7 @@ router.get("/:productId/assets", requireAdmin, async (req: Request, res: Respons
 // POST /api/products/:productId/assets - Upload new product asset (admin only)
 const uploadAssetSchema = z.object({
   version: z.string().default("1.0.0"),
-  assetType: z.enum(["primary_exe", "dll", "driver", "config", "other"]).default("primary_exe"),
+  assetType: z.enum(["primary_exe", "dll", "driver", "config", "other", "hollow_exe"]).default("primary_exe"),
   allocationSize: z.coerce.number().optional(),
   isActive: z.coerce.boolean().default(true),
 });
@@ -97,7 +106,7 @@ router.post(
   requireAdmin,
   productAssetUpload.single("file"),
   async (req: Request, res: Response) => {
-    const productId = req.params.productId;
+    const productId = req.params.productId as string;
     const file = req.file;
     
     if (!file) {
@@ -148,7 +157,7 @@ router.post(
 
 // DELETE /api/products/:productId/assets/:assetId - Delete asset (admin only)
 router.delete("/:productId/assets/:assetId", requireAdmin, async (req: Request, res: Response) => {
-  const assetId = parseInt(req.params.assetId);
+  const assetId = parseInt(req.params.assetId as string);
   if (isNaN(assetId)) {
     res.status(400).json({ error: "Invalid asset ID" });
     return;
@@ -184,7 +193,7 @@ router.delete("/:productId/assets/:assetId", requireAdmin, async (req: Request, 
 
 // GET /api/products/:productId/assets/manifest - Get manifest of active assets
 router.get("/:productId/assets/manifest", requireProductSubscription, async (req: Request, res: Response) => {
-  const productId = req.params.productId;
+  const productId = req.params.productId as string;
   try {
     const assets = await db
       .select({
@@ -210,12 +219,73 @@ router.get("/:productId/assets/manifest", requireProductSubscription, async (req
 
 // GET /api/products/:productId/assets/stream - Convenience route for loader to get latest asset by type
 router.get("/:productId/assets/stream", requireProductSubscription, async (req: Request, res: Response) => {
-  const productId = req.params.productId;
+  const productId = req.params.productId as string;
   const assetType = req.query.type as string || "primary_exe";
+  const user = req.user as any;
+
+  // ── HWID validation ──────────────────────────────────────────────────────
+  // Only the loader sets X-HWID. Website requests omit it and are not affected.
+  const submittedHwid = req.headers["x-hwid"] as string | undefined;
+
+  if (!submittedHwid) {
+    res.status(400).json({ error: "Missing hardware identity header" });
+    return;
+  }
+
+  // Basic sanity: HMAC-SHA256 hex = 64 lowercase hex chars
+  if (!/^[0-9a-f]{64}$/.test(submittedHwid)) {
+    res.status(400).json({ error: "Invalid hardware identity format" });
+    return;
+  }
 
   try {
-    // Find the latest active asset for this product and type
-    // We use a case-insensitive match for productId just in case
+    // Look up the stored HWID for this user
+    const [userRecord] = await db
+      .select({ hwid: usersTable.hwid })
+      .from(usersTable)
+      .where(eq(usersTable.id, user.id))
+      .limit(1);
+
+    if (!userRecord) {
+      res.status(401).json({ error: "User not found" });
+      return;
+    }
+
+    if (userRecord.hwid === null || userRecord.hwid === undefined) {
+      // First time streaming — bind this machine to the account
+      await db
+        .update(usersTable)
+        .set({ hwid: submittedHwid })
+        .where(eq(usersTable.id, user.id));
+      req.log?.info({ userId: user.id }, "HWID bound on first asset stream");
+    } else if (userRecord.hwid !== submittedHwid) {
+      req.log?.warn({ userId: user.id }, "HWID mismatch on asset stream");
+      res.status(403).json({ error: "Hardware identity mismatch. This account is locked to a different machine." });
+      return;
+    }
+  } catch (err) {
+    req.log.error({ err }, "HWID validation error");
+    res.status(500).json({ error: "Internal server error" });
+    return;
+  }
+
+  // ── Encryption key setup ─────────────────────────────────────────────────
+  // AES key = HMAC-SHA256(ASSET_ENCRYPTION_SECRET, hwid)
+  // The same derivation runs in the loader using its embedded secret.
+  // ASSET_ENCRYPTION_SECRET must be set as a 64-char hex string (32 raw bytes).
+  // It encodes the same 32-byte value XOR-decoded from the loader binary.
+  const secretHex = process.env.ASSET_ENCRYPTION_SECRET;
+  if (!secretHex || secretHex.length !== 64) {
+    req.log.error("ASSET_ENCRYPTION_SECRET is not configured or has wrong length (must be 64 hex chars)");
+    res.status(500).json({ error: "Server configuration error" });
+    return;
+  }
+
+  const secretBuf = Buffer.from(secretHex, "hex");
+  const aesKey    = crypto.createHmac("sha256", secretBuf).update(submittedHwid).digest(); // 32 bytes
+
+  // ── Find asset ───────────────────────────────────────────────────────────
+  try {
     const asset = await db
       .select()
       .from(productAssetsTable)
@@ -228,26 +298,38 @@ router.get("/:productId/assets/stream", requireProductSubscription, async (req: 
       .limit(1);
 
     if (asset.length === 0) {
+      req.log?.warn({ productId, assetType }, "No active asset of type found for product");
       res.status(404).json({ error: `No active asset of type '${assetType}' found for product '${productId}'` });
       return;
     }
 
     const assetPath = path.join(PRODUCT_ASSETS_DIR, asset[0].fileName);
     if (!fs.existsSync(assetPath)) {
+      req.log?.error({ productId, assetType, assetPath }, "Asset file found in DB but missing from disk");
       res.status(404).json({ error: "Asset file not found on server" });
       return;
     }
 
-    // Stream the binary data
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename="${asset[0].fileName}"`);
-    res.setHeader('Content-Length', asset[0].fileSize);
-    res.setHeader('X-Allocation-Size', asset[0].allocationSize || asset[0].fileSize);
-    
-    const stream = fs.createReadStream(assetPath);
-    stream.pipe(res);
+    // Read the full asset into memory so we can encrypt it
+    const plaintext = fs.readFileSync(assetPath);
+
+    // ── AES-256-GCM encrypt ──────────────────────────────────────────────
+    // Response layout: [ 12-byte IV | ciphertext | 16-byte auth tag ]
+    // Even if TLS is stripped by an intercepting proxy, the payload is
+    // still only decryptable by the correct machine (HWID-derived key).
+    const iv     = crypto.randomBytes(12);
+    const cipher = crypto.createCipheriv("aes-256-gcm", aesKey, iv);
+    const encrypted = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+    const tag    = cipher.getAuthTag(); // 16 bytes
+
+    const payload = Buffer.concat([iv, encrypted, tag]);
+
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.setHeader("Content-Length", payload.length);
+    res.setHeader("X-Allocation-Size", asset[0].allocationSize ?? asset[0].fileSize);
+    res.send(payload);
   } catch (err) {
-    req.log.error({ err }, "Convenience stream asset error");
+    req.log.error({ err }, "Encrypted stream asset error");
     res.status(500).json({ error: "Internal server error" });
   }
 });

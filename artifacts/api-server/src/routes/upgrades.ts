@@ -645,7 +645,7 @@ router.get("/admin/email-templates/:templateKey", requireAuth, async (req: Reque
   }
 
   try {
-    const templateKey = req.params.templateKey;
+    const templateKey = req.params.templateKey as string;
     const template = await getEmailTemplate(templateKey);
     return res.json({ templateKey, template });
   } catch (err) {
@@ -673,7 +673,7 @@ router.post("/admin/email-templates/:templateKey", requireAuth, async (req: Requ
   }
 
   try {
-    const templateKey = req.params.templateKey;
+    const templateKey = req.params.templateKey as string;
     const parse = emailTemplateSchema.safeParse(req.body);
     if (!parse.success) {
       return res.status(400).json({ error: "Invalid template data" });

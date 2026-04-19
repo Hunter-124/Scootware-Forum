@@ -8,6 +8,7 @@ import upgradesRouter from "./upgrades";
 import adminRouter from "./admin";
 import loadersRouter from "./loaders";
 import productAssetsRouter from "./productAssets";
+import hwidResetRouter from "./hwidReset";
 
 const router: IRouter = Router();
 
@@ -21,5 +22,6 @@ router.use("/products", upgradesRouter); // Added for React Products.tsx expecti
 router.use("/products", productAssetsRouter);
 router.use("/admin", adminRouter);
 router.use("/loaders", loadersRouter);
+router.use("/hwid-reset", hwidResetRouter);
 
 export default router;

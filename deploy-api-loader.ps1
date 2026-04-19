@@ -122,9 +122,11 @@ catch {
 Write-In "`n[3/4] Restarting PM2 service..."
 
 try {
-    $sshCmd = "ssh -i `"$pemKeyPath`" $VPS_USER@$VPS_IP `"pm2 restart scootware-api`""
+    # Combined command: Kill anything on port 3000, delete old process if exists, and start from config
+    $remoteCmd = "sudo fuser -k 3000/tcp || true; cd $REMOTE_PATH && pm2 delete scootware-api || true; pm2 start ecosystem.config.cjs --update-env"
+    $sshCmd = "ssh -i `"$pemKeyPath`" $VPS_USER@$VPS_IP `"$remoteCmd`""
     
-    Write-Host "      Running: pm2 restart scootware-api"
+    Write-Host "      Cleaning port 3000 and restarting PM2"
     $restartOutput = Invoke-Expression $sshCmd 2>&1
     
     if ($LASTEXITCODE -ne 0) {
@@ -133,7 +135,6 @@ try {
     }
     
     Write-Success "      [OK] PM2 restarted"
-    Write-Host $restartOutput | Select-String -Pattern "online|stopped|error" | ForEach-Object { Write-Host "        $_" }
 }
 catch {
     Write-Err "      ERROR: SSH error: $_"

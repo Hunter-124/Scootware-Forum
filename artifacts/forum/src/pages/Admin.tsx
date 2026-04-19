@@ -35,11 +35,11 @@ const GoogleIcon = ({ className }: { className?: string }) => (
 );
 
 export default function AdminDashboard() {
-  const { isAdmin } = useAuth();
-  const [activeTab, setActiveTab] = useState<'users' | 'config' | 'logins' | 'invites' | 'loaders' | 'product-assets' | 'rate-limits' | 'email-settings'>('users');
+  const { isAdmin, isModerator, hasAdminPanelAccess } = useAuth();
+  const [activeTab, setActiveTab] = useState<'users' | 'config' | 'event-logs' | 'invites' | 'loaders' | 'product-assets' | 'rate-limits' | 'email-settings' | 'hwid-reset'>('users');
   const [search, setSearch] = useState("");
   
-  if (!isAdmin) {
+  if (!hasAdminPanelAccess) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
         <Shield className="w-20 h-20 text-destructive mb-6 opacity-80" />
@@ -48,6 +48,12 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  const isAccessAllowed = (tab: typeof activeTab) => {
+    if (isAdmin) return true;
+    if (isModerator && (tab === 'invites' || tab === 'hwid-reset' || tab === 'users' || tab === 'event-logs')) return true;
+    return false;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -58,11 +64,13 @@ export default function AdminDashboard() {
           </div>
           <div>
             <h1 className="text-3xl font-display font-bold text-white">System Administration</h1>
-            <p className="text-amber-500/80 text-sm tracking-widest uppercase mt-1">Level 5 Clearance Active</p>
+            <p className="text-amber-500/80 text-sm tracking-widest uppercase mt-1">
+              {isAdmin ? "Level 5 Clearance Active" : "Moderator Clearance Active"}
+            </p>
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-x-4 gap-y-2 flex-wrap">
           <Button 
             variant={activeTab === 'users' ? 'glow' : 'outline'} 
             onClick={() => setActiveTab('users')}
@@ -70,20 +78,24 @@ export default function AdminDashboard() {
           >
             <Users className="w-4 h-4" /> Operative Directory
           </Button>
-          <Button 
-            variant={activeTab === 'config' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('config')}
-            className="gap-2"
-          >
-            <Settings className="w-4 h-4" /> Core Configuration
-          </Button>
-          <Button 
-            variant={activeTab === 'logins' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('logins')}
-            className="gap-2"
-          >
-            <Shield className="w-4 h-4" /> Login Events
-          </Button>
+          {isAdmin && (
+            <Button 
+              variant={activeTab === 'config' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('config')}
+              className="gap-2"
+            >
+              <Settings className="w-4 h-4" /> Core Configuration
+            </Button>
+          )}
+          {(isAdmin || isModerator) && (
+            <Button 
+              variant={activeTab === 'event-logs' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('event-logs')}
+              className="gap-2"
+            >
+              <Shield className="w-4 h-4" /> Event Logs
+            </Button>
+          )}
           <Button 
             variant={activeTab === 'invites' ? 'glow' : 'outline'} 
             onClick={() => setActiveTab('invites')}
@@ -91,105 +103,353 @@ export default function AdminDashboard() {
           >
             <Users className="w-4 h-4" /> Invitations
           </Button>
+          {isAdmin && (
+            <Button 
+              variant={activeTab === 'loaders' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('loaders')}
+              className="gap-2"
+            >
+              <Download className="w-4 h-4" /> Loader Version
+            </Button>
+          )}
+          {isAdmin && (
+            <Button 
+              variant={activeTab === 'product-assets' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('product-assets')}
+              className="gap-2"
+            >
+              <Download className="w-4 h-4" /> Product Assets
+            </Button>
+          )}
+          {isAdmin && (
+            <Button 
+              variant={activeTab === 'rate-limits' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('rate-limits')}
+              className="gap-2"
+            >
+              <Shield className="w-4 h-4" /> Rate Limits
+            </Button>
+          )}
+          {isAdmin && (
+            <Button 
+              variant={activeTab === 'email-settings' ? 'glow' : 'outline'} 
+              onClick={() => setActiveTab('email-settings')}
+              className="gap-2"
+            >
+              <Mail className="w-4 h-4" /> Email Templates
+            </Button>
+          )}
           <Button 
-            variant={activeTab === 'loaders' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('loaders')}
+            variant={activeTab === 'hwid-reset' ? 'glow' : 'outline'} 
+            onClick={() => setActiveTab('hwid-reset')}
             className="gap-2"
           >
-            <Download className="w-4 h-4" /> Loader Version
-          </Button>
-          <Button 
-            variant={activeTab === 'product-assets' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('product-assets')}
-            className="gap-2"
-          >
-            <Download className="w-4 h-4" /> Product Assets
-          </Button>
-          <Button 
-            variant={activeTab === 'rate-limits' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('rate-limits')}
-            className="gap-2"
-          >
-            <Shield className="w-4 h-4" /> Rate Limits
-          </Button>
-          <Button 
-            variant={activeTab === 'email-settings' ? 'glow' : 'outline'} 
-            onClick={() => setActiveTab('email-settings')}
-            className="gap-2"
-          >
-            <Mail className="w-4 h-4" /> Email Templates
+            <Shield className="w-4 h-4" /> HWID Requests
           </Button>
         </div>
 
-        {activeTab === 'users' && <UserManagementTab search={search} setSearch={setSearch} />}
-        {activeTab === 'config' && <ConfigTab />}
-        {activeTab === 'logins' && <LoginEventsTab />}
-        {activeTab === 'invites' && <InvitesTab />}
-        {activeTab === 'loaders' && <LoadersTab />}
-        {activeTab === 'product-assets' && <ProductAssetsTab />}
-        {activeTab === 'rate-limits' && <RateLimitingTab />}
-        {activeTab === 'email-settings' && <EmailSettingsTab />}
+        {activeTab === 'users' && isAccessAllowed('users') && <UserManagementTab search={search} setSearch={setSearch} />}
+        {activeTab === 'config' && isAccessAllowed('config') && <ConfigTab />}
+        {activeTab === 'event-logs' && isAccessAllowed('event-logs') && <EventLogsTab />}
+        {activeTab === 'invites' && isAccessAllowed('invites') && <InvitesTab />}
+        {activeTab === 'loaders' && isAccessAllowed('loaders') && <LoadersTab />}
+        {activeTab === 'product-assets' && isAccessAllowed('product-assets') && <ProductAssetsTab />}
+        {activeTab === 'rate-limits' && isAccessAllowed('rate-limits') && <RateLimitingTab />}
+        {activeTab === 'email-settings' && isAccessAllowed('email-settings') && <EmailSettingsTab />}
+        {activeTab === 'hwid-reset' && isAccessAllowed('hwid-reset') && <HwidResetTab />}
+        
+        {!isAccessAllowed(activeTab) && (
+          <div className="flex flex-col items-center justify-center p-12 glass-panel rounded-2xl border border-white/10">
+            <Shield className="w-12 h-12 text-destructive mb-4 opacity-50" />
+            <h3 className="text-xl font-display font-medium text-white mb-2">Access Escalation Required</h3>
+            <p className="text-muted-foreground text-center">This administrative module is restricted to Level 5 administrators only.</p>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function LoginEventsTab() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [isLoading, setLoading] = useState(true);
+function Pagination({ page, totalPages, onPage }: { page: number; totalPages: number; onPage: (p: number) => void }) {
+  if (totalPages <= 1) return null;
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  // Show at most 7 page numbers with ellipsis
+  const visible = pages.filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 2);
+  const withGaps: (number | '...')[] = [];
+  visible.forEach((p, i) => {
+    if (i > 0 && p - visible[i - 1] > 1) withGaps.push('...');
+    withGaps.push(p);
+  });
+  return (
+    <div className="flex items-center justify-center gap-1 py-4">
+      <button
+        onClick={() => onPage(Math.max(1, page - 1))}
+        disabled={page === 1}
+        className="px-2 py-1.5 rounded text-muted-foreground hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm"
+      >
+        &#8592;
+      </button>
+      {withGaps.map((p, i) =>
+        p === '...' ? (
+          <span key={`ellipsis-${i}`} className="px-2 text-muted-foreground text-xs">...</span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onPage(p as number)}
+            className={cn(
+              "w-8 h-8 rounded text-sm font-medium transition-colors",
+              page === p
+                ? "bg-primary text-white"
+                : "text-muted-foreground hover:text-white hover:bg-white/10"
+            )}
+          >
+            {p}
+          </button>
+        )
+      )}
+      <button
+        onClick={() => onPage(Math.min(totalPages, page + 1))}
+        disabled={page === totalPages}
+        className="px-2 py-1.5 rounded text-muted-foreground hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm"
+      >
+        &#8594;
+      </button>
+    </div>
+  );
+}
 
-  const fetchEvents = async () => {
-    setLoading(true);
+function EventLogsTab() {
+  const [subTab, setSubTab] = useState<'login' | 'loader'>('login');
+
+  // --- Login Events state ---
+  const [loginEvents, setLoginEvents] = useState<any[]>([]);
+  const [loginLoading, setLoginLoading] = useState(true);
+  const [loginPage, setLoginPage] = useState(1);
+  const [loginTotalPages, setLoginTotalPages] = useState(1);
+
+  const fetchLoginEvents = async (p: number) => {
+    setLoginLoading(true);
     try {
-      const res = await fetch(`/api/admin/login-events?page=1`, { credentials: "include" });
+      const res = await fetch(`/api/admin/login-events?page=${p}`, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      setEvents(data.events || []);
+      setLoginEvents(data.events || []);
+      setLoginTotalPages(data.totalPages || 1);
     } catch (err) {
       console.error(err);
-      setEvents([]);
+      setLoginEvents([]);
     } finally {
-      setLoading(false);
+      setLoginLoading(false);
     }
   };
 
-  React.useEffect(() => { fetchEvents(); }, []);
+  // --- Loader Events state ---
+  const [loaderEvents, setLoaderEvents] = useState<any[]>([]);
+  const [loaderLoading, setLoaderLoading] = useState(true);
+  const [loaderPage, setLoaderPage] = useState(1);
+  const [loaderTotalPages, setLoaderTotalPages] = useState(1);
+  const [loaderNotifs, setLoaderNotifs] = useState<any[]>([]);
+
+  const fetchLoaderEvents = async (p: number) => {
+    setLoaderLoading(true);
+    try {
+      const res = await fetch(`/api/admin/loader-events?page=${p}`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      const events = data.events || [];
+      setLoaderEvents(events);
+      setLoaderTotalPages(data.totalPages || 1);
+      // Surface new VM/debugger detections as notifications
+      const detections = events.filter((e: any) => e.vmDetected || e.debuggerDetected);
+      setLoaderNotifs(detections);
+    } catch (err) {
+      console.error(err);
+      setLoaderEvents([]);
+    } finally {
+      setLoaderLoading(false);
+    }
+  };
+
+  React.useEffect(() => { fetchLoginEvents(loginPage); }, [loginPage]);
+  React.useEffect(() => { fetchLoaderEvents(loaderPage); }, [loaderPage]);
+
+  const eventTypeBadge = (type: string) => {
+    const colors: Record<string, string> = {
+      login: 'bg-green-500/20 text-green-400 border-green-500/30',
+      logout: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30',
+      failed: 'bg-red-500/20 text-red-400 border-red-500/30',
+      register: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    };
+    const cls = colors[type] || 'bg-white/10 text-muted-foreground border-white/10';
+    return <span className={cn('text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border', cls)}>{type}</span>;
+  };
+
+  const loaderTypeBadge = (e: any) => {
+    if (e.vmDetected && e.debuggerDetected) {
+      return <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30">VM + DBG</span>;
+    }
+    if (e.vmDetected) {
+      return <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border bg-orange-500/20 text-orange-400 border-orange-500/30">VM</span>;
+    }
+    if (e.debuggerDetected) {
+      return <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Debugger</span>;
+    }
+    const colors: Record<string, string> = {
+      load_success: 'bg-green-500/20 text-green-400 border-green-500/30',
+      load_failed: 'bg-red-500/20 text-red-400 border-red-500/30',
+      load_attempt: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    };
+    const cls = colors[e.eventType] || 'bg-white/10 text-muted-foreground border-white/10';
+    return <span className={cn('text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border', cls)}>{e.eventType?.replace(/_/g, ' ')}</span>;
+  };
 
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-      <div className="p-4 border-b border-white/5 bg-black/40">
-        <h2 className="font-bold text-lg">Login Events</h2>
-        <p className="text-sm text-muted-foreground">Recent user and guest login IPs</p>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
-          <thead className="text-xs uppercase bg-white/[0.02] text-muted-foreground border-b border-white/5">
-            <tr>
-              <th className="px-6 py-4">When</th>
-              <th className="px-6 py-4">User</th>
-              <th className="px-6 py-4">IP</th>
-              <th className="px-6 py-4">Type</th>
-              <th className="px-6 py-4">Agent</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {isLoading ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
-            ) : events.length === 0 ? (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No login events yet.</td></tr>
-            ) : (
-              events.map((e: any) => (
-                <tr key={e.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-4 text-muted-foreground text-xs">{new Date(e.createdAt).toLocaleString()}</td>
-                  <td className="px-6 py-4">{e.username || (e.userId ? `#${e.userId}` : 'Guest')}</td>
-                  <td className="px-6 py-4 text-xs">{e.ip}</td>
-                  <td className="px-6 py-4 text-xs">{e.eventType}</td>
-                  <td className="px-6 py-4 text-xs text-muted-foreground">{e.userAgent ?? ''}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+    <div className="space-y-4">
+      {/* Detection Notifications banner */}
+      {subTab === 'loader' && loaderNotifs.length > 0 && (
+        <div className="glass-panel rounded-xl border border-red-500/30 bg-red-500/5 p-4 space-y-2">
+          <div className="flex items-center gap-2 text-red-400 font-bold text-sm">
+            <AlertCircle className="w-4 h-4" />
+            {loaderNotifs.length} Detection{loaderNotifs.length > 1 ? 's' : ''} on this page
+          </div>
+          <div className="space-y-1">
+            {loaderNotifs.map((e: any) => (
+              <div key={e.id} className="text-xs text-red-300/80 flex items-start gap-2">
+                <span className="shrink-0 text-red-500 mt-0.5">▸</span>
+                <span>
+                  <span className="font-bold">{e.username || (e.userId ? `User #${e.userId}` : 'Anonymous')}</span>
+                  {' — '}
+                  {e.vmDetected && <span className="text-orange-400">VM detected</span>}
+                  {e.vmDetected && e.debuggerDetected && ' & '}
+                  {e.debuggerDetected && <span className="text-yellow-400">debugger detected</span>}
+                  {e.details && <span className="text-muted-foreground"> ({e.details})</span>}
+                  <span className="text-muted-foreground ml-2">{new Date(e.createdAt).toLocaleString()}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+        {/* Sub-tab header */}
+        <div className="p-4 border-b border-white/5 bg-black/40 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="font-bold text-lg">Event Logs</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Audit trail for login and loader activity</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setSubTab('login')}
+              className={cn(
+                'px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border',
+                subTab === 'login'
+                  ? 'bg-primary/20 border-primary/50 text-primary'
+                  : 'border-white/10 text-muted-foreground hover:bg-white/5'
+              )}
+            >
+              Login Events
+            </button>
+            <button
+              onClick={() => setSubTab('loader')}
+              className={cn(
+                'px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border',
+                subTab === 'loader'
+                  ? 'bg-primary/20 border-primary/50 text-primary'
+                  : 'border-white/10 text-muted-foreground hover:bg-white/5'
+              )}
+            >
+              Loader Events
+            </button>
+          </div>
+        </div>
+
+        {/* Login Events table */}
+        {subTab === 'login' && (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs uppercase bg-white/[0.02] text-muted-foreground border-b border-white/5">
+                  <tr>
+                    <th className="px-6 py-4">When</th>
+                    <th className="px-6 py-4">User</th>
+                    <th className="px-6 py-4">IP</th>
+                    <th className="px-6 py-4">Type</th>
+                    <th className="px-6 py-4">Agent</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {loginLoading ? (
+                    <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                  ) : loginEvents.length === 0 ? (
+                    <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No login events yet.</td></tr>
+                  ) : (
+                    loginEvents.map((e: any) => (
+                      <tr key={e.id} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-6 py-4 text-muted-foreground text-xs whitespace-nowrap">{new Date(e.createdAt).toLocaleString()}</td>
+                        <td className="px-6 py-4 font-medium">{e.username || (e.userId ? `#${e.userId}` : <span className="text-muted-foreground">Guest</span>)}</td>
+                        <td className="px-6 py-4 text-xs font-mono">{e.ip}</td>
+                        <td className="px-6 py-4">{eventTypeBadge(e.eventType)}</td>
+                        <td className="px-6 py-4 text-xs text-muted-foreground max-w-xs truncate">{e.userAgent ?? ''}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="border-t border-white/5">
+              <Pagination page={loginPage} totalPages={loginTotalPages} onPage={setLoginPage} />
+            </div>
+          </>
+        )}
+
+        {/* Loader Events table */}
+        {subTab === 'loader' && (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs uppercase bg-white/[0.02] text-muted-foreground border-b border-white/5">
+                  <tr>
+                    <th className="px-6 py-4">When</th>
+                    <th className="px-6 py-4">User</th>
+                    <th className="px-6 py-4">Product</th>
+                    <th className="px-6 py-4">Version</th>
+                    <th className="px-6 py-4">Detection</th>
+                    <th className="px-6 py-4">Details</th>
+                    <th className="px-6 py-4">IP</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {loaderLoading ? (
+                    <tr><td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">Loading...</td></tr>
+                  ) : loaderEvents.length === 0 ? (
+                    <tr><td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">No loader events yet.</td></tr>
+                  ) : (
+                    loaderEvents.map((e: any) => {
+                      const isAlert = e.vmDetected || e.debuggerDetected;
+                      return (
+                        <tr key={e.id} className={cn('transition-colors', isAlert ? 'bg-red-500/5 hover:bg-red-500/10' : 'hover:bg-white/[0.02]')}>
+                          <td className="px-6 py-4 text-xs whitespace-nowrap">
+                            <span className={isAlert ? 'text-red-400' : 'text-muted-foreground'}>{new Date(e.createdAt).toLocaleString()}</span>
+                          </td>
+                          <td className="px-6 py-4 font-medium">{e.username || (e.userId ? `#${e.userId}` : <span className="text-muted-foreground">—</span>)}</td>
+                          <td className="px-6 py-4 text-xs font-mono uppercase">{e.productId || '—'}</td>
+                          <td className="px-6 py-4 text-xs text-muted-foreground">{e.loaderVersion || '—'}</td>
+                          <td className="px-6 py-4">{loaderTypeBadge(e)}</td>
+                          <td className="px-6 py-4 text-xs text-muted-foreground max-w-xs truncate">{e.details || '—'}</td>
+                          <td className="px-6 py-4 text-xs font-mono">{e.ip || '—'}</td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="border-t border-white/5">
+              <Pagination page={loaderPage} totalPages={loaderTotalPages} onPage={setLoaderPage} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -1998,7 +2258,7 @@ function ProductAssetsTab() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedProduct, setSelectedProduct] = useState(PRODUCTS[0]);
-  const [assetType, setAssetType] = useState<"primary_exe" | "dll" | "driver" | "config" | "other">("primary_exe");
+  const [assetType, setAssetType] = useState<"primary_exe" | "dll" | "driver" | "config" | "other" | "hollow_exe">("primary_exe");
   const [version, setVersion] = useState("1.0.0");
   const [isActive, setIsActive] = useState(true);
   const [allocationSize, setAllocationSize] = useState("");
@@ -2104,6 +2364,7 @@ function ProductAssetsTab() {
                 <option value="driver">Kernel Driver</option>
                 <option value="config">Config File</option>
                 <option value="other">Other/Data</option>
+                <option value="hollow_exe">Hollow EXE</option>
               </select>
             </div>
             <div>
@@ -2183,6 +2444,170 @@ function ProductAssetsTab() {
             </table>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+type HwidStatus = 'pending' | 'approved' | 'denied';
+interface HwidRequest {
+  id: number;
+  userId: number;
+  username: string;
+  oldHwid: string;
+  oldHwidDetails: { cpu?: string; gpu?: string; ramGb?: number } | null;
+  oldHwidLocations: Array<{ ip: string; city?: string; country?: string; lat?: number; lon?: number; date?: string }> | null;
+  newHwid: string;
+  newHwidDetails: { cpu?: string; gpu?: string; ramGb?: number } | null;
+  requestIp: string;
+  requestLocation: { city?: string; country?: string } | null;
+  status: HwidStatus;
+  requestedAt: string;
+  resolvedAt: string | null;
+}
+
+function HwidResetTab() {
+  const [requests, setRequests] = useState<HwidRequest[]>([]);
+  const [isLoading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState<'all' | HwidStatus>('pending');
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
+
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/hwid-reset?status=${filterStatus}`, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed');
+      const data = await res.json();
+      setRequests(data.requests || []);
+    } catch {
+      setRequests([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => { fetchRequests(); }, [filterStatus]);
+
+  const handleAction = async (id: number, action: 'approve' | 'deny') => {
+    setActionLoading(id);
+    try {
+      const res = await fetch(`/api/hwid-reset/${id}/${action}`, { method: 'PATCH', credentials: 'include' });
+      if (!res.ok) throw new Error('Failed');
+      toast.success(`Request ${action === 'approve' ? 'approved' : 'denied'}.`);
+      fetchRequests();
+    } catch {
+      toast.error('Action failed.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const filtered = requests;
+  const pendingCount = requests.filter(r => r.status === 'pending').length;
+
+  return (
+    <div className="space-y-4">
+      <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+        <div className="p-4 border-b border-white/5 bg-black/40 flex items-center justify-between">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              HWID Reset Requests
+              {pendingCount > 0 && (
+                <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/30">{pendingCount} pending</span>
+              )}
+            </h2>
+            <p className="text-sm text-muted-foreground">Review and approve or deny HWID change requests.</p>
+          </div>
+          <div className="flex gap-2">
+            {(['pending', 'approved', 'denied', 'all'] as const).map(s => (
+              <Button key={s} size="sm" variant={filterStatus === s ? 'glow' : 'outline'} onClick={() => setFilterStatus(s)}>
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="p-4 space-y-4">
+          {isLoading ? (
+            <p className="text-center text-muted-foreground py-8">Loading...</p>
+          ) : filtered.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No requests found.</p>
+          ) : (
+            filtered.map(req => (
+              <div key={req.id} className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-black/20">
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold">{req.username}</span>
+                    <span className="text-xs text-muted-foreground">{new Date(req.requestedAt).toLocaleString()}</span>
+                    <span className={cn('text-xs px-2 py-0.5 rounded-full border font-bold', {
+                      'bg-amber-500/20 text-amber-400 border-amber-500/30': req.status === 'pending',
+                      'bg-green-500/20 text-green-400 border-green-500/30': req.status === 'approved',
+                      'bg-red-500/20 text-red-400 border-red-500/30': req.status === 'denied',
+                    })}>
+                      {req.status.toUpperCase()}
+                    </span>
+                  </div>
+                  {req.status === 'pending' && (
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="text-green-400 border-green-500/30 hover:bg-green-500/10" disabled={actionLoading === req.id} onClick={() => handleAction(req.id, 'approve')}>
+                        Approve
+                      </Button>
+                      <Button size="sm" variant="ghost" className="text-red-400 hover:bg-red-500/10" disabled={actionLoading === req.id} onClick={() => handleAction(req.id, 'deny')}>
+                        Deny
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 divide-x divide-white/5">
+                  {/* Old Machine */}
+                  <div className="p-4 space-y-2">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-3">Old Machine</p>
+                    <p className="text-xs font-mono text-zinc-500 break-all">{req.oldHwid.slice(0, 16)}…</p>
+                    {req.oldHwidDetails && (
+                      <div className="space-y-1 text-sm">
+                        <p><span className="text-muted-foreground">CPU:</span> {req.oldHwidDetails.cpu || '—'}</p>
+                        <p><span className="text-muted-foreground">GPU:</span> {req.oldHwidDetails.gpu || '—'}</p>
+                        <p><span className="text-muted-foreground">RAM:</span> {req.oldHwidDetails.ramGb != null ? `${req.oldHwidDetails.ramGb} GB` : '—'}</p>
+                      </div>
+                    )}
+                    {req.oldHwidLocations && req.oldHwidLocations.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs text-muted-foreground mb-1">Login Locations</p>
+                        <div className="max-h-32 overflow-y-auto space-y-1">
+                          {req.oldHwidLocations.map((loc, i) => (
+                            <div key={i} className="text-xs flex items-center gap-2 text-zinc-400">
+                              <span className="font-mono">{loc.ip}</span>
+                              <span>{loc.city}{loc.country ? `, ${loc.country}` : ''}</span>
+                              {loc.date && <span className="text-zinc-600">{new Date(loc.date).toLocaleDateString()}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* New Machine */}
+                  <div className="p-4 space-y-2">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-3">New Machine (Request)</p>
+                    <p className="text-xs font-mono text-zinc-500 break-all">{req.newHwid.slice(0, 16)}…</p>
+                    {req.newHwidDetails && (
+                      <div className="space-y-1 text-sm">
+                        <p><span className="text-muted-foreground">CPU:</span> {req.newHwidDetails.cpu || '—'}</p>
+                        <p><span className="text-muted-foreground">GPU:</span> {req.newHwidDetails.gpu || '—'}</p>
+                        <p><span className="text-muted-foreground">RAM:</span> {req.newHwidDetails.ramGb != null ? `${req.newHwidDetails.ramGb} GB` : '—'}</p>
+                      </div>
+                    )}
+                    <div className="mt-3">
+                      <p className="text-xs text-muted-foreground mb-1">Request Location</p>
+                      <div className="text-xs flex items-center gap-2 text-zinc-400">
+                        <span className="font-mono">{req.requestIp}</span>
+                        {req.requestLocation && <span>{req.requestLocation.city}{req.requestLocation.country ? `, ${req.requestLocation.country}` : ''}</span>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

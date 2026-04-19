@@ -195,10 +195,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-4 shrink-0">
               {isAuthenticated ? (
                 <div className="hidden md:flex items-center gap-4">
-                {isAdmin && (
+                {(isAdmin || (user?.role === 'mod')) && (
                   <Link href="/admin">
                     <Button variant="outline" size="sm" className="gap-2 border-amber-500/30 text-amber-500 hover:bg-amber-500/10 hover:text-amber-400">
-                      <Shield className="w-4 h-4" /> Admin
+                      <Shield className="w-4 h-4" /> Panel
                     </Button>
                   </Link>
                 )}

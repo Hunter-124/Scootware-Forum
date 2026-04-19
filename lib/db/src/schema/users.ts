@@ -40,6 +40,7 @@ export const usersTable = pgTable("users", {
   discordId: text("discord_id"),
   steamId: text("steam_id"),
   aboutMe: text("about_me"),
+  hwid: text("hwid"),
   postCount: integer("post_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

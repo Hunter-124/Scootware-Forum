@@ -419,7 +419,7 @@ async function checkPendingRequest(
       const productNames = productIds.length > 0 ? productIds.map(id => id.toUpperCase()).join(" + ") : "Products";
       
       // Determine crypto method label
-      let methodLabel = req.coin;
+      let methodLabel: string = req.coin;
       if (req.coin === "USDT_ERC20" || req.coin === "USDC_ERC20") {
         methodLabel = req.coin.replace("_ERC20", " (ERC-20)");
       }

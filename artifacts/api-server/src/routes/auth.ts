@@ -7,7 +7,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import rateLimit from "express-rate-limit";
 import { db } from "@workspace/db";
-import { usersTable, siteConfigTable, loginEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable, postsTable, accountChangesTable } from "@workspace/db";
+import { usersTable, siteConfigTable, loginEventsTable, loaderEventsTable, inviteCodesTable, inviteRequestsTable, productAccessTable, postsTable, accountChangesTable } from "@workspace/db";
 import { eq, gt, and, sql } from "drizzle-orm";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../lib/email";
 import { logger } from "../lib/logger";
@@ -485,7 +485,74 @@ router.post('/request-invite', inviteRequestLimiter, async (req: Request, res: R
   }
 });
 
+// ── Loader detection event (unauthenticated) ──────────────────────────────────
+// Called by the C++ loader immediately on VM/debugger detection, before any
+// login attempt. No session or auth token required — the loader passes its
+// HWID so we can correlate with a user account if one is already bound.
+const loaderEventSchema = z.object({
+  hwid:             z.string().max(256).optional(),
+  vmDetected:       z.boolean(),
+  debuggerDetected: z.boolean(),
+  eventType:        z.enum(["vm_detected", "debugger_detected", "vm_and_debugger_detected", "detection"]).default("detection"),
+  details:          z.string().max(4000).optional(), // semicolon-separated list of specific triggers
+  productId:        z.string().max(128).optional(),
+  loaderVersion:    z.string().max(64).optional(),
+});
+
+router.post("/loader-event", async (req: Request, res: Response) => {
+  const parse = loaderEventSchema.safeParse(req.body);
+  if (!parse.success) {
+    res.status(400).json({ error: parse.error.issues[0]?.message || "Validation error" });
+    return;
+  }
+
+  const { hwid, vmDetected, debuggerDetected, eventType, details, productId, loaderVersion } = parse.data;
+  const ip = req.ip ||
+    (req.headers["x-forwarded-for"] ? String(req.headers["x-forwarded-for"]).split(",")[0].trim() : undefined) ||
+    req.socket?.remoteAddress ||
+    "";
+
+  try {
+    // Attempt to resolve user ID from HWID — purely informational, not required
+    let userId: number | null = null;
+    if (hwid && /^[0-9a-f]{64}$/.test(hwid)) {
+      const [user] = await db
+        .select({ id: usersTable.id })
+        .from(usersTable)
+        .where(eq(usersTable.hwid, hwid))
+        .limit(1);
+      if (user) userId = user.id;
+    }
+
+    await db.insert(loaderEventsTable as any).values({
+      userId,
+      hwid: hwid || null,
+      ip,
+      userAgent: req.get("user-agent") || null,
+      eventType,
+      vmDetected,
+      debuggerDetected,
+      details: details || null,
+      productId: productId || null,
+      loaderVersion: loaderVersion || null,
+    });
+
+    req.log?.info(
+      { userId, hwid, vmDetected, debuggerDetected, eventType, details, ip },
+      "Loader detection event recorded"
+    );
+
+    // Always respond 200 — we don't want the loader to know it was logged
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    req.log?.error({ err }, "Failed to record loader detection event");
+    // Still return 200 so the loader doesn't get any signal
+    res.status(200).json({ ok: true });
+  }
+});
+
 router.post("/login", loginLimiter, async (req: Request, res: Response, next) => {
+
   const loginPayload = {
     identifier: typeof req.body.identifier === "string" ? req.body.identifier : (typeof req.body.email === "string" ? req.body.email : undefined),
     email: typeof req.body.email === "string" ? req.body.email : undefined,
@@ -514,38 +581,56 @@ router.post("/login", loginLimiter, async (req: Request, res: Response, next) =>
     // EMAIL VERIFICATION DISABLED: Users can login immediately after registration without verifying email
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
-      // Record successful login
-      (async function record() {
+      req.session.save(async () => {
+        // Record successful login with the now-finalized session ID
         try {
           const ip = req.ip || (req.headers && req.headers["x-forwarded-for"] ? String(req.headers["x-forwarded-for"]).split(",")[0] : undefined) || req.connection?.remoteAddress || "";
-          await db.insert(loginEventsTable).values({ userId: user.id, ip, userAgent: req.get ? req.get("user-agent") : undefined, eventType: "login" }).returning();
+          const sid = req.session.id;
+          await db.insert(loginEventsTable).values({ 
+            userId: user.id, 
+            ip, 
+            userAgent: req.get ? req.get("user-agent") : undefined, 
+            eventType: "login", 
+            sessionId: sid 
+          }).returning();
+          req.log?.info({ userId: user.id, sid }, "Login event recorded with session (v2)");
         } catch (err) {
           req.log?.error({ err }, "Failed to record login event");
         }
-      })();
 
-      req.session.save(async () => {
-        // Fetch active products before responding
-        const now = new Date();
-        const activeProducts = await db
-          .select()
-          .from(productAccessTable)
-          .where(and(eq(productAccessTable.userId, user.id), gt(productAccessTable.expiresAt, now)));
-        
-        // Attach products
-        (user as any).activeProducts = activeProducts.map((p: any) => {
-          let tier = "premium";
-          if (p.paymentRef?.startsWith("admin-assign:")) {
-            tier = p.paymentRef.split(":")[1] || "premium";
-          }
-          return {
-            productId: p.productId,
-            expiresAt: p.expiresAt,
-            tier,
-          };
-        });
+        try {
+          // Fetch active products before responding
+          const now = new Date();
+          const activeProducts = await db
+            .select()
+            .from(productAccessTable)
+            .where(and(eq(productAccessTable.userId, user.id), gt(productAccessTable.expiresAt, now)));
+          
+          // Attach products
+          (user as any).activeProducts = activeProducts.map((p: any) => {
+            let tier = "premium";
+            if (p.paymentRef?.startsWith("admin-assign:")) {
+              tier = p.paymentRef.split(":")[1] || "premium";
+            }
+            return {
+              productId: p.productId,
+              expiresAt: p.expiresAt,
+              tier,
+            };
+          });
 
-        res.json({ user: mapUser(user) });
+          res.json({ 
+            user: mapUser(user),
+            sessionId: req.sessionID 
+          });
+        } catch (err) {
+          req.log?.error({ err }, "Error fetching user products after login");
+          // Still respond with the user even if products fail to load
+          res.json({ 
+            user: mapUser(user),
+            sessionId: req.sessionID 
+          });
+        }
       });
     });
   })(req, res, next);

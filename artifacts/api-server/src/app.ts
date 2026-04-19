@@ -1,5 +1,6 @@
 import express, { type Express } from "express";
 import fs from "fs";
+import crypto from "crypto";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import helmet from "helmet";
@@ -127,7 +128,7 @@ app.use(express.json({
   limit: "1gb",
   verify: (req: any, res, buf, encoding) => {
     // Capture raw body for diagnostics
-    req.rawBody = buf.toString(encoding || 'utf-8');
+    req.rawBody = buf.toString((encoding as BufferEncoding) || 'utf-8');
   }
 }));
 app.use(express.urlencoded({ extended: true, limit: "1gb" }));
@@ -135,21 +136,6 @@ app.use(express.urlencoded({ extended: true, limit: "1gb" }));
 // Security: Add XSS protection middleware to sanitize user input
 app.use(xssProtection);
 
-// Determine which session store to use
-let sessionStore: session.Store;
-// Check if pool is a PostgreSQL Pool (has both query and end methods, typical of pg.Pool)
-// PGlite instances will not have the typical Pool interface
-if (pool && typeof pool.query === "function" && typeof pool.end === "function" && pool.constructor?.name === "Pool") {
-  // PostgreSQL Pool - use PgSession
-  sessionStore = new PgSession({
-    pool,
-    tableName: "user_sessions",
-    createTableIfMissing: true,
-  });
-} else {
-  // PGlite or fallback - use memory session store
-  sessionStore = new MemorySessionStore();
-}
 
 // Security: Require SESSION_SECRET to be set
 const sessionSecret = process.env.SESSION_SECRET;
@@ -165,6 +151,93 @@ if (!sessionSecret) {
       "Generate a secure secret and set it as an environment variable."
     );
   }
+}
+
+
+// Support for loader/API clients that can't handle cookies: 
+// extract session ID from Authorization header, X-Session-ID header, or query params
+app.use(async (req: any, res, next) => {
+  const authHeader = req.headers.authorization;
+  const xSid = req.headers["x-session-id"];
+  const userAgent = req.headers["user-agent"];
+
+  // Check headers first, then common query parameters used by loaders/clients
+  let sid = (typeof xSid === "string" ? xSid : undefined) 
+    || (authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : (authHeader && authHeader !== "undefined" ? authHeader : undefined))
+    || (req.query.sid as string)
+    || (req.query.token as string)
+    || (req.query.session as string)
+    || (req.query.session_id as string);
+
+  // IP-based session recovery fallback for ScootwareLoader
+  if (!sid && userAgent === "ScootwareLoader/1.0" && pool) {
+    try {
+      // Use CF-Connecting-IP if available, otherwise req.ip
+      let clientIp = (req.headers["cf-connecting-ip"] as string) || req.ip;
+      
+      // Normalize IPv6 mapped IPv4
+      if (clientIp && clientIp.startsWith("::ffff:")) {
+        clientIp = clientIp.substring(7);
+      }
+      
+      // Find latest successful login with a session from this IP in last 60 mins
+      const result = await pool.query(
+        "SELECT session_id FROM login_events WHERE ip = $1 AND user_agent = $2 AND session_id IS NOT NULL AND created_at > NOW() - INTERVAL '60 minutes' ORDER BY created_at DESC LIMIT 1",
+        [clientIp, userAgent]
+      );
+      if (result.rows && result.rows.length > 0) {
+        sid = result.rows[0].session_id;
+        logger.info({ ip: clientIp, sid: sid.substring(0, 8) }, "IP-based session recovery successful");
+      }
+    } catch (err) {
+      logger.error({ err }, "IP-based session recovery failed");
+    }
+  }
+
+  // Log all requests to /api/products to debug loader auth
+  if (req.url && req.url.includes("/products/")) {
+    logger.info({
+      url: req.url,
+      headers: req.headers,
+      query: req.query,
+      sidFound: !!sid
+    }, "VERBOSE Loader session middleware check");
+  }
+
+  if (sid && sid !== "undefined" && sid !== "null" && (!req.headers.cookie || !req.headers.cookie.includes("connect.sid"))) {
+    // If the SID is not signed (doesn't start with s:), sign it so express-session accepts it
+    if (!sid.startsWith("s:")) {
+      const secret = process.env.SESSION_SECRET || "dev-secret-do-not-use-in-production";
+      const signature = crypto
+        .createHmac("sha256", secret)
+        .update(sid)
+        .digest("base64")
+        .replace(/\=+$/, "");
+      sid = `s:${sid}.${signature}`;
+    }
+    
+    const cookieStr = `connect.sid=${sid}`;
+    req.headers.cookie = req.headers.cookie ? `${cookieStr}; ${req.headers.cookie}` : cookieStr;
+    
+    if (req.url && req.url.includes("/products/")) {
+      logger.info({ cookieSet: cookieStr.substring(0, 50) }, "Loader session cookie injected");
+    }
+  }
+  next();
+});
+
+let sessionStore: session.Store;
+// Check if pool is a PostgreSQL Pool (has both query and end methods, typical of pg.Pool)
+if (pool && typeof pool.query === "function" && typeof pool.end === "function") {
+  // PostgreSQL Pool - use PgSession
+  sessionStore = new PgSession({
+    pool,
+    tableName: "user_sessions",
+    createTableIfMissing: true,
+  });
+} else {
+  // PGlite or fallback - use memory session store
+  sessionStore = new MemorySessionStore();
 }
 
 app.use(

@@ -8,6 +8,7 @@ export const loginEventsTable = pgTable("login_events", {
   ip: text("ip").notNull(),
   userAgent: text("user_agent"),
   eventType: text("event_type").notNull().default("login"),
+  sessionId: text("session_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => [
   // For user login history lookups and admin analytics

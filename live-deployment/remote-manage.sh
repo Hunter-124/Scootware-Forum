@@ -50,6 +50,9 @@ echo ""
 
 case $COMMAND in
   update)
+    echo "--- Stopping Services Before Update/Build ---"
+    bash $0 stop
+    
     echo "--- Updating Dependencies and Migrations ---"
     cd $APP_PATH || exit 1
         
@@ -118,11 +121,8 @@ case $COMMAND in
     fi
     ;;
 
-  restart)
-    echo "--- Restarting PM2 Processes and Nginx ---"
-    cd $APP_PATH || exit 1
-    
-    # Step 0: Kill any conflicting Node/PM2 processes on ports 80/443
+  stop)
+    echo "--- Stopping Conflicting Processes ---"
     echo "[0/7] Clearing conflicting processes from ports 80/443/3000..."
     
     sudo killall -9 node 2>/dev/null || true
@@ -164,6 +164,14 @@ case $COMMAND in
     sleep 2
     echo "  ✓ Port conflict cleanup complete"
     echo ""
+    ;;
+
+  restart)
+    echo "--- Restarting PM2 Processes and Nginx ---"
+    cd $APP_PATH || exit 1
+    
+    # Processes should already be stopped by the stop command before build,
+    # but we'll do a gentle cleanup just in case.
 
     # Step 1: Apply database migrations and patches
     echo "[1/7] Applying database migrations and patches..."
@@ -257,7 +265,7 @@ case $COMMAND in
   all)
     bash $0 update
     bash $0 build
-    bash $0 reboot
+    bash $0 restart
     ;;
 
   *)

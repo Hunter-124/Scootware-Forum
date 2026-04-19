@@ -5,6 +5,7 @@ import {
   usersTable,
   siteConfigTable,
   loginEventsTable,
+  loaderEventsTable,
   inviteCodesTable,
   inviteRequestsTable,
   threadsTable,
@@ -35,8 +36,17 @@ function requireAdmin(req: Request, res: Response, next: any) {
     res.status(401).json({ error: "Not authenticated" });
     return;
   }
-  if (user.role !== "admin") {
-    res.status(403).json({ error: "Admin access required" });
+  if (user.role !== "admin" && user.role !== "mod") {
+    res.status(403).json({ error: "Administrative access required" });
+    return;
+  }
+  next();
+}
+
+function requireStrictAdmin(req: Request, res: Response, next: any) {
+  const user = req.user as any;
+  if (!user || user.role !== "admin") {
+    res.status(403).json({ error: "Strict admin access required" });
     return;
   }
   next();
@@ -503,7 +513,7 @@ const CONFIG_KEYS = [
   "rateLimitPurchasePerWindow", "rateLimitPurchaseWindowMs",
 ];
 
-router.get("/config", async (req: Request, res: Response) => {
+router.get("/config", requireStrictAdmin, async (req: Request, res: Response) => {
   try {
     const rows = await db.select().from(siteConfigTable);
     const config: any = {
@@ -696,11 +706,12 @@ router.post("/config-debug", async (req: Request, res: Response) => {
   });
 });
 
-router.patch("/config", async (req: Request, res: Response) => {
+router.patch("/config", requireStrictAdmin, async (req: Request, res: Response) => {
   // Ensure req.body is parsed
   if (!req.body || typeof req.body !== 'object') {
     req.log?.error({ body: req.body, contentType: req.get('content-type') }, "No body or invalid body type");
-    return res.status(400).json({ error: "Request body must be JSON object", received: typeof req.body });
+    res.status(400).json({ error: "Request body must be JSON object", received: typeof req.body });
+    return;
   }
   
   req.log?.info({ bodyKeys: Object.keys(req.body) }, "Received PATCH /config request");
@@ -831,7 +842,7 @@ router.patch("/config", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/login-events", async (req: Request, res: Response) => {
+router.get("/login-events", requireAdmin, async (req: Request, res: Response) => {
   const page = Math.max(1, parseInt(String(req.query.page || "1")));
   try {
     const [{ count }] = await db
@@ -848,9 +859,43 @@ router.get("/login-events", async (req: Request, res: Response) => {
       username: usersTable.username,
     }).from(loginEventsTable as any).leftJoin(usersTable, eq(loginEventsTable.userId, usersTable.id)).orderBy(desc(loginEventsTable.createdAt)).limit(PAGE_SIZE).offset((page - 1) * PAGE_SIZE as number);
 
-    res.json({ events, total: count, page, totalPages: Math.ceil(count / PAGE_SIZE) });
+  res.json({ events, total: count, page, totalPages: Math.ceil(count / PAGE_SIZE) });
   } catch (err) {
     req.log.error({ err }, "Admin get login events error");
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/loader-events", requireAdmin, async (req: Request, res: Response) => {
+  const page = Math.max(1, parseInt(String(req.query.page || "1")));
+  try {
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(loaderEventsTable as any);
+
+    const events = await db.select({
+      id: loaderEventsTable.id,
+      userId: loaderEventsTable.userId,
+      hwid: loaderEventsTable.hwid,
+      ip: loaderEventsTable.ip,
+      userAgent: loaderEventsTable.userAgent,
+      eventType: loaderEventsTable.eventType,
+      vmDetected: loaderEventsTable.vmDetected,
+      debuggerDetected: loaderEventsTable.debuggerDetected,
+      details: loaderEventsTable.details,
+      productId: loaderEventsTable.productId,
+      loaderVersion: loaderEventsTable.loaderVersion,
+      createdAt: loaderEventsTable.createdAt,
+      username: usersTable.username,
+    }).from(loaderEventsTable as any)
+      .leftJoin(usersTable, eq((loaderEventsTable as any).userId, usersTable.id))
+      .orderBy(desc(loaderEventsTable.createdAt))
+      .limit(PAGE_SIZE)
+      .offset((page - 1) * PAGE_SIZE as number);
+
+    res.json({ events, total: count, page, totalPages: Math.ceil(count / PAGE_SIZE) });
+  } catch (err) {
+    req.log.error({ err }, "Admin get loader events error");
     res.status(500).json({ error: "Internal server error" });
   }
 });

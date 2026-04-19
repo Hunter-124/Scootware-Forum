@@ -49,11 +49,7 @@ async function requireActiveSubscription(req: Request, res: Response, next: any)
 // Middleware: Check admin role
 function requireAdmin(req: Request, res: Response, next: any) {
   const user = req.user as any;
-  if (!user) {
-    res.status(401).json({ error: "Not authenticated" });
-    return;
-  }
-  if (user.role !== "admin") {
+  if (!user || user.role !== "admin") {
     res.status(403).json({ error: "Admin access required" });
     return;
   }

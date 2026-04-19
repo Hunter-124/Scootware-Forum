@@ -20,6 +20,8 @@ export function useAuth() {
     isLoading,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
+    isModerator: user?.role === 'mod',
+    hasAdminPanelAccess: user?.role === 'admin' || user?.role === 'mod',
     error,
     invalidateAuth,
     isSubscribed: (productId?: string) => {
