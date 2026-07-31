@@ -51,9 +51,9 @@ test('Development environment is configured correctly', () => {
 // Test 4: Check production config
 test('Production environment is configured correctly', () => {
   const envProd = fs.readFileSync('.env.production', 'utf8');
-  const match = envProd.match(/DATABASE_URL=postgres:\/\/[^@]+@([^:]+):/);
-  if (!match || !match[1].includes('[VPS_IP]')) {
-    throw new Error('Production DATABASE_URL does not point to VPS ([VPS_IP])');
+  const match = envProd.match(/^DATABASE_URL=postgres(?:ql)?:\/\/[^@]+@[^:]+:\d+\/.+$/m);
+  if (!match) {
+    throw new Error('Production DATABASE_URL is missing or malformed');
   }
 });
 
@@ -95,8 +95,8 @@ test('Production environment verification passes', () => {
     if (!output.includes('configuration looks good')) {
       throw new Error('check-env did not pass for production');
     }
-    if (!output.includes('[VPS_IP]')) {
-      throw new Error('Production check did not verify VPS connection');
+    if (!output.includes('DATABASE_URL is configured')) {
+      throw new Error('Production check did not validate DATABASE_URL');
     }
   } catch (e) {
     throw new Error(`Production check failed: ${e.message}`);

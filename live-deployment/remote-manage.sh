@@ -30,13 +30,9 @@ ensure_database_url() {
         
     # Check if DATABASE_URL is empty or missing
     if ! grep -q '^DATABASE_URL=postgresql://' "${APP_PATH}/.env" 2>/dev/null; then
-        echo "  [CRITICAL] DATABASE_URL not properly set in .env!"
-        echo "  Adding default PostgreSQL connection..."
-        # Remove any empty DATABASE_URL entries first
-        sed -i '/^DATABASE_URL=/d' "${APP_PATH}/.env" 2>/dev/null || true
-        # Add the proper DATABASE_URL
-        echo 'DATABASE_URL=postgresql://postgres:[POSTGRES_PASSWORD]@127.0.0.1:5432/scootware' >> "${APP_PATH}/.env"
-        echo "  ✓ DATABASE_URL set to default PostgreSQL connection"
+        echo "  [CRITICAL] DATABASE_URL is not configured in ${APP_PATH}/.env."
+        echo "  Set DATABASE_URL in the server's untracked .env file before continuing."
+        return 1
     fi
 }
 

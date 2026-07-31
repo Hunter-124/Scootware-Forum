@@ -18,10 +18,10 @@ if (Test-Path $envProdFile) {
         
         # Verify DATABASE_URL is properly set in .env
         $envContent = Get-Content $envFile -Raw
-        if ($envContent -notmatch 'DATABASE_URL=postgresql://postgres:') {
-            Write-Host "  [WARNING] DATABASE_URL not set correctly in .env, adding default..." -ForegroundColor Yellow
-            Add-Content -Path $envFile -Value "`nDATABASE_URL=postgresql://postgres:[POSTGRES_PASSWORD]@127.0.0.1:5432/scootware"
-            Write-Host "  [OK] DATABASE_URL added to .env" -ForegroundColor Green
+        if ($envContent -notmatch '^DATABASE_URL=postgresql://' -or $envContent -match '^\s*DATABASE_URL=\s*$') {
+            Write-Host "  [ERROR] DATABASE_URL is missing from .env.production." -ForegroundColor Red
+            Write-Host "  Set it in the ignored .env.production file before deploying." -ForegroundColor Yellow
+            exit 1
         } else {
             Write-Host "  [OK] DATABASE_URL is set in .env" -ForegroundColor Green
         }

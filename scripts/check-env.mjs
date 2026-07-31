@@ -67,22 +67,16 @@ if (envCondition === 'development' || envCondition === 'local') {
     }
   }
 } else if (envCondition === 'production') {
-  console.log('   Mode: PRODUCTION (VPS)');
-  console.log('   Database: PostgreSQL on [VPS_IP]');
-  console.log('   DATABASE_URL: Should point to VPS');
+  console.log('   Mode: PRODUCTION');
+  console.log('   Database: PostgreSQL (configured through DATABASE_URL)');
   
   if (files['.env.production']) {
     const content = fs.readFileSync(envProd, 'utf8');
     const dbUrlMatch = content.match(/^DATABASE_URL=(.+)$/m);
-    if (dbUrlMatch) {
-      const url = dbUrlMatch[1];
-      if (url.includes('[VPS_IP]')) {
-        console.log('   ✅ DATABASE_URL points to VPS (correct!)');
-      } else {
-        console.log(`   ⚠️  DATABASE_URL does not point to VPS: ${url}`);
-      }
+    if (dbUrlMatch && /^postgres(?:ql)?:\/\/[^@]+@[^:]+:\d+\/.+$/.test(dbUrlMatch[1])) {
+      console.log('   ✅ DATABASE_URL is configured');
     } else {
-      console.log('   ⚠️  DATABASE_URL not found in .env.production!');
+      console.log('   ⚠️  DATABASE_URL is missing or malformed in .env.production');
     }
   }
 }
