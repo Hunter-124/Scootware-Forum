@@ -8,8 +8,8 @@
     "build:prod": "cross-env NODE_ENV=production pnpm run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --workspace-concurrency 1 --filter \"./artifacts/**\" --filter '!@workspace/mockup-sandbox' --filter '!@workspace/next-app' --filter \"./scripts\" --if-present run typecheck",
-    "check-env": "node check-env.mjs",
-    "setup:env": "echo \"Environment Files:\" && echo \"  .env.local (LOCAL DEV - PGlite)\" && echo \"  .env.production (VPS - PostgreSQL)\" && echo \"See ENV_CONFIGURATION.md for details\""
+    "check-env": "node scripts/check-env.mjs",
+    "setup:env": "echo \"Create ignored .env.local or .env.production files from the documented variable list in SETUP.md.\""
   },
   "private": true,
   "devDependencies": {

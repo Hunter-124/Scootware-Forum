@@ -117,10 +117,10 @@ pnpm dev
 
 ## 6. Deployment (New Infrastructure)
 
-Since the existing `deployment-manager/` and `live-deployment/` scripts reference a specific old VPS configuration, we recommend setting up fresh deployment using:
+The repository keeps deployment examples under `live-deployment/` and `scripts/deployment/`. Treat them as templates: configure your own server paths, users, domains, and credentials before use.
 
 1. **VPS**: Spin up a new Linux VPS (Ubuntu 22.04+ recommended)
-2. **Reverse Proxy**: Configure nginx (see `nginx-https.conf` as a reference, but update all paths and domains)
+2. **Reverse Proxy**: Configure nginx (see `live-deployment/nginx-https.conf` as a reference, but update all paths and domains)
 3. **SSL**: Use Let's Encrypt or your hosting provider's SSL
 4. **Process Manager**: Use `pm2` or systemd to manage the Node.js API server and Next.js frontend
 5. **Database**: Set up PostgreSQL on the VPS or use a managed database service
@@ -135,14 +135,14 @@ SITE_URL=https://yourdomain.com
 
 ## 7. Important Notes
 
-- **Never commit `config/*.env` files with real values to source control.** The `.env` files listed in `.gitignore` will be automatically excluded. Use `.env.example` as a template.
-- **The existing `deployment-manager/` scripts contain references to the old VPS IP and SSH key.** Update all hardcoded values before using them.
+- **Never commit `.env` files with real values to source control.** Keep production secrets in ignored environment files or your deployment platform's secret store.
+- **Deployment scripts are templates, not production-ready infrastructure.** Supply your own server configuration and SSH credentials through environment variables or a secure deployment system.
 - **Crypto wallet addresses should be per-deployment (unique receiving addresses for each coin).** Do not reuse main wallet addresses directly.
 - **The forum collects user emails and passwords.** Ensure compliance with applicable data protection regulations (GDPR, etc.).
 
 ## 8. SSL/HTTPS Setup (Reference)
 
-See `nginx-https.conf` for a reference nginx configuration. Update all `server_name` directives to match your domain. Obtain certificates via Let's Encrypt:
+See `live-deployment/nginx-https.conf` for a reference nginx configuration. Update all `server_name` directives to match your domain. Obtain certificates via Let's Encrypt:
 
 ```bash
 sudo apt install certbot python3-certbot-nginx

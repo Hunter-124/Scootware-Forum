@@ -26,6 +26,8 @@ out-tsc
 *.log
 .deploy_cache.json
 scratch/
+.pnpm-approve-builds.yaml
+
 
 # Python
 *.pyc
