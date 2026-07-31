@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 
 # Add the directory to sys.path to import ErrorLogger
-sys.path.append(r'C:\Users\nigga\Downloads\Scootware Master\Scootware-Forum\Scootware-Forum\deployment-manager')
+sys.path.append(r'C:\Users\${USERNAME}\Downloads\Scootware Master\Scootware-Forum\Scootware-Forum\deployment-manager')
 
 from error_logger import ErrorLogger
 

@@ -91,7 +91,7 @@ try:
     print("="*70)
     print("\nNext steps:")
     print("  1. Wait 15-30 seconds for services to fully initialize")
-    print("  2. Visit: http://scootware.us or http://[VPS_IP]")
+    print("  2. Visit: http://[YOUR_DOMAIN] or http://[VPS_IP]")
     print("  3. Check Cloudflare - error 521 should resolve once origin is responding")
     print("  4. If still not working, check logs: pm2 logs scootware-api\n")
     

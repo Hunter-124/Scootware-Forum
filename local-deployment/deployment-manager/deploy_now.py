@@ -154,7 +154,7 @@ try:
     print(f"  • Services: Restarted via PM2")
     print(f"  • Status: API running on {vps_host}")
     print(f"\nNext Steps:")
-    print(f"  1. Verify at: http://scootware.us or http://[VPS_IP]")
+    print(f"  1. Verify at: http://[YOUR_DOMAIN] or http://[VPS_IP]")
     print(f"  2. Check logs: pm2 logs scootware-api")
     print(f"  3. Monitor health: Run health check in deployment manager\n")
     

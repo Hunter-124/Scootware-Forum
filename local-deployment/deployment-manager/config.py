@@ -47,10 +47,10 @@ class Config:
         """Get default configuration."""
         return {
             "vps": {
-                "host": "[VPS_IP]",
+                "host": "[VPS_IP]",  # Should come from env var or secure config file
                 "user": "admin",
                 "port": 22,
-                "pem_key_path": "scootware.pem",
+                "pem_key_path": "[SSH_KEY_PATH]",  # Should come from env var or secure config file
                 "remote_path": "/home/admin/Scootware-Forum",
             },
             "local": {
@@ -88,7 +88,7 @@ class Config:
                     "*.pem",
                     "*.ppk",
                     "*.key",
-                    "scootware.pem",
+                    "[SSH_KEY_PATH]",  # Should come from env var or secure config file
                     "scootwareppk.ppk",
                     
                     # Temporary/cache files and database files (CRITICAL: never override server DB)

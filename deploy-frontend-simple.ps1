@@ -1,8 +1,8 @@
 $ErrorActionPreference = "Stop"
-$VPS_IP = "[VPS_IP]"
-$REMOTE_USER = "admin"
-$PEM_KEY = "scootware.pem"
-$REMOTE_PATH = "/home/admin/Scootware-Forum"
+$VPS_IP = $env:VPS_IP
+$REMOTE_USER = $env:VPS_USER
+$PEM_KEY = $env:SSH_KEY_PATH
+$REMOTE_PATH = $env:VPS_REMOTE_PATH
 
 Write-Host "=== Scootware Frontend Deployment ===" -ForegroundColor Cyan
 Write-Host "Target: http://$VPS_IP/" -ForegroundColor Yellow

@@ -7,7 +7,7 @@ try:
     from ssh_manager import SSHManager
     
     print("Verifying deployment on VPS...")
-    ssh = SSHManager(host="[VPS_IP]", user="admin", pem_key_path="scootware.pem")
+    ssh = SSHManager(host="[VPS_IP]", user="[SSH_USER]", pem_key_path="[YOUR_SSH_KEY_PATH]")
     success, msg = ssh.connect()
     
     if not success:

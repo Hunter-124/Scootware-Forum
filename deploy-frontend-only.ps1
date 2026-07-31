@@ -2,17 +2,17 @@
 # Deploys only the frontend built files to the VPS
 
 $ErrorActionPreference = "Stop"
-$VPS_IP = "[VPS_IP]"
-$REMOTE_USER = "admin"
-$PEM_KEY = "scootware.pem"
-$REMOTE_PATH = "/home/admin/Scootware-Forum"
+$VPS_IP = $env:VPS_IP
+$REMOTE_USER = $env:VPS_USER
+$PEM_KEY = $env:SSH_KEY_PATH
+$REMOTE_PATH = $env:VPS_REMOTE_PATH
 
 $frontendSourceDir = "artifacts/forum/dist/public"
 $archiveName = "scootware-frontend.tar.gz"
 $archivePath = "$env:TEMP\$archiveName"
 
 Write-Host "=== Scootware Frontend Deployment ===" -ForegroundColor Cyan
-Write-Host "Target: https://scootware.us" -ForegroundColor Yellow
+Write-Host "Target: http://$VPS_IP/" -ForegroundColor Yellow
 Write-Host "VPS IP: $VPS_IP" -ForegroundColor Yellow
 
 # Verify frontend files exist

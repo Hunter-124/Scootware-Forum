@@ -18,7 +18,7 @@ tar --exclude='node_modules' --exclude='.git' --exclude='.pnpm-store' --exclude=
 
 # 3. Upload to VPS
 Write-Host "[3/5] Uploading to $VPS_IP..."
-scp -i "scootware.pem" -o StrictHostKeyChecking=no $TEMP_ARCHIVE "${REMOTE_USER}@${VPS_IP}:/tmp/"
+scp -i "[YOUR_SSH_KEY_PATH]" -o StrictHostKeyChecking=no $TEMP_ARCHIVE "${REMOTE_USER}@${VPS_IP}:/tmp/"
 
 # 4. Remote Execution
 Write-Host "[4/5] Executing remote update commands..."
@@ -43,7 +43,7 @@ pm2 reload scootware-api --node-args="--env-file=.env" || pm2 start artifacts/ap
 sudo systemctl reload nginx
 "@
 
-ssh -i "scootware.pem" -o StrictHostKeyChecking=no "${REMOTE_USER}@${VPS_IP}" $remote_commands
+ssh -i "[YOUR_SSH_KEY_PATH]" -o StrictHostKeyChecking=no "${REMOTE_USER}@${VPS_IP}" $remote_commands
 
 # 5. Cleanup
 Write-Host "[5/5] Final cleanup..."

@@ -483,7 +483,7 @@ class DirectUploader:
             # Split path into parts for component matching
             path_parts = rel_path.parts
             
-            # 1. Exact filename match (e.g., "scootware.pem")
+            # 1. Exact filename match (e.g., "[YOUR_SSH_KEY_PATH]")
             if rel_name == pattern:
                 return True
             

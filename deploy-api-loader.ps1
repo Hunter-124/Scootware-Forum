@@ -13,10 +13,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$VPS_IP = "[VPS_IP]"
-$VPS_USER = "admin"
-$PEM_KEY = "scootware.pem"
-$REMOTE_PATH = "/home/admin/Scootware-Forum"
+$VPS_IP = $env:VPS_IP
+$VPS_USER = $env:VPS_USER
+$PEM_KEY = $env:SSH_KEY_PATH
+$REMOTE_PATH = $env:VPS_REMOTE_PATH
 $API_SOURCE = "artifacts/api-server"
 $API_DIST = "artifacts/api-server/dist"
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -39,8 +39,8 @@ function Write-In {
 }
 
 # Verify PEM key exists
-if (-not (Test-Path "$SCRIPT_DIR\$PEM_KEY")) {
-    Write-Err "ERROR: PEM key not found at $SCRIPT_DIR\$PEM_KEY"
+if (-not (Test-Path "$env:SSH_KEY_PATH")) {
+    Write-Err "ERROR: SSH_KEY_PATH env var not set or key not found at $env:SSH_KEY_PATH"
     exit 1
 }
 
@@ -92,7 +92,7 @@ if (-not (Test-Path "$SCRIPT_DIR\$API_DIST")) {
 # Step 2: Upload to VPS
 Write-In "`n[2/4] Uploading to VPS ($VPS_IP)..."
 
-$pemKeyPath = "$SCRIPT_DIR\$PEM_KEY"
+$pemKeyPath = "$env:SSH_KEY_PATH"
 $distPath = "$SCRIPT_DIR\$API_DIST"
 
 try {

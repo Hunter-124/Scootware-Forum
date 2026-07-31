@@ -6,7 +6,7 @@ import json
 def run_ssh_command(command):
     """Execute a command on the VPS via SSH."""
     result = subprocess.run(
-        ["ssh", "-i", "scootware.pem", "admin@[VPS_IP]", command],
+        ["ssh", "-i", "[YOUR_SSH_KEY_PATH]", "[SSH_USER]@[VPS_IP]", command],
         capture_output=True,
         text=True,
         timeout=10

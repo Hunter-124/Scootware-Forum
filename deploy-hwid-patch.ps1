@@ -1,8 +1,8 @@
 $ErrorActionPreference = "Stop"
-$VPS_IP = "[VPS_IP]"
-$REMOTE_USER = "admin"
-$PEM = "scootware.pem"
-$REMOTE_PATH = "/home/admin/Scootware-Forum"
+$VPS_IP = $env:VPS_IP
+$REMOTE_USER = $env:VPS_USER
+$PEM = $env:SSH_KEY_PATH
+$REMOTE_PATH = $env:VPS_REMOTE_PATH
 
 function Upload($local, $remote) {
     Write-Host "  Uploading $local ..." -ForegroundColor Yellow

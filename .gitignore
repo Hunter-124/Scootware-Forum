@@ -17,14 +17,15 @@ build/
 out-tsc
 *.tsbuildinfo
 
+# Important files to track
+!.env.example
+!config/.env.example
+
 # Temporary files, logs, and archives
-*.md
 *.tar.gz
 *.log
 .deploy_cache.json
 scratch/
-build-output.txt
-application_credentials
 
 # Python
 *.pyc

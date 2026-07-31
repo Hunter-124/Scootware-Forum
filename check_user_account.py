@@ -3,13 +3,25 @@
 import subprocess
 import json
 import sys
+import os
+
+# Credentials should come from environment variables, not hardcoded:
+#   SSH_KEY_PATH - path to your SSH private key (e.g., scootware.pem)
+#   VPS_HOST     - IP or hostname of your VPS
+#   VPS_USER     - SSH username for the VPS
+#   DB_PASSWORD  - database password for the scootadmin user
+
+SSH_KEY = os.environ.get("SSH_KEY_PATH", "[YOUR_SSH_KEY_PATH]")
+VPS_HOST = os.environ.get("VPS_HOST", "your_vps_ip")
+VPS_USER = os.environ.get("VPS_USER", "admin")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 
 def run_ssh_command(command):
     """Execute a command on the VPS via SSH."""
     full_cmd = [
         "ssh",
-        "-i", "scootware.pem",
-        "admin@[VPS_IP]",
+        "-i", SSH_KEY,
+        f"{VPS_USER}@{VPS_HOST}",
         command
     ]
     
@@ -53,7 +65,7 @@ def get_user_accounts():
     
     # Run psql command
     cmd = f"""
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h localhost -U scootadmin -d scootware -c "{sql}"
+    PGPASSWORD=DB_PASSWORD psql -h localhost -U scootadmin -d scootware -c "{sql}"
     """
     
     code, out, err = run_ssh_command(cmd)
@@ -72,7 +84,7 @@ def get_email_verification_required():
     """
     
     cmd = f"""
-    PGPASSWORD=${POSTGRES_PASSWORD} psql -h localhost -U scootadmin -d scootware -c "{sql}"
+    PGPASSWORD=DB_PASSWORD psql -h localhost -U scootadmin -d scootware -c "{sql}"
     """
     
     code, out, err = run_ssh_command(cmd)

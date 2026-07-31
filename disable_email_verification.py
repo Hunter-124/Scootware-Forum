@@ -5,7 +5,7 @@ import subprocess
 def run_ssh_command(command):
     """Execute a command on the VPS via SSH."""
     result = subprocess.run(
-        ["ssh", "-i", "scootware.pem", "admin@[VPS_IP]", command],
+        ["ssh", "-i", "[YOUR_SSH_KEY_PATH]", "[SSH_USER]@[VPS_IP]", command],
         capture_output=True,
         text=True,
         timeout=10
@@ -32,7 +32,7 @@ if code == 0:
     print("- Email: [TEST_EMAIL]")
     print("\nOR:")
     print("- Username: [TEST_USERNAME]")
-    print("- Email: haedmonds69@gmail.com")
+    print("- Email: [YOUR_EMAIL]")
     print("- Role: admin")
 else:
     print(f"❌ Error: {err}")

@@ -57,9 +57,9 @@ def check_tkinter():
 def check_pem_key():
     """Check if PEM key is accessible."""
     pem_paths = [
-        Path.cwd() / "scootware.pem",
-        Path.cwd().parent / "scootware.pem",
-        Path.home() / ".ssh" / "scootware.pem",
+        Path.cwd() / "[YOUR_SSH_KEY_PATH]",  # Should come from env var or secure config file
+        Path.cwd().parent / "[YOUR_SSH_KEY_PATH]",  # Should come from env var or secure config file
+        Path.home() / ".ssh" / "[YOUR_SSH_KEY_PATH]",  # Should come from env var or secure config file
     ]
     
     found = False
@@ -83,9 +83,9 @@ def check_vps_connectivity():
     """Check if VPS is reachable."""
     try:
         import socket
-        sock = socket.create_connection(("[VPS_IP]", 22), timeout=5)
+        sock = socket.create_connection(("[VPS_IP]", 22), timeout=5)  # Should come from env var or secure config file
         sock.close()
-        print(f"✓ VPS reachable at [VPS_IP]:22")
+        print(f"✓ VPS reachable at [VPS_IP]:22")  # Should come from env var or secure config file
         return True
     except Exception as e:
         print(f"⚠  VPS not reachable: {e}")
