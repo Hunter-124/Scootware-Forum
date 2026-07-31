@@ -34,3 +34,4 @@ __pycache__/
 # Secrets and Keys
 *.pem
 *.ppk
+tmp/
